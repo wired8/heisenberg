@@ -1,9 +1,9 @@
 {
-  "name": "hackathon-starter",
-  "version": "2.2.1",
+  "name": "resrvo",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": "https://github.com/wired8/resrvo.git"
   },
   "scripts": {
     "start": "node app.js",
@@ -55,7 +55,8 @@
     "twit": "^1.1.15",
     "uglify-js": "^2.4.14",
     "validator": "^3.13.0",
-    "yui": "^3.17.1"
+    "yui": "^3.17.1",
+    "injct": "0.0.7"
   },
   "devDependencies": {
     "blessed": "0.0.33",
