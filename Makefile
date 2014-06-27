@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 UNIT_TESTS = test/unit
 INTEGRATION_TESTS = test/integration
 REST_TESTS = test/rest
@@ -63,3 +64,15 @@ update-metadata:
 
 
 .PHONY: test full-test test-cov integration-test install test-ci test-lcov
+=======
+
+PREFIX ?= /usr/local
+
+install: bin/deploy
+	@cp -p $< $(PREFIX)/$<
+
+uninstall:
+	rm -f $(PREFIX)/bin/deploy
+
+.PHONY: install uninstall
+>>>>>>> c0543c317ce3a960dd332e8d7dd7e018915574db

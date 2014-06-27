@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 lib-cov
 *.seed
 *.log
@@ -19,3 +20,9 @@ node_modules
 *.iml
 .DS_Store
 Thumbs.db
+=======
+.DS_Store
+node_modules
+*.sock
+testing
+>>>>>>> c0543c317ce3a960dd332e8d7dd7e018915574db
