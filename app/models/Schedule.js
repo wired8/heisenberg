@@ -10,6 +10,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var ScheduleSchema = new Schema({
+    account_id: {type: String, require: true},
     monday: {
         open: {type: Boolean},
         start: {type: Number},
@@ -60,20 +61,14 @@ var ScheduleSchema = new Schema({
  *
  * @param {Object} json
  *  {
- *      first_name: String
- *      last_name: String
- *      title: String
- *      bio: String
- *      image_url: String
- *      email: String
- *      password: String
- *      services: [String]
- *      breaks: Object
- *      active: Boolean
- *      active_from: Date
- *      active_to: Date
- *      not_available_message: String
- *      book_online: Boolean
+ *      account_id: String
+ *      monday: Object
+ *      tuesday: Object
+ *      wednesday: Object
+ *      thursday: Object
+ *      friday: Object
+ *      saturday: Object
+ *      sunday: Object
  *      created_at: Number
  *      updated_at: Number
  *  }
@@ -93,19 +88,14 @@ var Schedule = function (json) {
         this._id = json._id;
     }
 
-    this.first_name = json.firstname;
-    this.last_name = json.lastname;
-    this.title = json.title;
-    this.bio = json.bio;
-    this.image_url = json.image_url;
-    this.email = json.email;
-    this.password = json.password;
-    this.services = json.services;
-    this.active = json.active || false;
-    this.active_from = json.active_from;
-    this.active_to = json.active_to;
-    this.not_available_message = json.not_available_message;
-    this.book_online = json.book_online;
+    this.account_id = json.account_id;
+    this.monday = json.monday;
+    this.tuesday = json.tuesday;
+    this.wednesday = json.wednesday;
+    this.thursday = json.thursday;
+    this.friday = json.friday;
+    this.saturday = json.saturday;
+    this.sunday = json.sunday;
 
     var now = new XDate(true).getTime();
 

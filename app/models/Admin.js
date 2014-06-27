@@ -10,6 +10,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var AdminSchema = new Schema({
+    account_id: {type: String, require: true},
     firstname: {type: String, required: true},
     lastname: {type: String, required: true},
     email: {type: String, required: true, unique: true},
@@ -24,6 +25,7 @@ var AdminSchema = new Schema({
  *
  * @param {Object} json
  *  {
+ *      account_id: String
  *      firstname: String
  *      lastname: String
  *      email: String
@@ -49,6 +51,7 @@ var Admin = function (json) {
         this._id = json._id;
     }
 
+    this.account_id = json.account_id;
     this.firstname = json.firstname;
     this.lastname = json.lastname;
     this.email = json.email;

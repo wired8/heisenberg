@@ -19,3 +19,24 @@ var AdminService = function (adminRepository) {
 };
 module.exports = AdminService;
 
+
+/**
+ * Gets the admin from mongo
+ *
+ * @param id string
+ * @param callback
+ */
+AdminService.prototype.getAdminById = function (_id, callback) {
+    this.adminRepository.getAdminById(_id, callback);
+};
+
+
+/**
+ * Update a admin
+ *
+ * @param {Admin} admin
+ * @param {Function} callback
+ */
+AdminService.prototype.updateAdmin = function(admin, callback) {
+    this.adminRepository.saveAdmin(admin, callback);
+};

@@ -10,6 +10,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var ServiceSchema = new Schema({
+    account_id: {type: String, require: true},
     name: {type: String, required: true},
     description: {type: String},
     active: {type: Boolean, default: false},

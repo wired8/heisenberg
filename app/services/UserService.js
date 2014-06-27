@@ -39,4 +39,4 @@ UserService.prototype.getUserById = function (_id, callback) {
  */
 UserService.prototype.updateUser = function(user, callback) {
     this.userRepository.saveUser(user, callback);
-}
+};
