@@ -45,3 +45,33 @@ UserRepository.prototype.getUserById = function (id, fields, callback) {
 
     });
 };
+
+/**
+ * Save a user
+ *
+ * @param {User} user
+ * @param {Function(err, user)} callback
+ */
+UserRepository.prototype.saveUser = function (user, callback) {
+
+    if (user._id) {
+
+        var id = user._id;
+        delete user._id;
+        User.model().findByIdAndUpdate(id, user, {}, function (err, result) {
+            callback(err, result);
+        });
+
+    } else {
+
+        user.model().save(function (err, _user) {
+            if (err) {
+                return callback(err);
+            }
+            callback(null, new User(_user));
+        });
+
+    }
+};
+
+

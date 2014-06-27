@@ -15,9 +15,9 @@ var Schema = Mongoose.Schema;
 var UserSchema = new Schema({
     email: { type: String, unique: true, lowercase: true },
     password: String,
-    facebook: String,
-    twitter: String,
-    google: String,
+    facebook: { type: String, default: '' },
+    twitter: { type: String, default: '' },
+    google: { type: String, default: '' },
     tokens: Array,
 
     profile: {

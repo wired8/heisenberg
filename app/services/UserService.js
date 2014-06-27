@@ -31,7 +31,12 @@ UserService.prototype.getUserById = function (_id, callback) {
 };
 
 
-UserService.prototype.test = function (cb) {
-    console.log('test!');
-    cb(null ,'test');
-};
+/**
+ * Update a user
+ *
+ * @param {User} user
+ * @param {Function} callback
+ */
+UserService.prototype.updateUser = function(user, callback) {
+    this.userRepository.saveUser(user, callback);
+}

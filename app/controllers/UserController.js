@@ -131,7 +131,10 @@ var getAccount = function(req, res) {
  * Update profile information.
  */
 var postUpdateProfile = function(req, res, next) {
-    User.model().findById(req.user.id, function(err, user) {
+
+    var userService = Injct.getInstance('userService');
+
+    userService.getUserById(req.user._id, function(err, user) {
         if (err) return next(err);
         user.email = req.body.email || '';
         user.profile.name = req.body.name || '';
@@ -139,7 +142,7 @@ var postUpdateProfile = function(req, res, next) {
         user.profile.location = req.body.location || '';
         user.profile.website = req.body.website || '';
 
-        user.save(function(err) {
+        userService.updateUser(user, function(err, result) {
             if (err) return next(err);
             req.flash('success', { msg: 'Profile information updated.' });
             res.redirect('/account');
