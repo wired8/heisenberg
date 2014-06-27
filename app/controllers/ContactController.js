@@ -1,4 +1,10 @@
-var secrets = require('../config/secrets');
+'use strict';
+
+var ControllerLoader = require('./common/ControllerLoader.js'),
+    Injct = require('injct'),
+    Routes = new ControllerLoader(ContactController);
+
+var secrets = require('../../config/secrets');
 var nodemailer = require("nodemailer");
 var smtpTransport = nodemailer.createTransport('SMTP', {
   service: 'SendGrid',
@@ -8,12 +14,25 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
   }
 });
 
+
+/**
+ * Contact Controller
+ *
+ * @param userService
+ *
+ * @constructor
+ */
+function ContactController() {
+    Injct.apply(this);
+}
+
+
 /**
  * GET /contact
  * Contact form page.
  */
 
-exports.getContact = function(req, res) {
+ContactController.prototype.getContact = function(req, res) {
   res.render('contact', {
     title: 'Contact'
   });
@@ -27,7 +46,7 @@ exports.getContact = function(req, res) {
  * @param message
  */
 
-exports.postContact = function(req, res) {
+ContactController.prototype.postContact = function(req, res) {
   req.assert('name', 'Name cannot be blank').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('message', 'Message cannot be blank').notEmpty();
@@ -61,3 +80,7 @@ exports.postContact = function(req, res) {
     res.redirect('/contact');
   });
 };
+
+Routes.get('/contact').public('getContact');
+Routes.post('/contact').public('postContact');
+Routes.build(exports);

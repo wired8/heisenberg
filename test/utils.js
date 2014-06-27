@@ -1,18 +1,6 @@
 var config = require('config');
 var mongoose = require('mongoose');
 var mongodbConf = config.get('mongodb');
-var User = req('/models/User.js');
-var Item = req('/models/Item.js');
-var Gift = req('/models/Gift.js');
-var Narrative = req('/models/Narrative.js');
-var UserCharacter = req('/models/UserCharacter.js');
-var ServerBase = require('ServerBase');
-var MetaDataUtil = ServerBase.MetaDataUtil;
-var sinon = require('sinon');
-var redis = require('redis');
-var Memcached = require('memcached');
-var PurchasingInitializer = require('../config/initializers/PurchasingInitializer.js');
-var MetadataUpdater = require('../app/jobs/MetadataUpdater.js');
 var DatabaseSetup = require('../config/initializers/DatabaseSetup.js');
 
 /**
@@ -37,7 +25,7 @@ exports.setupUnit = function (done) {
     initUnitDependencies(done);
     setupFakeMetadata();
 
-}
+};
 
 /**
  * Tear down for integration tests
@@ -47,12 +35,6 @@ exports.tearDown = function (done) {
 
     User.model().remove({}, logDrop);
     User.model().collection.dropAllIndexes(logDrop);
-
-//    Gift.model().remove({}, logDrop);
-    UserCharacter.model().remove({}, logDrop);
-
-    Item.model().remove({}, logDrop);
-    Narrative.model().remove({}, logDrop);
 
     mongoose.connection.close();
 
@@ -69,7 +51,7 @@ exports.flushRedis = function() {
     var redis_client = redis.createClient(redis_config.port, redis_config.host);
 
     redis_client.send_command('FLUSHALL', []);
-}
+};
 
 function logDrop(err) {
     if (err) {
@@ -77,11 +59,7 @@ function logDrop(err) {
         return;
     }
     console.log('collection removed');
-
 }
-
-
-/* SETUP DEPENDENCY INJECTION FOR TESTS WITH FAKE MOBAGE AND MEMCACHE */
 
 var injct = require('injct')
     , util = require('util');
@@ -111,46 +89,6 @@ function initDependencies(cb) {
     }
 
 }
-
-/**
- * Fake analytics
- *
- */
-function setupFakeAnalyticsAndLogger() {
-
-    global.Analytics = {
-        gameEvent: console.log,
-        _buildGameEvent: function() {},
-        analyticsClient: {
-            makeRequest: function() {}
-        }
-    };
-
-    global.logger = {
-        info: console.log,
-        warn: console.log,
-        debug: function () {
-        },
-        error: console.error
-    };
-
-}
-/**
- * Fake stuff for unit testing
- * @param cb
- */
-function initUnitDependencies(cb) {
-
-    setupFakeAnalyticsAndLogger();
-
-    MetaDataUtil.setFilesPath(__dirname + "/../app/models/generated/");
-
-    if (cb) {
-        cb();
-    }
-
-}
-
 
 
 function req(pkg) {
