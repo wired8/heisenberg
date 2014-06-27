@@ -85,6 +85,8 @@ var getSignup = function(req, res) {
  * @param password
  */
 var postSignup = function(req, res, next) {
+    var userService = Injct.getInstance('userService');
+
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password must be at least 4 characters long').len(4);
     req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -106,9 +108,9 @@ var postSignup = function(req, res, next) {
             req.flash('errors', { msg: 'Account with that email address already exists.' });
             return res.redirect('/signup');
         }
-        user.model().save(function(err) {
+        userService.updateUser(user, function(err, _user) {
             if (err) return next(err);
-            req.logIn(user, function(err) {
+            req.logIn(_user, function(err) {
                 if (err) return next(err);
                 res.redirect('/');
             });

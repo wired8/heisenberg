@@ -11,13 +11,14 @@ var OAuthStrategy = require('passport-oauth').OAuthStrategy; // Tumblr
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy; // Venmo, Foursquare
 var User = require('../app/models/User');
 var secrets = require('./secrets');
+var Mongoose = require('mongoose');
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  User.model().findById(id, function(err, user) {
+  User.model().findOne({_id: new Mongoose.Types.ObjectId(id)}, function(err, user) {
     done(err, new User(user));
   });
 });
