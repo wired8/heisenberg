@@ -5,6 +5,7 @@ var fs = require('fs');
 var util = require('util');
 var events = require('events');
 var semver = require('semver');
+var Logger = require('./Logger');
 
 function processDir(dirPath,regex,result) {
 
@@ -16,10 +17,10 @@ function processDir(dirPath,regex,result) {
 
         var stats = fs.statSync(currPath);
         if(stats.isDirectory()) {
-            console.log('handling dir: '+currPath);
+            Logger.info('handling dir: '+currPath);
             processDir(currPath,regex,result);
         } else {
-            console.log('handling file: '+currPath);
+            Logger.info('handling file: '+currPath);
 
             if(currPath.match(regex)) {
                 result.push(currPath);
@@ -55,7 +56,7 @@ exports.listFiles = function(startPath,regex) {
     var result = [];
     processDir(startPath,regex,result);
     return result;
-}
+};
 
 /**
  * Synchronous implementation of 'mkdir -p'.
@@ -176,10 +177,10 @@ util.inherits(DirCopySync,events.EventEmitter);
  * dirCopySync = new DirCopySync();
  *
  * this.dirCopySync.on('newdir',function(dirPath) {
- *    console.log('CREATE DIR: '+dirPath);
+ *    Logger.info('CREATE DIR: '+dirPath);
  * });
  * this.dirCopySync.on('newfile',function(filePath) {
- *    console.log('    CREATE: '+filePath);
+ *    Logger.info('    CREATE: '+filePath);
  * });
  *
  * // Handle any template items for this new directory.

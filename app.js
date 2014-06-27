@@ -12,6 +12,7 @@ var errorHandler = require('errorhandler');
 var csrf = require('lusca').csrf();
 var methodOverride = require('method-override');
 var Path = require('path');
+var Logger = require('./app/util/Logger');
 
 var _ = require('lodash');
 var MongoStore = require('connect-mongo')({ session: session });
@@ -32,7 +33,6 @@ var initializerManager = new InitializerManager(InitializerPath);
 
 Heisenberg = express();
 
-
 initializerManager.loadApplicationInitializers(function() {
 
     initializeExpress();
@@ -48,7 +48,7 @@ function initializeExpress() {
 
     mongoose.connect(secrets.db);
     mongoose.connection.on('error', function() {
-        console.error('MongoDB Connection Error. Make sure MongoDB is running.');
+        Logger.error('MongoDB Connection Error. Make sure MongoDB is running.');
     });
 
     var hour = 3600000;
@@ -122,7 +122,7 @@ function initializeExpress() {
  */
 function listen() {
     Heisenberg.listen(Heisenberg.get('port'), function() {
-        console.log('Heisenberg server listening on port %d in %s mode', Heisenberg.get('port'), Heisenberg.get('env'));
+        Logger.info('Heisenberg server listening on port %d in %s mode', Heisenberg.get('port'), Heisenberg.get('env'));
     });
 };
 
