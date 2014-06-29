@@ -1,41 +1,20 @@
 'use strict';
 
-var ControllerLoader = require('./common/ControllerLoader.js'),
-    Injct = require('injct'),
-    Routes = new ControllerLoader(ContactController);
-
-var secrets = require('../../config/secrets');
-var nodemailer = require("nodemailer");
-var smtpTransport = nodemailer.createTransport('SMTP', {
-  service: 'SendGrid',
-  auth: {
-    user: secrets.sendgrid.user,
-    pass: secrets.sendgrid.password
-  }
-});
-
+var Injct = require('injct');
 
 /**
- * Contact Controller
+ * GET /
+ * Home page.
  *
- * @param userService
- *
- * @constructor
+ * @param request
+ * @param response
+ * @param callback
  */
-function ContactController() {
-    Injct.apply(this);
-}
+var getContact = function(req, res) {
 
-
-/**
- * GET /contact
- * Contact form page.
- */
-
-ContactController.prototype.getContact = function(req, res) {
-  res.render('contact', {
-    title: 'Contact'
-  });
+    res.render('contact', {
+        title: 'Contact'
+    });
 };
 
 /**
@@ -45,42 +24,41 @@ ContactController.prototype.getContact = function(req, res) {
  * @param name
  * @param message
  */
+var postContact = function(req, res) {
+    req.assert('name', 'Name cannot be blank').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('message', 'Message cannot be blank').notEmpty();
 
-ContactController.prototype.postContact = function(req, res) {
-  req.assert('name', 'Name cannot be blank').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('message', 'Message cannot be blank').notEmpty();
+    var errors = req.validationErrors();
 
-  var errors = req.validationErrors();
-
-  if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/contact');
-  }
-
-  var from = req.body.email;
-  var name = req.body.name;
-  var body = req.body.message;
-  var to = 'your@email.com';
-  var subject = 'Contact Form | Hackathon Starter';
-
-  var mailOptions = {
-    to: to,
-    from: from,
-    subject: subject,
-    text: body
-  };
-
-  smtpTransport.sendMail(mailOptions, function(err) {
-    if (err) {
-      req.flash('errors', { msg: err.message });
-      return res.redirect('/contact');
+    if (errors) {
+        req.flash('errors', errors);
+        return res.redirect('/contact');
     }
-    req.flash('success', { msg: 'Email has been sent successfully!' });
-    res.redirect('/contact');
-  });
+
+    var from = req.body.email;
+    var name = req.body.name;
+    var body = req.body.message;
+    var to = 'your@email.com';
+    var subject = 'Contact Form | Hackathon Starter';
+
+    var mailOptions = {
+        to: to,
+        from: from,
+        subject: subject,
+        text: body
+    };
+
+    smtpTransport.sendMail(mailOptions, function(err) {
+        if (err) {
+            req.flash('errors', { msg: err.message });
+            return res.redirect('/contact');
+        }
+        req.flash('success', { msg: 'Email has been sent successfully!' });
+        res.redirect('/contact');
+    });
 };
 
-Routes.get('/contact').public('getContact');
-Routes.post('/contact').public('postContact');
-Routes.build(exports);
+Heisenberg.get('/contact', getContact);
+Heisenberg.post('/contact', postContact);
+

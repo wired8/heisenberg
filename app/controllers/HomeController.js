@@ -17,7 +17,7 @@ var getHome = function(req, res) {
     });
 };
 
-Heisenberg.get('/', getHome);
+Heisenberg.get('/home', getHome);
 
 
 

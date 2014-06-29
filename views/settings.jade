@@ -1,0 +1,169 @@
+extends layout
+
+block content
+    .page-header
+        h3 Settings
+
+    form.form-horizontal(role='form', method='POST')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+            .col-sm-3
+                ul(class="nav nav-pills nav-stacked")
+                    li(class="active")
+                        a(href="#account", data-toggle="tab") Account
+                    li
+                        a(href="#booking", data-toggle="tab") Booking
+                    li
+                        a(href="#schedule", data-toggle="tab") Schedule
+                    li
+                        a(href="#provider", data-toggle="tab") Provider
+                    li
+                        a(href="#client", data-toggle="tab") Client
+                    li
+                        a(href="#billing", data-toggle="tab") Billing
+            .col-sm-9
+                .tab-content
+                    .tab-pane(id="account")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Account Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Name
+                            .col-sm-4
+                                input.form-control(type='text', name='name', id='name', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Address
+                            .col-sm-4
+                                input.form-control(type='text', name='address', id='address', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Address Ext
+                            .col-sm-4
+                                input.form-control(type='text', name='address_ext', id='address_ext', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Country
+                            .col-sm-4
+                                input.form-control(type='text', name='Country', id='Country', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Postal/Zip Code
+                            .col-sm-4
+                                input.form-control(type='text', name='postal', id='postal', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Phone
+                            .col-sm-4
+                                input.form-control(type='text', name='phone', id='phone', value='')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="booking")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Booking Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='login') Login required
+                            .col-sm-4
+                                input(type='checkbox', name='login_required', id='login_required', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Bookings admin approved
+                            .col-sm-4
+                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Max bookings per day per user
+                            .col-sm-4
+                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Waiver required
+                            .col-sm-4
+                                input(type='checkbox', name='waiver_required', id='waiver_required', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Private only
+                            .col-sm-4
+                                input(type='checkbox', name='private_only', id='private_only', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Allow social login
+                            .col-sm-4
+                                input(type='checkbox', name='social_login', id='social_login', value='')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="schedule")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Schedule Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Rotating schedule
+                            .col-sm-7
+                                select
+                                    option(value="1") 1 week only
+                                    option(value="2") 2 weeks alternate
+                                    option(value="3") 3 weeks rotating
+                                    option(value="4") 4 weeks rotating
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Rotating week 1 start date
+                                .col-sm-7
+                            .dp2(id="start_period", name="start_period", class="input-group date date")
+                                input(data-format="dd/MM/yyyy", readonly, type="text", class="form-control", name="start_period_val", id="start_period_val")
+                                span(class="input-group-addon")
+                                    span(class="glyphicon glyphicon-calendar")
+                        .form-group
+                            .col-sm-offset-3.col-sm-8
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="provider")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Provider Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='provider_selection') User selection allowed
+                            .col-sm-8
+                                input(type='checkbox', name='provider_selection', id='provider_selection', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Bookings admin approved
+                            .col-sm-8
+                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Provider preference
+                            .col-sm-8
+                                select
+                                    option(value="true") Random
+                                    option(value="false") Sorted by priority
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="client")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Client Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='login') Login required
+                            .col-sm-4
+                                input(type='checkbox', name='login_required', id='login_required', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Bookings admin approved
+                            .col-sm-4
+                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Max bookings per day per user
+                            .col-sm-4
+                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Waiver required
+                            .col-sm-4
+                                input(type='checkbox', name='waiver_required', id='waiver_required', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Private only
+                            .col-sm-4
+                                input(type='checkbox', name='private_only', id='private_only', value='')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Allow social login
+                            .col-sm-4
+                                input(type='checkbox', name='social_login', id='social_login', value='')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="billing")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Billing Settings
+
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
