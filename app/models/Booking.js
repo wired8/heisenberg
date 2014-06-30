@@ -15,7 +15,8 @@ var BookingSchema = new Schema({
     last_name: {type: String, required: true},
     phone: {type: String},
     email: {type: String},
-    date: {type: Date},
+    start_date: {type: Date},
+    end_date: {type: Date},
     service: {type: String},
     provider: {type: String},
     created_at: {type: Number, required: true},
@@ -31,7 +32,8 @@ var BookingSchema = new Schema({
  *      last_name: String
  *      phone: String
  *      email: String
- *      date: Date
+ *      start_date: Date
+ *      end_date: Date
  *      service: String
  *      provider: String
  *      created_at: Number
@@ -58,7 +60,8 @@ var Booking = function (json) {
     this.last_name = json.last_name;
     this.phone = json.phone;
     this.email = json.email;
-    this.date = json.date;
+    this.start_date = json.start_date;
+    this.end_date = json.end_date;
     this.service = json.service;
     this.provider = json.provider;
 

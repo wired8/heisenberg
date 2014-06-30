@@ -35,7 +35,9 @@ function setupDependencies(cb) {
         userService: reqService('UserService'),
         adminRepository: reqRepository('AdminRepository'),
         adminService: reqService('AdminService'),
-        adminRoleRepository: reqRepository('AdminRoleRepository')
+        adminRoleRepository: reqRepository('AdminRoleRepository'),
+        bookingService: reqService('bookingService'),
+        bookingRepository: reqRepository('bookingRepository')
     });
 
     if (cb) {

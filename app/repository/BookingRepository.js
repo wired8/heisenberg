@@ -47,6 +47,40 @@ BookingRepository.prototype.getBookingById = function (id, fields, callback) {
 };
 
 /**
+ * Get all bookings by account_id
+ *
+ * @param {String|HexId} account_id
+ *
+ * @param [String] fields
+ *  the fields to return '_id name nickname'
+ *
+ * @param {Function} callback
+ */
+BookingRepository.prototype.getBookingsByAccountId = function (account_id, fields, callback) {
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = null;
+    }
+
+    Booking.model().find({account_id: account_id}, fields, function (err, bookings) {
+
+        if (err) {
+            Logger.error("Error trying to get bookings by account_id %j", account_id, err);
+            return callback(err);
+        }
+
+        if (!bookings) {
+            Logger.error("No booking for account found", account_id);
+            return callback(new Error('No booking for account found'));
+        }
+
+        callback(null, bookings);
+
+    });
+};
+
+/**
  * Save a booking
  *
  * @param {Booking} booking

@@ -6,4 +6,6 @@ $(document).ready(function() {
         socket.emit('respond', { message: 'Hello to you too, Mr.Server!' });
     });
 
+    resrvo_scheduler.init();
+
 });

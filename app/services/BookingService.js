@@ -30,6 +30,17 @@ BookingService.prototype.getBookingById = function (_id, callback) {
     this.bookingRepository.getBookingById(_id, callback);
 };
 
+/**
+ * Gets all bookings by account id
+ *
+ * @param account_id string
+ * @param callback
+ */
+BookingService.prototype.getBookingsByAccountId = function (account_id, callback) {
+    this.bookingRepository.getBookingsByAccountId(account_id, callback);
+};
+
+
 
 /**
  * Update a booking
