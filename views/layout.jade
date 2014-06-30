@@ -7,8 +7,11 @@ html
     meta(name='description', content='')
     meta(name='csrf-token', content=_csrf)
     meta(name='author', content='')
-    title #{title} | Hackathon Starter
+    title #{title} | Resrvo
     != css('styles')
+
+    script(src='/socket.io/socket.io.js?v=#{cacheBuster}')
+
   body
     include partials/navbar
 

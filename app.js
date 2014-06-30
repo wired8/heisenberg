@@ -31,7 +31,14 @@ var InitializerManager = require('./config/initializers/InitializerManager.js').
 var InitializerPath = Path.resolve(Path.join(Path.resolve('.'),'config','initializers'));
 var initializerManager = new InitializerManager(InitializerPath);
 
+var http = require('http');
+var io = require('socket.io');
+
 Heisenberg = express();
+
+var Server = require('http').createServer(Heisenberg)
+    , io = io.listen(Server);
+
 
 initializerManager.loadApplicationInitializers(function() {
 
@@ -42,18 +49,21 @@ initializerManager.loadApplicationInitializers(function() {
     controllerManager.loadControllers();
 
     listen();
+    configureSocketIO();
+
 });
 
 function initializeExpress() {
 
     mongoose.connect(secrets.db);
     mongoose.connection.on('error', function() {
-        Logger.error('MongoDB Connection Error. Make sure MongoDB is running.');
+        Logger.error('✗ MongoDB Connection Error. Make sure MongoDB is running.');
     });
 
     var hour = 3600000;
     var day = hour * 24;
     var week = day * 7;
+    Heisenberg.locals.cacheBuster = Date.now();
 
     /**
      * CSRF whitelist.
@@ -121,14 +131,36 @@ function initializeExpress() {
  * Start Express server.
  */
 function listen() {
-    Heisenberg.listen(Heisenberg.get('port'), function() {
-        Logger.info('Heisenberg server listening on port %d in %s mode', Heisenberg.get('port'), Heisenberg.get('env'));
+    Server.listen(Heisenberg.get('port'), function() {
+        Logger.info('✔ Heisenberg server listening on port %d in %s mode', Heisenberg.get('port'), Heisenberg.get('env'));
     });
 };
 
+function configureSocketIO() {
+
+    if (Heisenberg.get('env') == 'production') {
+        io.enable('browser client minification');  // send minified client
+        io.enable('browser client etag');          // apply etag caching logic based on version number
+        io.enable('browser client gzip');          // gzip the file
+    };
+
+    if (Heisenberg.get('env') == 'development') {
+
+    };
+
+    io.sockets.on('connection', function (socket) {
+        socket.on('message', function (message) {
+            console.log("Got message: " + message);
+            var ip = socket.handshake.address.address;
+        });
+        socket.on('disconnect', function () {
+            console.log("Socket disconnected");
+
+        });
+    });
+}
+
 module.exports = Heisenberg;
-
-
 
 
 /**
