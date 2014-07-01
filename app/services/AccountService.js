@@ -21,7 +21,7 @@ module.exports = AccountService;
 
 
 /**
- * Gets the account from mongo
+ * Get the account from mongo
  *
  * @param id string
  * @param callback

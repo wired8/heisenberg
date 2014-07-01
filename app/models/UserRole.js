@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * AdminRole model
+ * UserRole model
  */
 var Mongoose = require('mongoose'),
     XDate = require('xdate'),
@@ -9,7 +9,7 @@ var Mongoose = require('mongoose'),
 
 var Schema = Mongoose.Schema;
 
-var AdminRoleSchema = new Schema({
+var UserRoleSchema = new Schema({
     role: {type: String, required: true, unique: true},
     description: {type: String},
     created_at: {type: Number, required: true}
@@ -25,7 +25,7 @@ var AdminRoleSchema = new Schema({
  *  }
  * @constructor
  */
-var AdminRole = function (json) {
+var UserRole = function (json) {
 
     if (!json) {
         json = {};
@@ -47,14 +47,14 @@ var AdminRole = function (json) {
     this.created_at = json.created_at || now;
 };
 
-var model = SchemaUtil.model('AdminRole', AdminRoleSchema);
+var model = SchemaUtil.model('UserRole', UserRoleSchema);
 
-AdminRole.prototype.model = function () {
+UserRole.prototype.model = function () {
     return new model(this);
 };
 
-AdminRole.model = function () {
+UserRole.model = function () {
     return model;
 };
 
-module.exports = AdminRole;
+module.exports = UserRole;

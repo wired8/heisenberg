@@ -12,12 +12,12 @@ var Schema = Mongoose.Schema;
 var AccountSchema = new Schema({
     name: {type: String, required: true},
     address: {type: String, required: true},
-    address_ext: {type: String, required: true},
+    address_ext: {type: String},
     phone: {type: String, required: true},
     postal: {type: String},
     country: {type: String, required: true},
     admins: [String],
-    options: {
+    account_options: {
         booking: {
             options: {
                 login_required: {type: Boolean},
@@ -51,10 +51,10 @@ var AccountSchema = new Schema({
         waiver: {type: String}
     },
     billing: {
-        account_type: {type: String, required: true},
-        billing_cycle: {type: Number, required: true},
-        start_date: {type: Date, required: true},
-        end_date: {type: Date, required: true}
+        account_type: {type: String},
+        billing_cycle: {type: Number},
+        start_date: {type: Date},
+        end_date: {type: Date}
     },
     enabled: {type: Boolean, required: true},
     created_at: {type: Number, required: true},
@@ -94,15 +94,15 @@ var Account = function (json) {
         this._id = json._id;
     }
 
-    this.name = json.name;
-    this.address = json.address;
-    this.address_ext = json.address_ext;
-    this.phone = json.phone;
-    this.postal = json.postal;
-    this.country = json.country;
-    this.admins = json.admins;
-    this.options = json.options;
-    this.billing = json.billing;
+    this.name = json.name || '';
+    this.address = json.address || '';
+    this.address_ext = json.address_ext || '';
+    this.phone = json.phone || '';
+    this.postal = json.postal || '';
+    this.country = json.country || '';
+    this.admins = json.admins || [];
+    this.options = json.options || {};
+    this.billing = json.billing || {};
     this.enabled = json.enabled || false;
 
     var now = new XDate(true).getTime();

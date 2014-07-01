@@ -6,9 +6,10 @@ block content
 
     form.form-horizontal(role='form', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
+        input(id="account_id", type="hidden", name="account_id", value="#{account._id}")
         .form-group
             .col-sm-3
-                ul(class="nav nav-pills nav-stacked")
+                ul(class="nav nav-pills nav-stacked", data-toggle="tab", id="settings_tab")
                     li(class="active")
                         a(href="#account", data-toggle="tab") Account
                     li
@@ -23,34 +24,36 @@ block content
                         a(href="#billing", data-toggle="tab") Billing
             .col-sm-9
                 .tab-content
-                    .tab-pane(id="account")
+                    .tab-pane(id="account", class="active")
                         .form-group
                             .col-sm-offset-2
                                 h3 Account Settings
                         .form-group
                             label.col-sm-3.control-label(for='name') Name
                             .col-sm-4
-                                input.form-control(type='text', name='name', id='name', value='')
+                                input.form-control(type='text', name='name', id='name', value='#{account.name}')
                         .form-group
                             label.col-sm-3.control-label(for='name') Address
                             .col-sm-4
-                                input.form-control(type='text', name='address', id='address', value='')
+                                input.form-control(type='text', name='address', id='address',value='#{account.address}')
                         .form-group
                             label.col-sm-3.control-label(for='name') Address Ext
                             .col-sm-4
-                                input.form-control(type='text', name='address_ext', id='address_ext', value='')
+                                input.form-control(type='text', name='address_ext', id='address_ext', value='#{account.address_ext}')
                         .form-group
                             label.col-sm-3.control-label(for='name') Country
                             .col-sm-4
-                                input.form-control(type='text', name='Country', id='Country', value='')
+                                select(id="country_code", name="country_code")
+                                    each country in countries
+                                        option(value="#{country.ioc}", selected=account.country==country.ioc) #{country.name}
                         .form-group
                             label.col-sm-3.control-label(for='name') Postal/Zip Code
                             .col-sm-4
-                                input.form-control(type='text', name='postal', id='postal', value='')
+                                input.form-control(type='text', name='postal', id='postal', value='#{account.postal}')
                         .form-group
                             label.col-sm-3.control-label(for='name') Phone
                             .col-sm-4
-                                input.form-control(type='text', name='phone', id='phone', value='')
+                                input.form-control(type='text', name='phone', id='phone', value='#{account.phone}')
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
@@ -167,3 +170,4 @@ block content
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
+    script(src="/js/settings.js")

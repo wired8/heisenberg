@@ -105,7 +105,7 @@ function initializeExpress() {
         csrf(req, res, next);
     });
     Heisenberg.use(function(req, res, next) {
-        // Make user object available in templates.
+        // Make user and account objects available in templates.
         res.locals.user = req.user;
         next();
     });

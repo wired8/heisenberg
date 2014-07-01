@@ -27,12 +27,12 @@ var ProviderSchema = new Schema({
         }
     ],
     active: {type: Boolean, default: false},
-    active_from: {type: Date, required: true},
-    active_to: {type: Date},
+    active_from: {type: Number, required: true},
+    active_to: {type: Number},
     holidays: [
         {
-            from: Date,
-            to: Date
+            from: Number,
+            to: Number
         }
     ],
     not_available_message: {type: String},

@@ -1,6 +1,6 @@
 'use strict';
 
-var AdminRole = require('../models/AdminRole.js'),
+var UserRole = require('../models/UserRole.js'),
     Mongoose = require('mongoose'),
     _ = require('underscore'),
     Logger = require('../util/Logger.js'),
@@ -8,6 +8,6 @@ var AdminRole = require('../models/AdminRole.js'),
     Constants = require('../util/Constants.js');
 
 
-var AdminRoleRepository = function () {};
-module.exports = AdminRoleRepository;
+var UserRoleRepository = function () {};
+module.exports = UserRoleRepository;
 

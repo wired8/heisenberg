@@ -13,6 +13,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var UserSchema = new Schema({
+    account_id: { type: String },
     email: { type: String, unique: true, lowercase: true },
     password: String,
     facebook: { type: String, default: '' },
@@ -27,10 +28,12 @@ var UserSchema = new Schema({
         picture: { type: String, default: '' }
     },
 
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
-    created_at: Date
+    roles: [String],
 
+    resetPasswordToken: String,
+    resetPasswordExpires: Number,
+    created_at: Number,
+    updated_at: Number
 });
 
 /**
@@ -57,20 +60,22 @@ var User = function (json) {
         this._id = json._id;
     }
 
+    this.account_id = json.account_id || '';
     this.email = json.email;
     this.password = json.password;
-    this.facebook = json.facebook;
-    this.twitter = json.twitter;
-    this.google = json.google;
-    this.tokens = json.tokens;
+    this.facebook = json.facebook || '';
+    this.twitter = json.twitter || '';
+    this.google = json.google || '';
+    this.tokens = json.tokens || []
 
-    this.profile = json.profile;
-    this.resetPasswordToken = json.resetPasswordToken;
-    this.resetPasswordExpires = json.resetPasswordExpires;
+    this.profile = json.profile || {};
+    this.resetPasswordToken = json.resetPasswordToken || '';
+    this.resetPasswordExpires = json.resetPasswordExpires || -1;
 
     var now = new XDate(true).getTime();
 
     this.created_at = json.created_at || now;
+    this.updated_at = json.updated_at || now;
 };
 
 var model = SchemaUtil.model('User', UserSchema);

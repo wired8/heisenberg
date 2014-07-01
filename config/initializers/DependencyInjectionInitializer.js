@@ -31,13 +31,15 @@ exports.init = function (cb) {
 function setupDependencies(cb) {
 
     injct.unique({
-        userRepository: reqRepository('UserRepository'),
-        userService: reqService('UserService'),
-        adminRepository: reqRepository('AdminRepository'),
-        adminService: reqService('AdminService'),
-        adminRoleRepository: reqRepository('AdminRoleRepository'),
+        accountService: reqService('AccountService'),
+        accountRepository: reqRepository('AccountRepository'),
         bookingService: reqService('bookingService'),
-        bookingRepository: reqRepository('bookingRepository')
+        bookingRepository: reqRepository('bookingRepository'),
+        scheduleRepository: reqRepository('scheduleRepository'),
+        scheduleService: reqService('scheduleService'),
+        userRepository: reqRepository('UserRepository'),
+        userRoleRepository: reqRepository('UserRoleRepository'),
+        userService: reqService('UserService')
     });
 
     if (cb) {
