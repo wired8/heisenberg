@@ -46,17 +46,17 @@ var AccountSchema = new Schema({
         },
         schedule: {
             rotate_period: {type: Number},
-            start_period: {type: Date}
+            start_period: {type: Number}
         },
         waiver: {type: String}
     },
     billing: {
         account_type: {type: String},
         billing_cycle: {type: Number},
-        start_date: {type: Date},
-        end_date: {type: Date}
+        start_date: {type: Number},
+        end_date: {type: Number}
     },
-    enabled: {type: Boolean, required: true},
+    enabled: {type: Boolean},
     created_at: {type: Number, required: true},
     updated_at: {type: Number, required: true}
 });
@@ -101,9 +101,46 @@ var Account = function (json) {
     this.postal = json.postal || '';
     this.country = json.country || '';
     this.admins = json.admins || [];
-    this.options = json.options || {};
+
     this.billing = json.billing || {};
-    this.enabled = json.enabled || false;
+    this.enabled = json.enabled || true;
+
+
+    var default_account_options = {
+        booking: {
+            options: {
+                login_required: false,
+                admin_approved: false,
+                max_per_user_day: 1,
+                waiver_required: false,
+                private_only: false,
+                social_login: true,
+                enabled: true,
+                schedule_period: 1,
+                provider_selection: true,
+                provider_random: false
+            },
+            dates: {
+                first: {
+                    fixed: true,
+                    value: '',
+                    enabled: false
+                },
+                last: {
+                    fixed: false,
+                    value: '',
+                    enabled: false
+                }
+            }
+        },
+        schedule: {
+            rotate_period: 1,
+            start_period: {type: Date}
+        },
+        waiver: ''
+    };
+
+    this.account_options = json.account_options || default_account_options;
 
     var now = new XDate(true).getTime();
 

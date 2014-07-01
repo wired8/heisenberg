@@ -6,7 +6,9 @@ var Injct = require('injct'),
     Account = require('../models/Account'),
     User = require('../models/User'),
     Countries = require('country-data'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    Logger = require('../util/Logger'),
+    Util = require('util');
 
 /**
  * GET /settings
@@ -50,6 +52,8 @@ var postSettings = function(req, res) {
     var userService = Injct.getInstance('userService');
     var user_id = req.user._id.toString();
 
+    Logger.info(Util.inspect(req.body));
+
     var account = new Account({
         _id: req.body.account_id !== 'undefined' ? req.body.account_id : undefined,
         name: req.body.name,
@@ -57,7 +61,25 @@ var postSettings = function(req, res) {
         address_ext: req.body.address_ext,
         country: req.body.country_code,
         phone: req.body.phone,
-        postal: req.body.postal
+        postal: req.body.postal,
+
+        account_options: {
+            booking: {
+                options: {
+                    login_required: req.body.login_required === 'on' ? true : false,
+                    admin_approved: req.body.admin_approved === 'on' ? true : false,
+                    max_per_user_day: req.body.max_per_user_day,
+                    waiver_required: req.body.waiver_required === 'on' ? true : false,
+                    private_only: req.body.private_only === 'on' ? true : false,
+                    social_login: req.body.social_login === 'on' ? true : false,
+                    enabled: true,
+                    schedule_period: req.body.schedule_period,
+                    provider_selection: req.body.provider_selection === 'on' ? true : false,
+                    provider_random: req.body.provider_random === 'on' ? true : false
+                }
+            }
+        }
+
     });
 
     if (!_.contains(account.admins, user_id)) {

@@ -64,27 +64,27 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='login') Login required
                             .col-sm-4
-                                input(type='checkbox', name='login_required', id='login_required', value='')
+                                input(type='checkbox', name='login_required', id='login_required', checked='#{account.account_options.booking.options.login_required}'=='true')
                         .form-group
                             label.col-sm-3.control-label(for='name') Bookings admin approved
                             .col-sm-4
-                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
+                                input(type='checkbox', name='admin_approved', id='admin_approved', checked='#{account.account_options.booking.options.admin_approved}'=='true')
                         .form-group
                             label.col-sm-3.control-label(for='name') Max bookings per day per user
                             .col-sm-4
-                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='')
+                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='#{account.account_options.booking.options.max_per_user_day}')
                         .form-group
                             label.col-sm-3.control-label(for='name') Waiver required
                             .col-sm-4
-                                input(type='checkbox', name='waiver_required', id='waiver_required', value='')
+                                input(type='checkbox', name='waiver_required', id='waiver_required', checked='#{account.account_options.booking.options.waiver_required}'=='true')
                         .form-group
                             label.col-sm-3.control-label(for='name') Private only
                             .col-sm-4
-                                input(type='checkbox', name='private_only', id='private_only', value='')
+                                input(type='checkbox', name='private_only', id='private_only', checked='#{account.account_options.booking.options.private_only}'=='true')
                         .form-group
                             label.col-sm-3.control-label(for='name') Allow social login
                             .col-sm-4
-                                input(type='checkbox', name='social_login', id='social_login', value='')
+                                input(type='checkbox', name='social_login', id='social_login', checked='#{account.account_options.booking.options.social_login}'=='true')
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
@@ -95,7 +95,7 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='name') Rotating schedule
                             .col-sm-7
-                                select
+                                select(name='schedule_period')
                                     option(value="1") 1 week only
                                     option(value="2") 2 weeks alternate
                                     option(value="3") 3 weeks rotating
@@ -117,15 +117,11 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='provider_selection') User selection allowed
                             .col-sm-8
-                                input(type='checkbox', name='provider_selection', id='provider_selection', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Bookings admin approved
-                            .col-sm-8
-                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
+                                input(type='checkbox', name='provider_selection', id='provider_selection', checked='#{account.account_options.booking.options.provider_selection}'=='true')
                         .form-group
                             label.col-sm-3.control-label(for='name') Provider preference
                             .col-sm-8
-                                select
+                                select(name='provider_random')
                                     option(value="true") Random
                                     option(value="false") Sorted by priority
                         .form-group
@@ -136,29 +132,7 @@ block content
                             .col-sm-offset-2
                                 h3 Client Settings
                         .form-group
-                            label.col-sm-3.control-label(for='login') Login required
-                            .col-sm-4
-                                input(type='checkbox', name='login_required', id='login_required', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Bookings admin approved
-                            .col-sm-4
-                                input(type='checkbox', name='admin_approved', id='admin_approved', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Max bookings per day per user
-                            .col-sm-4
-                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Waiver required
-                            .col-sm-4
-                                input(type='checkbox', name='waiver_required', id='waiver_required', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Private only
-                            .col-sm-4
-                                input(type='checkbox', name='private_only', id='private_only', value='')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Allow social login
-                            .col-sm-4
-                                input(type='checkbox', name='social_login', id='social_login', value='')
+
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
