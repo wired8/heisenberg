@@ -33,10 +33,10 @@ function setupDependencies(cb) {
     injct.unique({
         accountService: reqService('AccountService'),
         accountRepository: reqRepository('AccountRepository'),
-        bookingService: reqService('bookingService'),
-        bookingRepository: reqRepository('bookingRepository'),
-        scheduleRepository: reqRepository('scheduleRepository'),
-        scheduleService: reqService('scheduleService'),
+        bookingService: reqService('BookingService'),
+        bookingRepository: reqRepository('BookingRepository'),
+        scheduleRepository: reqRepository('ScheduleRepository'),
+        scheduleService: reqService('ScheduleService'),
         userRepository: reqRepository('UserRepository'),
         userRoleRepository: reqRepository('UserRoleRepository'),
         userService: reqService('UserService')
