@@ -96,10 +96,8 @@ block content
                             label.col-sm-3.control-label(for='name') Rotating schedule
                             .col-sm-7
                                 select(name='schedule_period')
-                                    option(value="1") 1 week only
-                                    option(value="2") 2 weeks alternate
-                                    option(value="3") 3 weeks rotating
-                                    option(value="4") 4 weeks rotating
+                                    each schedule in schedule_period
+                                        option(value="#{schedule.value}", selected=schedule.value==account.account_options.booking.options.schedule_period) #{schedule.name}
                         .form-group
                             label.col-sm-3.control-label(for='name') Rotating week 1 start date
                                 .col-sm-7
@@ -122,8 +120,8 @@ block content
                             label.col-sm-3.control-label(for='name') Provider preference
                             .col-sm-8
                                 select(name='provider_random')
-                                    option(value="true") Random
-                                    option(value="false") Sorted by priority
+                                    each provider in provider_random
+                                        option(value="#{provider.value}", selected=provider.value==account.account_options.booking.options.provider_random) #{provider.name}
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes

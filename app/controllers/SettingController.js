@@ -29,10 +29,37 @@ var getSettings = function(req, res) {
             account = new Account();
         }
 
+        var schedule_period = [
+            {
+                name: '1 week only',
+                value: 1 },
+            {
+                name: '2 weeks alternate',
+                value: 2 },
+            {
+                name: '3 weeks rotating',
+                value: 3 },
+            {
+                name: '4 weeks rotating',
+                value: 4 }
+        ];
+
+        var provider_random = [
+            {
+                name: 'Random',
+                value: true },
+            {
+                name: 'Sorted by priority',
+                value: false }
+
+        ];
+
         res.render('settings', {
             title: 'Settings',
             account: account,
-            countries: Countries.countries.all
+            countries: Countries.countries.all,
+            schedule_period: schedule_period,
+            provider_random: provider_random
         });
 
     });
@@ -75,7 +102,7 @@ var postSettings = function(req, res) {
                     enabled: true,
                     schedule_period: req.body.schedule_period,
                     provider_selection: req.body.provider_selection === 'on' ? true : false,
-                    provider_random: req.body.provider_random === 'on' ? true : false
+                    provider_random: req.body.provider_random
                 }
             }
         }
