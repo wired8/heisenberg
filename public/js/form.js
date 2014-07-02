@@ -2,7 +2,7 @@
 
 var resrvo_form = {
 
-    init: function () {
+    init: function (form_fields) {
         var self = this;
 
         Formbuilder.options.HTTP_ENDPOINT = '/management/form';
@@ -10,35 +10,7 @@ var resrvo_form = {
 
         var builder = new Formbuilder({
             selector: '#resrvo_form',
-            bootstrapData: [
-                {
-                    "label": "Please enter your clearance number",
-                    "field_type": "text",
-                    "required": true,
-                    "field_options": {},
-                    "cid": "c6"
-                },
-                {
-                    "label": "Security personnel #82?",
-                    "field_type": "radio",
-                    "required": true,
-                    "field_options": {"options": [
-                        {"label": "Yes", "checked": false},
-                        {"label": "No", "checked": false}
-                    ],
-                    "include_other_option": true},
-                    "cid": "c10"
-                },
-                {
-                    "label": "Medical history",
-                    "field_type": "file",
-                    "required": true,
-                    "field_options": {},
-                    "cid": "c14"
-                }
-            ]
+            bootstrapData: form_fields
         });
     }
 };
-
-resrvo_form.init();

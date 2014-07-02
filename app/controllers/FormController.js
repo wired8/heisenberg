@@ -30,9 +30,11 @@ var getForm = function(req, res) {
             return;
         }
 
+        var form_fields = (form && form.fields !== undefined ? JSON.stringify(form.fields) : JSON.stringify([]));
+
         res.render('management/form', {
             title: 'Form Management',
-            form: form
+            form_fields: form_fields
         });
 
     });

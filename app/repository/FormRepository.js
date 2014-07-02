@@ -63,14 +63,14 @@ FormRepository.prototype.getFormByAccountId = function (account_id, fields, call
         fields = null;
     }
 
-    Form.model().find({account_id: account_id}, fields, function (err, services) {
+    Form.model().findOne({account_id: account_id}, fields, function (err, form) {
 
         if (err) {
-            Logger.error("Error trying to find services by account_id %j", account_id, err);
+            Logger.error("Error trying to find form by account_id %j", account_id, err);
             return callback(err);
         }
 
-        callback(null, services);
+        callback(null, form);
 
     });
 };
@@ -83,6 +83,8 @@ FormRepository.prototype.getFormByAccountId = function (account_id, fields, call
  */
 FormRepository.prototype.saveForm = function (form, callback) {
 
+    Form.model().findOneAndUpdate({ account_id: form.account_id }, form, { upsert: true }, callback);
+    /*
     if (form._id) {
 
         var id = form._id;
@@ -101,6 +103,7 @@ FormRepository.prototype.saveForm = function (form, callback) {
         });
 
     }
+    */
 };
 
 
