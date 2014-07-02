@@ -47,6 +47,35 @@ ServiceRepository.prototype.getServiceById = function (id, fields, callback) {
 };
 
 /**
+ * Get services by account_id
+ *
+ * @param {String|HexId} account_id
+ *
+ * @param [String] fields
+ *  the fields to return '_id name nickname'
+ *
+ * @param {Function} callback
+ */
+ServiceRepository.prototype.getServicesByAccountId = function (account_id, fields, callback) {
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = null;
+    }
+
+    Service.model().find({account_id: account_id}, fields, function (err, services) {
+
+        if (err) {
+            Logger.error("Error trying to find services by account_id %j", account_id, err);
+            return callback(err);
+        }
+
+        callback(null, services);
+
+    });
+};
+
+/**
  * Save a service
  *
  * @param {Service} service

@@ -9,7 +9,7 @@ var Injct = require('injct'),
     Booking = require('../models/Booking.js');
 
 /**
- * GET /
+ * GET /management/schedule
  * Schedule page.
  *
  * @param request
@@ -48,14 +48,14 @@ var getBookings = function(req, res, next) {
 };
 
 /**
- * POST /api/bookings
- * Save a booking for auth user.
+ * POST /management/schedule
+ * Save a schedule for auth user.
  *
  * @param request
  * @param response
  * @param callback
  */
-var postBooking = function(req, res, next) {
+var postSchedule = function(req, res, next) {
     var account_id = req.user.account_id;
     var bookingService = Injct.getInstance('bookingService');
 
@@ -136,8 +136,41 @@ var postBooking = function(req, res, next) {
 };
 
 
+/**
+ * GET /management/scheduleSettings
+ * Schedule settings page.
+ *
+ * @param request
+ * @param response
+ * @param callback
+ */
+var getScheduleSettings = function(req, res) {
+
+    var account_id = req.user.account_id;
+    var accountService = Injct.getInstance('accountService');
+
+    res.render('management/schedule', {
+        title: 'Schedule Settings Management'
+    });
+};
+
+/**
+ * POST /management/schedule
+ * Save schedule settings.
+ *
+ * @param request
+ * @param response
+ * @param callback
+ */
+var postScheduleSettings = function(req, res) {
+
+};
+
+
 Heisenberg.get('/', PassportConf.isAuthenticated, getSchedule);
-Heisenberg.get('/api/bookings', PassportConf.isAuthenticated, getBookings);
-Heisenberg.post('/api/bookings', PassportConf.isAuthenticated, postBooking);
+Heisenberg.get('/management/schedule', PassportConf.isAuthenticated, getSchedule);
+Heisenberg.post('/management/schedule', PassportConf.isAuthenticated, postSchedule);
+Heisenberg.get('/management/scheduleSettings', PassportConf.isAuthenticated, getScheduleSettings);
+Heisenberg.post('/management/scheduleSettings', PassportConf.isAuthenticated, postScheduleSettings);
 
 

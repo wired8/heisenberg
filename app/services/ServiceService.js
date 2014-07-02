@@ -21,13 +21,23 @@ module.exports = ServiceService;
 
 
 /**
- * Gets the schedule from mongo
+ * Get service from mongo
  *
  * @param id string
  * @param callback
  */
 ServiceService.prototype.getServiceById = function (_id, callback) {
     this.serviceRepository.getServiceById(_id, callback);
+};
+
+/**
+ * Get services by account id
+ *
+ * @param account_id string
+ * @param callback
+ */
+ServiceService.prototype.getServicesByAccountId = function (account_id, callback) {
+    this.serviceRepository.getServicesByAccountId(account_id, callback);
 };
 
 
@@ -37,6 +47,6 @@ ServiceService.prototype.getServiceById = function (_id, callback) {
  * @param {Service} service
  * @param {Function} callback
  */
-ScheduleService.prototype.updateService = function(schedule, callback) {
+ServiceService.prototype.updateService = function(schedule, callback) {
     this.serviceRepository.saveService(service, callback);
 };

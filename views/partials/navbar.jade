@@ -11,12 +11,28 @@
       ul.nav.navbar-nav
         li(class=title=='Schedule'?'active':undefined)
           a(href='/') Schedule
-        li(class=title=='Settings'?'active':undefined)
-          a(href='/settings') Settings
+        li.dropdown(class=title=='Management'?'active':undefined)
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+              | Management
+              i.caret
+              ul.dropdown-menu
+                  li: a(href='/management/services') Services
+                  li: a(href='/management/providers') Providers
+                  li: a(href='/management/scheduleSettings') Schedule Settings
+                  li.divider
+                  li: a(href='/management/form') Booking Form
+                  li: a(href='/management/widget') Booking Widget
+
         li(class=title=='Analytics'?'active':undefined)
           a(href='/analytics') Analytics
         li(class=title=='Contact'?'active':undefined)
           a(href='/contact') Contact
+        li.dropdown(class=title=='Settings'?'active':undefined)
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+              | Settings
+              i.caret
+              ul.dropdown-menu
+                  li: a(href='/settings/application') Application
       ul.nav.navbar-nav.navbar-right
         if !user
           li(class=title=='Login'?'active':undefined)

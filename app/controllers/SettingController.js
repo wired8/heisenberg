@@ -1,7 +1,6 @@
 'use strict';
 
 var Injct = require('injct'),
-    Passport = require('passport'),
     PassportConf = require('../../config/passport'),
     Account = require('../models/Account'),
     User = require('../models/User'),
@@ -11,14 +10,14 @@ var Injct = require('injct'),
     Util = require('util');
 
 /**
- * GET /settings
- * Settings page.
+ * GET /settings/application
+ * Application settings page.
  *
  * @param request
  * @param response
  * @param callback
  */
-var getSettings = function(req, res) {
+var getApplicationSettings = function(req, res) {
 
     var account_id = req.user.account_id;
     var accountService = Injct.getInstance('accountService');
@@ -54,8 +53,8 @@ var getSettings = function(req, res) {
 
         ];
 
-        res.render('settings', {
-            title: 'Settings',
+        res.render('settings/application', {
+            title: 'Application Settings',
             account: account,
             countries: Countries.countries.all,
             schedule_period: schedule_period,
@@ -66,14 +65,14 @@ var getSettings = function(req, res) {
 };
 
 /**
- * POST /settings
- * Save settings.
+ * POST /settings/application
+ * Save application settings.
  *
  * @param request
  * @param response
  * @param callback
  */
-var postSettings = function(req, res) {
+var postApplicationSettings = function(req, res) {
 
     var accountService = Injct.getInstance('accountService');
     var userService = Injct.getInstance('userService');
@@ -128,11 +127,11 @@ var postSettings = function(req, res) {
                 userService.updateUser(user, function(err, result) {
                     if (err) {
                         req.flash('errors', { msg: 'Error updating account information.' });
-                        res.redirect('/settings');
+                        res.redirect('/settings/application');
                         return;
                     }
                     req.flash('success', { msg: 'Account information updated.' });
-                    res.redirect('/settings');
+                    res.redirect('/settings/application');
                 });
 
             });
@@ -141,9 +140,8 @@ var postSettings = function(req, res) {
     });
 };
 
-Heisenberg.get('/settings', PassportConf.isAuthenticated, getSettings);
-Heisenberg.post('/settings', PassportConf.isAuthenticated, postSettings);
-
+Heisenberg.get('/settings/application', PassportConf.isAuthenticated, getApplicationSettings);
+Heisenberg.post('/settings/application', PassportConf.isAuthenticated, postApplicationSettings);
 
 
 
