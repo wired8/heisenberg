@@ -5,7 +5,9 @@
  */
 var Mongoose = require('mongoose'),
     XDate = require('xdate'),
-    SchemaUtil = require('./common/SchemaUtil.js');
+    SchemaUtil = require('./common/SchemaUtil.js'),
+    Bcrypt = require('bcrypt-nodejs'),
+    Crypto = require('crypto');
 
 var Schema = Mongoose.Schema;
 
@@ -16,8 +18,8 @@ var ProviderSchema = new Schema({
     title: {type: String},
     bio: {type: String},
     image_url: {type: String},
-    email: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
+    email: {type: String, unique: true},
+    password: {type: String},
     services: [String],
     breaks:[
         {
@@ -27,7 +29,7 @@ var ProviderSchema = new Schema({
         }
     ],
     active: {type: Boolean, default: false},
-    active_from: {type: Number, required: true},
+    active_from: {type: Number},
     active_to: {type: Number},
     holidays: [
         {
@@ -80,21 +82,21 @@ var Provider = function (json) {
         this._id = json._id;
     }
 
-    this.account_id = json.account_id;
-    this.first_name = json.firstname;
-    this.last_name = json.lastname;
-    this.title = json.title;
-    this.bio = json.bio;
-    this.image_url = json.image_url;
-    this.email = json.email;
-    this.password = json.password;
-    this.services = json.services;
+    this.account_id = json.account_id || '';
+    this.first_name = json.first_name || '';
+    this.last_name = json.last_name || '';
+    this.title = json.title || '';
+    this.bio = json.bio || '';
+    this.image_url = json.image_url || '';
+    this.email = json.email || '';
+    this.password = json.password || '';
+    this.services = json.services || [];
     this.active = json.active || false;
-    this.active_from = json.active_from;
-    this.active_to = json.active_to;
-    this.holidays = json.holidays;
-    this.not_available_message = json.not_available_message;
-    this.book_online = json.book_online;
+    this.active_from = json.active_from || -1;
+    this.active_to = json.active_to || -1;
+    this.holidays = json.holidays || {};
+    this.not_available_message = json.not_available_message || '';
+    this.book_online = json.book_online || true;
 
     var now = new XDate(true).getTime();
 

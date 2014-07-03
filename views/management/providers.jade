@@ -4,4 +4,32 @@ block content
         h3 Provider Management
     form.form-horizontal(role='form', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
+        .dataTables_wrapper(class="form-inline", role="grid")
+            button(class="editor_create btn btn-primary") Create new provider
+            .spacer
+            table(id='providers', class="table table-striped table-bordered dTableR dataTable")
+                thead
+                    tr
+                        th _id
+                        th First Name
+                        th Last Name
+                        th Email
+                        th Active
+                        th Created
+                        th Updated
+                        th Edit
+                        th Delete
+
+            link(rel="stylesheet", href="/css/lib/datatables/TableTools.css")
+            link(rel="stylesheet", href="/js/lib/smoke/themes/gebo.css", id="smoke_gebo")
+            link(rel='stylesheet', href='/css/lib/datatables/DTBootstrap.css')
+            link(rel='stylesheet', href='/css/lib/datatables/dataTables.editor.css')
+
+            script(src='/js/lib/jquery/jquery.js')
+            script(src='/js/lib/jquery/jquery-migrate.min.js')
+            script(src='/js/lib/datatables/jquery.dataTables.js')
+            script(src='/js/lib/datatables/DTBootstrap.js')
+            script(src='/js/lib/datatables/KeyTable.min.js')
+            script(src='/js/lib/datatables/dataTables.editor.min.js')
+            script(src='/js/providers.js')
 

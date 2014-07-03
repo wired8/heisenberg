@@ -1,0 +1,26 @@
+extends ../layout
+block content
+    .page-header
+        h3 Provider
+    form.form-horizontal(role='form', method='POST')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+            label.col-sm-3.control-label(for='first_name') First Name
+            .col-sm-4
+                input.form-control(type='text', name='first_name', id='first_name', value='#{provider.first_name}')
+        .form-group
+            label.col-sm-3.control-label(for='last_name') Last Name
+            .col-sm-4
+                input.form-control(type='text', name='last_name', id='last_name', value='#{provider.last_name}')
+        .form-group
+            label.col-sm-3.control-label(for='email') Email
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
+            label.col-sm-3.control-label(for='name') Active
+            .col-sm-4
+                input(type='checkbox', name='active', id='active', checked='#{provider.active}'=='true')
+        .form-group
+            .col-sm-offset-3.col-sm-4
+                button.btn.btn.btn-primary(type='submit') Save changes
+
