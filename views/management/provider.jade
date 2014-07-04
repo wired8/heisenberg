@@ -17,9 +17,53 @@ block content
             .col-sm-4
                 input.form-control(type='text', name='email', id='email', value='#{provider.email}')
         .form-group
+            label.col-sm-3.control-label(for='password') Password
+            .col-sm-4
+                input.form-control(type='text', name='password', id='password', value='#{provider.password}')
+        .form-group
+            label.col-sm-3.control-label(for='title') Title
+            .col-sm-4
+                input.form-control(type='text', name='title', id='title', value='#{provider.title}')
+        .form-group
+            label.col-sm-3.control-label(for='bio') Bio
+            .col-sm-4
+                input.form-control(type='text', name='bio', id='bio', value='#{provider.bio}')
+        .form-group
+            label.col-sm-3.control-label(for='image_url') Image
+            .col-sm-4
+                input.form-control(type='text', name='image_url', id='image_url', value='#{provider.image_url}')
+        .form-group
+            label.col-sm-3.control-label(for='services') Services
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
+            label.col-sm-3.control-label(for='email') Breaks
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
             label.col-sm-3.control-label(for='name') Active
             .col-sm-4
                 input(type='checkbox', name='active', id='active', checked='#{provider.active}'=='true')
+        .form-group
+            label.col-sm-3.control-label(for='email') Active From
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
+            label.col-sm-3.control-label(for='email') Active To
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
+            label.col-sm-3.control-label(for='email') Holidays
+            .col-sm-4
+                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+        .form-group
+            label.col-sm-3.control-label(for='not_available_message') Not Available Message
+            .col-sm-4
+                input.form-control(type='text', name='not_available_message', id='not_available_message', value='#{provider.not_available_message}')
+        .form-group
+            label.col-sm-3.control-label(for='name') Book Online
+            .col-sm-4
+                input(type='checkbox', name='book_online', id='book_online', checked='#{provider.book_online}'=='true')
         .form-group
             .col-sm-offset-3.col-sm-4
                 button.btn.btn.btn-primary(type='submit') Save changes

@@ -132,7 +132,18 @@ var postProvider = function(req, res) {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         email: req.body.email,
-        active: req.body.active === 'on' ? true : false
+        title: req.body.title,
+        bio: req.body.bio,
+        image_url: req.body.image_url,
+        password: req.body.password,
+        services: req.body.services,
+        breaks: req.body.breaks,
+        active: req.body.active === 'on' ? true : false,
+        active_from: req.body.active_from,
+        active_to: req.body.active_from,
+        holidays:  req.body.holidays,
+        not_available_message: req.body.not_available_message,
+        book_online: req.body.book_online === 'on' ? true : false
     });
 
     providerService.updateProvider(provider, function(err, provider) {
@@ -151,4 +162,4 @@ var postProvider = function(req, res) {
 Heisenberg.get('/management/provider/:provider_id?', PassportConf.isAuthenticated, getProvider);
 Heisenberg.get('/management/providers', PassportConf.isAuthenticated, getProviders);
 Heisenberg.get('/api/providers', PassportConf.isAuthenticated, getProviderData);
-Heisenberg.post('/management/provider/:provider_id?', PassportConf.isAuthenticated, postProvider);
+Heisenberg.post('/management/provider/?provider_id', PassportConf.isAuthenticated, postProvider);
