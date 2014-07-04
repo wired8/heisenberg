@@ -148,7 +148,7 @@ var postProvider = function(req, res) {
     });
 };
 
-Heisenberg.get('/management/provider/:provider_id', PassportConf.isAuthenticated, getProvider);
+Heisenberg.get('/management/provider/:provider_id?', PassportConf.isAuthenticated, getProvider);
 Heisenberg.get('/management/providers', PassportConf.isAuthenticated, getProviders);
 Heisenberg.get('/api/providers', PassportConf.isAuthenticated, getProviderData);
-Heisenberg.post('/management/provider/:provider_id', PassportConf.isAuthenticated, postProvider);
+Heisenberg.post('/management/provider/:provider_id?', PassportConf.isAuthenticated, postProvider);

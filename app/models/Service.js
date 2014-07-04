@@ -13,6 +13,7 @@ var ServiceSchema = new Schema({
     account_id: {type: String, require: true},
     name: {type: String, required: true},
     description: {type: String},
+    duration: {type: Number},
     active: {type: Boolean, default: false},
     cost: {type: String},
     service_options: Schema.Types.Mixed,
@@ -20,6 +21,7 @@ var ServiceSchema = new Schema({
     padding_after: Number,
     book_online: {type: Boolean, default: true},
     image_url: {type: String},
+    order: {type: Number},
     created_at: {type: Number, required: true},
     updated_at: {type: Number, required: true}
 });
@@ -31,6 +33,7 @@ var ServiceSchema = new Schema({
  *      account_id: String
  *      name: String
  *      description: String
+ *      duration: {type: Number}
  *      active: Boolean
  *      cost: String
  *      service_options: Object
@@ -38,6 +41,7 @@ var ServiceSchema = new Schema({
  *      padding_after: Number
  *      book_online: Boolean
  *      image_url: String
+ *      order: Number
  *      created_at: Number
  *      updated_at: Number
  *  }
@@ -58,15 +62,17 @@ var Service = function (json) {
     }
 
     this.account_id = json.account_id;
-    this.name = json.name;
-    this.description = json.description;
+    this.name = json.name || '';
+    this.description = json.description || '';
+    this.duration = json.duration || 0;
     this.active = json.active || false;
-    this.cost = json.cost;
-    this.service_options = json.service_options;
-    this.padding_before = json.padding_before;
-    this.padding_after = json.padding_after;
-    this.book_online = json.book_online;
-    this.image_url = json.image_url;
+    this.cost = json.cost || 0;
+    this.service_options = json.service_options || {};
+    this.padding_before = json.padding_before || 0;
+    this.padding_after = json.padding_after || 0;
+    this.book_online = json.book_online || true;
+    this.image_url = json.image_url || '';
+    this.order = json.order || 0;
 
     var now = new XDate(true).getTime();
 

@@ -1,0 +1,106 @@
+extends ../layout
+block content
+    .page-header
+        h3 Service
+    form.form-horizontal(role='form', method='POST')
+        input(type='hidden', name='_csrf', value=_csrf)
+        input(id="account_id", type="hidden", name="account_id", value="#{service.account_id}")
+        .form-group
+            .col-sm-3
+                ul(class="nav nav-pills nav-stacked", data-toggle="tab", id="settings_tab")
+                    li(class="active")
+                        a(href="#general", data-toggle="tab") General
+                    li
+                        a(href="#options", data-toggle="tab") Options
+                    li
+                        a(href="#providers", data-toggle="tab") Providers
+            .col-sm-9
+                .tab-content
+                    .tab-pane(id="general", class="active")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 General Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Name
+                            .col-sm-4
+                                input.form-control(type='text', name='name', id='name', value='#{service.name}')
+                        .form-group
+                            label.col-sm-3.control-label(for='description') Description
+                            .col-sm-4
+                                textarea.form-control(type='text', name='description', row="3", cols="10", id='description', value='#{service.description}')
+                        .form-group
+                            label.col-sm-3.control-label(for='duration') Duration
+                            .col-sm-4
+                                input.form-control(type='text', name='duration', id='duration', value='#{service.duration}')
+                        .form-group
+                            label.col-sm-3.control-label(for='cost') Cost
+                            .col-sm-4
+                                input.form-control(type='text', name='cost', id='cost', value='#{service.cost}')
+                        .form-group
+                            label.col-sm-3.control-label(for='padding_before') Padding Before
+                            .col-sm-4
+                                input.form-control(type='text', name='padding_before', id='padding_before', value='#{service.padding_before}')
+                        .form-group
+                            label.col-sm-3.control-label(for='padding_after') Padding After
+                            .col-sm-4
+                                input.form-control(type='text', name='padding_after', id='padding_after', value='#{service.padding_after}')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Active
+                            .col-sm-4
+                                input(type='checkbox', name='active', id='active', checked='#{service.active}'=='true')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+
+                    .tab-pane(id="options")
+                        .col-sm-9
+                            .form-group
+                                .col-sm-offset-2
+                                    h3 Options
+                            .form-group
+                                label.col-sm-3.control-label(for='option_name') Option Name
+                                .col-sm-4
+                                    input.form-control(type='text', name='option_name', id='option_name')
+                            .form-group
+                                label.col-sm-3.control-label(for='option_cost') Cost
+                                .col-sm-4
+                                    input.form-control(type='text', name='option_cost', id='option_cost')
+                            .form-group
+                                label.col-sm-3.control-label(for='option_active') Active
+                                .col-sm-4
+                                    input(type='checkbox', name='option_active', id='option_active')
+                            .form-group
+                                label.col-sm-3.control-label(for='option_image') Image
+                                .col-sm-4
+                                    input.form-control(type='text', name='option_image', id='option_image')
+                            .form-group
+                                .col-sm-offset-3.col-sm-4
+                                    .btn-group
+                                        button.btn.btn-primary(class='add_option') Add option
+
+
+                        .col-sm-3
+                            .form-group
+                                .service-options(style="width:auto")
+                            .form-group
+                                .col-sm-offset-3.col-sm-4
+                                    button.btn.btn.btn-primary(type='submit') Save changes
+
+                    .tab-pane(id="providers")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Providers
+
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+
+    link(rel='stylesheet', href='/js/lib/watable/watable.css')
+    script(src='/js/lib/jquery/jquery.js')
+    script(src='/js/service.js')
+
+    | <script type='text/javascript'>
+    | $(document).ready(function() {
+    |   resrvo_service.init();
+    | });
+    | </script>

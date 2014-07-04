@@ -47,6 +47,6 @@ ServiceService.prototype.getServicesByAccountId = function (account_id, callback
  * @param {Service} service
  * @param {Function} callback
  */
-ServiceService.prototype.updateService = function(schedule, callback) {
+ServiceService.prototype.updateService = function(service, callback) {
     this.serviceRepository.saveService(service, callback);
 };
