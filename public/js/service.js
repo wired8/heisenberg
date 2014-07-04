@@ -48,8 +48,37 @@ var resrvo_service = {
             },
 
             tableCreated: function(data) {    //Fires when the table is created / recreated. Use it if you want to manipulate the table in any way.
-                console.log('table created'); //data.table holds the html table element.
-                console.log(data);            //'this' keyword also holds the html table element.
+
+                $('.remove_option').on('click', function (e) {
+
+                    var id = parseInt(this.id, 10);
+                    e.preventDefault();
+                    var data = waTable.getData();
+
+                    var rows = _.filter(data.rows, function(option){
+                        return option.delete !== id;
+                    });
+
+                    var indexed_rows = [];
+
+                    _.each(rows, function(element, index) {
+                        indexed_rows.push({
+                            name: element.name,
+                            cost: element.cost,
+                            image: element.image,
+                            active: element.active,
+                            delete: index,
+                            edit: index
+                        });
+                    });
+
+                    data.rows = indexed_rows;
+
+                    waTable.setData(data, true);
+
+                });
+
+
             },
             rowClicked: function(data) {      //Fires when a row is clicked (Note. You need a column with the 'unique' property).
                 console.log('row clicked');   //data.event holds the original jQuery event.
@@ -90,24 +119,19 @@ var resrvo_service = {
                 cost: $('#option_cost').val(),
                 image: $('#option_image').val(),
                 active: $('#option_active').val() === 'on' ? true : false,
-                delete: data.rows.length,
-                edit: data.rows.length
+                delete: data.rows.length+1,
+                edit: data.rows.length+1
             });
 
             waTable.setData(data, true);
-
         });
 
-        $('.remove_option').on('click', function (e) {
 
-            e.preventDefault();
-            var data = waTable.getData();
 
-          /*  _.each(data, function()) {
 
-            });
-*/
-        });
+
+
+
 
     },
 
@@ -145,8 +169,6 @@ var resrvo_service = {
         };
 
         var rows = [];
-
-        rows.push({ name: 'Color', cost: 5, image: '', active: true, delete: 1, edit: 1 });
 
         var data = {
             cols: cols,
