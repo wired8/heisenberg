@@ -2,11 +2,13 @@
 
 var resrvo_service = {
 
-    init: function () {
+    _waTable: {},
+
+    init: function (service_options) {
 
         var self = this;
 
-        var waTable = $('.service-options').WATable({
+        self._waTable = $('.service-options').WATable({
             debug:true,                 //Prints some debug info to console
             pageSize: 10,                //Initial pagesize
             //transition: 'slide',       //Type of transition when paging (bounce, fade, flip, rotate, scroll, slide).Requires https://github.com/daneden/animate.css.
@@ -49,35 +51,7 @@ var resrvo_service = {
 
             tableCreated: function(data) {    //Fires when the table is created / recreated. Use it if you want to manipulate the table in any way.
 
-                $('.remove_option').on('click', function (e) {
-
-                    var id = parseInt(this.id, 10);
-                    e.preventDefault();
-                    var data = waTable.getData();
-
-                    var rows = _.filter(data.rows, function(option){
-                        return option.delete !== id;
-                    });
-
-                    var indexed_rows = [];
-
-                    _.each(rows, function(element, index) {
-                        indexed_rows.push({
-                            name: element.name,
-                            cost: element.cost,
-                            image: element.image,
-                            active: element.active,
-                            delete: index,
-                            edit: index
-                        });
-                    });
-
-                    data.rows = indexed_rows;
-
-                    waTable.setData(data, true);
-
-                });
-
+                self.setTableHandlers();
 
             },
             rowClicked: function(data) {      //Fires when a row is clicked (Note. You need a column with the 'unique' property).
@@ -106,13 +80,13 @@ var resrvo_service = {
             }
         }).data('WATable');
 
-        var data = this.getData();
-        waTable.setData(data);
+        var data = this.getData(service_options);
+        self._waTable.setData(data);
 
         $('.add_option').on('click', function (e) {
 
             e.preventDefault();
-            var data = waTable.getData();
+            var data = self._waTable.getData();
 
             data.rows.push({
                 name: $('#option_name').val(),
@@ -123,19 +97,73 @@ var resrvo_service = {
                 edit: data.rows.length+1
             });
 
-            waTable.setData(data, true);
+            self._waTable.setData(data, true);
+
+            $("[name='service_options']").val(JSON.stringify(data.rows));
+
+            $('#option_name').val('');
+            $('#option_cost').val('');
+            $('#option_image').val('');
+            $('#option_active').prop('checked', false);
+
+            self.setTableHandlers();
         });
 
+        self.setTableHandlers();
 
+    },
 
+    setTableHandlers: function() {
 
+        var self = this;
 
+        $('.edit_option').on('click', function (e) {
 
+            e.preventDefault();
+            var id = parseInt(this.id, 10);
+            var data = self._waTable.getData();
+            var row = _.findWhere(data.rows, { edit: id });
+
+            $('#option_name').val(row.name);
+            $('#option_cost').val(row.cost);
+            $('#option_image').val(row.image);
+            $('#option_active').prop('checked', row.active);
+
+        });
+
+        $('.remove_option').on('click', function (e) {
+
+            var id = parseInt(this.id, 10);
+            e.preventDefault();
+            var data = self._waTable.getData();
+
+            var rows = _.filter(data.rows, function(option){
+                return option.delete !== id;
+            });
+
+            var indexed_rows = [];
+
+            _.each(rows, function(element, index) {
+                indexed_rows.push({
+                    name: element.name,
+                    cost: element.cost,
+                    image: element.image,
+                    active: element.active,
+                    delete: index,
+                    edit: index
+                });
+            });
+
+            data.rows = indexed_rows;
+
+            self._waTable.setData(data, true);
+
+        });
 
 
     },
 
-    getData: function() {
+    getData: function(service_options) {
         var cols = {
             name: {
                 index: 1, //The order this column should appear in the table
@@ -168,7 +196,7 @@ var resrvo_service = {
             }
         };
 
-        var rows = [];
+        var rows = JSON.parse(service_options);
 
         var data = {
             cols: cols,

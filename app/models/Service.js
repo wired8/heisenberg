@@ -16,7 +16,7 @@ var ServiceSchema = new Schema({
     duration: {type: Number},
     active: {type: Boolean, default: false},
     cost: {type: String},
-    service_options: Schema.Types.Mixed,
+    service_options: Array,
     padding_before: Number,
     padding_after: Number,
     book_online: {type: Boolean, default: true},
@@ -67,7 +67,7 @@ var Service = function (json) {
     this.duration = json.duration || 0;
     this.active = json.active || false;
     this.cost = json.cost || 0;
-    this.service_options = json.service_options || {};
+    this.service_options = json.service_options || [];
     this.padding_before = json.padding_before || 0;
     this.padding_after = json.padding_after || 0;
     this.book_online = json.book_online || true;

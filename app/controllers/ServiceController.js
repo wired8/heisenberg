@@ -131,7 +131,8 @@ var postService = function(req, res) {
         name: req.body.name,
         description: req.body.description,
         duration: req.body.duration,
-        active: req.body.active === 'on' ? true : false
+        active: req.body.active === 'on' ? true : false,
+        service_options: req.body.service_options
     });
 
     serviceService.updateService(service, function(err, service) {

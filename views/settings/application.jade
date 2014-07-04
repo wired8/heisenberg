@@ -7,19 +7,19 @@ block content
         input(id="account_id", type="hidden", name="account_id", value="#{account._id}")
         .form-group
             .col-sm-3
-                ul(class="nav nav-pills nav-stacked", data-toggle="tab", id="settings_tab")
+                ul(class="nav nav-pills nav-stacked", id="settings_tab")
                     li(class="active")
-                        a(href="#account", data-toggle="tab") Account
+                        a(href="#account", data-toggle="pill") Account
                     li
-                        a(href="#booking", data-toggle="tab") Booking
+                        a(href="#booking", data-toggle="pill") Booking
                     li
-                        a(href="#schedule", data-toggle="tab") Schedule
+                        a(href="#schedule", data-toggle="pill") Schedule
                     li
-                        a(href="#provider", data-toggle="tab") Provider
+                        a(href="#provider", data-toggle="pill") Provider
                     li
-                        a(href="#client", data-toggle="tab") Client
+                        a(href="#client", data-toggle="pill") Client
                     li
-                        a(href="#billing", data-toggle="tab") Billing
+                        a(href="#billing", data-toggle="pill") Billing
             .col-sm-9
                 .tab-content
                     .tab-pane(id="account", class="active")
