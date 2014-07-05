@@ -196,7 +196,11 @@ var resrvo_service = {
             }
         };
 
-        var rows = JSON.parse(service_options);
+        var rows = [];
+        if (service_options.length > 0) {
+            var rows = JSON.parse(service_options);
+        }
+
 
         var data = {
             cols: cols,

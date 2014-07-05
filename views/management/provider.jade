@@ -5,66 +5,105 @@ block content
     form.form-horizontal(role='form', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
         .form-group
-            label.col-sm-3.control-label(for='first_name') First Name
-            .col-sm-4
-                input.form-control(type='text', name='first_name', id='first_name', value='#{provider.first_name}')
-        .form-group
-            label.col-sm-3.control-label(for='last_name') Last Name
-            .col-sm-4
-                input.form-control(type='text', name='last_name', id='last_name', value='#{provider.last_name}')
-        .form-group
-            label.col-sm-3.control-label(for='email') Email
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='password') Password
-            .col-sm-4
-                input.form-control(type='text', name='password', id='password', value='#{provider.password}')
-        .form-group
-            label.col-sm-3.control-label(for='title') Title
-            .col-sm-4
-                input.form-control(type='text', name='title', id='title', value='#{provider.title}')
-        .form-group
-            label.col-sm-3.control-label(for='bio') Bio
-            .col-sm-4
-                input.form-control(type='text', name='bio', id='bio', value='#{provider.bio}')
-        .form-group
-            label.col-sm-3.control-label(for='image_url') Image
-            .col-sm-4
-                input.form-control(type='text', name='image_url', id='image_url', value='#{provider.image_url}')
-        .form-group
-            label.col-sm-3.control-label(for='services') Services
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='email') Breaks
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='name') Active
-            .col-sm-4
-                input(type='checkbox', name='active', id='active', checked='#{provider.active}'=='true')
-        .form-group
-            label.col-sm-3.control-label(for='email') Active From
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='email') Active To
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='email') Holidays
-            .col-sm-4
-                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
-        .form-group
-            label.col-sm-3.control-label(for='not_available_message') Not Available Message
-            .col-sm-4
-                input.form-control(type='text', name='not_available_message', id='not_available_message', value='#{provider.not_available_message}')
-        .form-group
-            label.col-sm-3.control-label(for='name') Book Online
-            .col-sm-4
-                input(type='checkbox', name='book_online', id='book_online', checked='#{provider.book_online}'=='true')
-        .form-group
-            .col-sm-offset-3.col-sm-4
-                button.btn.btn.btn-primary(type='submit') Save changes
+            .col-sm-3
+                ul(class="nav nav-pills nav-stacked", id="settings_tab")
+                    li(class="active")
+                        a(href="#general", data-toggle="pill") General
+                    li
+                        a(href="#availability", data-toggle="pill") Availability
+                    li
+                        a(href="#services", data-toggle="pill") Services
+                    li
+                        a(href="#breaks", data-toggle="pill") Breaks
+            .col-sm-9
+                .tab-content
+                    .tab-pane(id="general", class="active")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 General Settings
+                        .form-group
+                            label.col-sm-3.control-label(for='first_name') First Name
+                            .col-sm-4
+                                input.form-control(type='text', name='first_name', id='first_name', value='#{provider.first_name}')
+                        .form-group
+                            label.col-sm-3.control-label(for='last_name') Last Name
+                            .col-sm-4
+                                input.form-control(type='text', name='last_name', id='last_name', value='#{provider.last_name}')
+                        .form-group
+                            label.col-sm-3.control-label(for='title') Title
+                            .col-sm-4
+                                input.form-control(type='text', name='title', id='title', value='#{provider.title}')
+                        .form-group
+                            label.col-sm-3.control-label(for='email') Email
+                            .col-sm-4
+                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                        .form-group
+                            label.col-sm-3.control-label(for='password') Password
+                            .col-sm-4
+                                input.form-control(type='text', name='password', id='password', value='#{provider.password}')
+                        .form-group
+                            label.col-sm-3.control-label(for='bio') Bio
+                            .col-sm-4
+                                input.form-control(type='text', name='bio', id='bio', value='#{provider.bio}')
+                        .form-group
+                            label.col-sm-3.control-label(for='image_url') Image
+                            .col-sm-4
+                                input.form-control(type='text', name='image_url', id='image_url', value='#{provider.image_url}')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Active
+                            .col-sm-4
+                                input(type='checkbox', name='active', id='active', checked='#{provider.active}'=='true')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+                    .tab-pane(id="availability")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Availability
+                        .form-group
+                            label.col-sm-3.control-label(for='email') Active From
+                            .col-sm-4
+                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                        .form-group
+                            label.col-sm-3.control-label(for='email') Active To
+                            .col-sm-4
+                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                        .form-group
+                            label.col-sm-3.control-label(for='email') Holidays
+                            .col-sm-4
+                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                        .form-group
+                            label.col-sm-3.control-label(for='not_available_message') Not Available Message
+                            .col-sm-4
+                                input.form-control(type='text', name='not_available_message', id='not_available_message', value='#{provider.not_available_message}')
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Book Online
+                            .col-sm-4
+                                input(type='checkbox', name='book_online', id='book_online', checked='#{provider.book_online}'=='true')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
 
+                    .tab-pane(id="services")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Services
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+
+                    .tab-pane(id="breaks")
+                        .form-group
+                            .col-sm-offset-2
+                                h3 Breaks
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit') Save changes
+
+            script(src='/js/lib/jquery/jquery.js')
+            script(src='/js/provider.js')
+            | <script type='text/javascript'>
+            | $(document).ready(function() {
+            | resrvo_provider.init();
+            | });
+            | </script>
