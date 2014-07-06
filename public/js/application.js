@@ -14,10 +14,12 @@
  */
 
 //= require lib/jquery/jquery-2.1.1.min
+//= require lib/moment/min/moment.min
 //= require lib/bootstrap/dist/js/bootstrap
 //= require lib/watable/jquery.watable
 //= require lib/underscore/underscore-min
 //= require lib/bootstrap-datepicker/js/bootstrap-datepicker
-//= require lib/bootstrap-timepicker/js/bootstrap-timepicker
+//= require lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min
 //= require main
 //= require tabs
+

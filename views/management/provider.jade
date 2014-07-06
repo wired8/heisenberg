@@ -61,13 +61,19 @@ block content
                             .col-sm-offset-2
                                 h3 Availability
                         .form-group
-                            label.col-sm-3.control-label(for='email') Active From
+                            label.col-sm-3.control-label(for='active_from') Available From
                             .col-sm-4
-                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                                .dp2(class="input-group date date", data-provide="datepicker")
+                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_from}", name="active_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        span(class="fa fa-calendar")
                         .form-group
-                            label.col-sm-3.control-label(for='email') Active To
+                            label.col-sm-3.control-label(for='active_to') Available To
                             .col-sm-4
-                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                                .dp2(class="input-group date date", data-provide="datepicker")
+                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_to}", name="active_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        span(class="fa fa-calendar")
                         .form-group
                             label.col-sm-3.control-label(for='email') Holidays
                             .col-sm-4
@@ -96,6 +102,104 @@ block content
                         .form-group
                             .col-sm-offset-2
                                 h3 Breaks
+                            .form-group
+                            label.col-sm-3.control-label(for='sunday') Sunday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_sunday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_sunday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='monday') Monday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_monday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_monday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='tuesday') Tuesday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_tuesday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_tuesday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='wednesday') Wednesday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_wednesday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_wednesday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='thursday') Thursday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='thursday') Friday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .form-group
+                            label.col-sm-3.control-label(for='thursday') Saturday
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_from", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
+                            .col-sm-1
+                                label.col-sm-3.control-label(for='to') to
+                            .col-sm-3
+                                .timepicker(class="input-group")
+                                    input(name="break_thursday_to", type="text", class="form-control")
+                                    span(class="input-group-addon")
+                                        i(class="fa fa-clock-o")
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
