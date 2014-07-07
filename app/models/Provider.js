@@ -21,13 +21,37 @@ var ProviderSchema = new Schema({
     email: {type: String, unique: true},
     password: {type: String},
     services: [String],
-    breaks:[
-        {
-            day: Number,
+    breaks: {
+        sunday: {
+            from: Number,
+            to: Number
+        },
+        monday: {
+            from: Number,
+            to: Number
+        },
+        tuesday: {
+            from: Number,
+            to: Number
+        },
+        wednesday: {
+            from: Number,
+            to: Number
+        },
+        thursday: {
+            from: Number,
+            to: Number
+        },
+        friday: {
+            from: Number,
+            to: Number
+        },
+        saturday: {
             from: Number,
             to: Number
         }
-    ],
+    }
+    ,
     active: {type: Boolean, default: false},
     active_from: {type: Number},
     active_to: {type: Number},
@@ -58,8 +82,8 @@ var ProviderSchema = new Schema({
  *      services: [String]
  *      breaks: Object
  *      active: Boolean
- *      active_from: Date,
- *      active_to: Date,
+ *      active_from: Number,
+ *      active_to: Number,
  *      holidays: Object
  *      not_available_message: String
  *      book_online: Boolean
@@ -82,6 +106,16 @@ var Provider = function (json) {
         this._id = json._id;
     }
 
+    var breaks = {
+        sunday: {},
+        monday: {},
+        tuesday: {},
+        wednesday: {},
+        thursday: {},
+        friday: {},
+        saturday: {}
+    };
+
     this.account_id = json.account_id || '';
     this.first_name = json.first_name || '';
     this.last_name = json.last_name || '';
@@ -91,9 +125,10 @@ var Provider = function (json) {
     this.email = json.email || '';
     this.password = json.password || '';
     this.services = json.services || [];
+    this.breaks = json.breaks || breaks;
     this.active = json.active || false;
-    this.active_from = json.active_from || -1;
-    this.active_to = json.active_to || -1;
+    this.active_from = json.active_from;
+    this.active_to = json.active_to;
     this.holidays = json.holidays || {};
     this.not_available_message = json.not_available_message || '';
     this.book_online = json.book_online || true;

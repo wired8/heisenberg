@@ -2,7 +2,7 @@ extends ../layout
 block content
     .page-header
         h3 Service
-    form.form-horizontal(role='form', method='POST')
+    form.form-horizontal(role='form', id='service', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
         input(type='hidden', name='service_options')
         .form-group
@@ -67,13 +67,13 @@ block content
                                 .col-sm-4
                                     input.form-control(type='text', id='option_cost')
                             .form-group
-                                label.col-sm-3.control-label(for='option_active') Active
-                                .col-sm-4
-                                    input(type='checkbox', id='option_active')
-                            .form-group
                                 label.col-sm-3.control-label(for='option_image') Image
                                 .col-sm-4
                                     input.form-control(type='text', id='option_image')
+                            .form-group
+                                label.col-sm-3.control-label(for='option_active') Active
+                                .col-sm-4
+                                    input(type='checkbox', id='option_active')
                             .form-group
                                 .col-sm-offset-3.col-sm-4
                                     .btn-group

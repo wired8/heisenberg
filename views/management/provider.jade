@@ -2,7 +2,7 @@ extends ../layout
 block content
     .page-header
         h3 Provider
-    form.form-horizontal(role='form', method='POST')
+    form.form-horizontal(role='form', id='providerForm', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
         .form-group
             .col-sm-3
@@ -40,7 +40,11 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='password') Password
                             .col-sm-4
-                                input.form-control(type='text', name='password', id='password', value='#{provider.password}')
+                                input.form-control(type='password', name='password', id='password')
+                        .form-group
+                            label.col-sm-3.control-label(for='retype_password') Retype Password
+                            .col-sm-4
+                                input.form-control(type='password', name='retype_password', id='retype_password')
                         .form-group
                             label.col-sm-3.control-label(for='bio') Bio
                             .col-sm-4
@@ -64,20 +68,20 @@ block content
                             label.col-sm-3.control-label(for='active_from') Available From
                             .col-sm-4
                                 .rdatepicker(class="input-group date")
-                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_from}", name="active_from", type="text", class="form-control")
+                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_from ? provider.active_from : ''}", name="active_from", type="text", class="form-control")
                                     span(class="input-group-addon")
                                         span(class="fa fa-calendar")
                         .form-group
                             label.col-sm-3.control-label(for='active_to') Available To
                             .col-sm-4
                                 .rdatepicker(class="input-group date")
-                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_to}", name="active_to", type="text", class="form-control")
+                                    input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_to ? provider.active_to : ''}", name="active_to", type="text", class="form-control")
                                     span(class="input-group-addon")
                                         span(class="fa fa-calendar")
                         .form-group
                             label.col-sm-3.control-label(for='email') Holidays
                             .col-sm-4
-                                input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+
                         .form-group
                             label.col-sm-3.control-label(for='not_available_message') Not Available Message
                             .col-sm-4
@@ -105,101 +109,87 @@ block content
                             .form-group
                             label.col-sm-3.control-label(for='sunday') Sunday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_sunday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_sunday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.sunday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_sunday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_sunday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.sunday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='monday') Monday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_monday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_monday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.monday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_monday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_monday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.monday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='tuesday') Tuesday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_tuesday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_tuesday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.tuesday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_tuesday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_tuesday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.tuesday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='wednesday') Wednesday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_wednesday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_wednesday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.wednesday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_wednesday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_wednesday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.wednesday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='thursday') Thursday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_thursday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.thursday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_thursday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.thursday.to==provider_break) #{provider_break}
                             .form-group
-                            label.col-sm-3.control-label(for='thursday') Friday
+                            label.col-sm-3.control-label(for='friday') Friday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_friday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.friday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_friday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.friday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='thursday') Saturday
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_from", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_saturday_from')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.saturday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                .timepicker(class="input-group")
-                                    input(name="break_thursday_to", type="text", class="form-control")
-                                    span(class="input-group-addon")
-                                        i(class="fa fa-clock-o")
+                                select(name='break_saturday_to')
+                                    each provider_break in provider_breaks
+                                        option(value=provider_break, selected=provider.breaks.saturday.to==provider_break) #{provider_break}
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
@@ -208,6 +198,7 @@ block content
             script(src='/js/provider.js')
             | <script type='text/javascript'>
             | $(document).ready(function() {
-            | resrvo_provider.init();
+            | var provider_breaks = !{JSON.stringify(provider_breaks)};
+            | resrvo_provider.init(provider_breaks);
             | });
             | </script>

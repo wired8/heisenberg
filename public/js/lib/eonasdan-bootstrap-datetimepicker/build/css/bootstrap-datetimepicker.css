@@ -2,6 +2,10 @@
  * Datetimepicker for Bootstrap v3
  * https://github.com/Eonasdan/bootstrap-datetimepicker/
  */
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    padding: 18px;
+}
 .bootstrap-datetimepicker-widget {
   top: 0;
   left: 0;

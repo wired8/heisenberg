@@ -7,7 +7,8 @@ var Injct = require('injct'),
     Provider = require('../models/Provider'),
     _ = require('underscore'),
     Logger = require('../util/Logger'),
-    Util = require('util');
+    Util = require('util'),
+    XDate = require('xdate');
 
 
 /**
@@ -86,6 +87,17 @@ var getProvider = function(req, res) {
     var provider_id = req.params.provider_id;
     var providerService = Injct.getInstance('providerService');
 
+    var startTime  = new XDate(2014, 1, 1, 0, 0, 0, 0);
+    var endTime    = new XDate(2014, 1, 1, 23, 55, 0, 0);
+    var step = 30;
+    var breaks  = ["none"];
+
+    while (startTime.getTime() <= endTime.getTime()) {
+        breaks.push(startTime.toString("hh:mmTT"));
+        startTime = startTime.addMinutes(step);
+    }
+
+
     if (provider_id !== undefined) {
 
         providerService.getProviderById(provider_id, function (err, provider) {
@@ -96,7 +108,8 @@ var getProvider = function(req, res) {
             }
             res.render('management/provider', {
                 title: 'Edit Provider',
-                provider: provider
+                provider: provider,
+                provider_breaks: breaks
             });
         });
     } else {
@@ -104,8 +117,9 @@ var getProvider = function(req, res) {
         var provider = new Provider();
 
         res.render('management/provider', {
-            title: 'Edit Provider',
-            provider: provider
+            title: 'New Provider',
+            provider: provider,
+            provider_breaks: breaks
         });
 
     }
@@ -162,4 +176,4 @@ var postProvider = function(req, res) {
 Heisenberg.get('/management/provider/:provider_id?', PassportConf.isAuthenticated, getProvider);
 Heisenberg.get('/management/providers', PassportConf.isAuthenticated, getProviders);
 Heisenberg.get('/api/providers', PassportConf.isAuthenticated, getProviderData);
-Heisenberg.post('/management/provider/?provider_id', PassportConf.isAuthenticated, postProvider);
+Heisenberg.post('/management/provider/:provider_id?', PassportConf.isAuthenticated, postProvider);
