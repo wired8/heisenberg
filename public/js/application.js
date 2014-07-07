@@ -18,7 +18,6 @@
 //= require lib/bootstrap/dist/js/bootstrap
 //= require lib/watable/jquery.watable
 //= require lib/underscore/underscore-min
-//= require lib/bootstrap-datepicker/js/bootstrap-datepicker
 //= require lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min
 //= require main
 //= require tabs

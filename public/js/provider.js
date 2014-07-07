@@ -8,5 +8,9 @@ var resrvo_provider = {
             pickDate: false
         });
 
+        $(".rdatepicker").datetimepicker({
+            pickTime: false
+        });
+
     }
 };

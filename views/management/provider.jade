@@ -63,14 +63,14 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='active_from') Available From
                             .col-sm-4
-                                .dp2(class="input-group date date", data-provide="datepicker")
+                                .rdatepicker(class="input-group date")
                                     input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_from}", name="active_from", type="text", class="form-control")
                                     span(class="input-group-addon")
                                         span(class="fa fa-calendar")
                         .form-group
                             label.col-sm-3.control-label(for='active_to') Available To
                             .col-sm-4
-                                .dp2(class="input-group date date", data-provide="datepicker")
+                                .rdatepicker(class="input-group date")
                                     input(data-format="dd/MM/yyyy hh:mm:ss", value="#{provider.active_to}", name="active_to", type="text", class="form-control")
                                     span(class="input-group-addon")
                                         span(class="fa fa-calendar")
