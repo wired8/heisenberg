@@ -85,6 +85,17 @@ var getService = function(req, res) {
     var service_id = req.params.service_id;
     var serviceService = Injct.getInstance('serviceService');
 
+    var hours = [];
+    var minutes = [];
+
+    for (var i=0; i<24; i++) {
+        hours.push({key: i, value: i + ' hours'});
+    }
+
+    for (var j=0; j<60; j+=5) {
+        minutes.push({key: j, value: j + ' minutes'});
+    }
+
     if (service_id !== undefined) {
 
         serviceService.getServiceById(service_id, function (err, service) {
@@ -95,7 +106,9 @@ var getService = function(req, res) {
             }
             res.render('management/service', {
                 title: 'Edit Service',
-                service: service
+                service: service,
+                hours: hours,
+                minutes: minutes
             });
         });
     } else {
@@ -104,7 +117,9 @@ var getService = function(req, res) {
 
         res.render('management/service', {
             title: 'Edit Service',
-            service: service
+            service: service,
+            hours: hours,
+            minutes: minutes
         });
 
     }
@@ -129,8 +144,20 @@ var postService = function(req, res) {
         _id: service_id !== 'undefined' ? service_id : undefined,
         account_id: account_id,
         name: req.body.name,
+        cost: req.body.cost,
         description: req.body.description,
-        duration: req.body.duration,
+        duration: {
+            hours: req.body.duration_hours,
+            minutes: req.body.duration_minutes
+        },
+        padding_before: {
+            hours: req.body.padding_before_hours,
+            minutes: req.body.padding_before_minutes
+        },
+        padding_after: {
+            hours: req.body.padding_after_hours,
+            minutes: req.body.padding_after_minutes
+        },
         active: req.body.active === 'on' ? true : false,
         service_options: req.body.service_options
     });

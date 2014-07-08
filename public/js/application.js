@@ -21,6 +21,9 @@
 //= require lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker
 //= require lib/bootstrap-select/bootstrap-select
 //= require lib/bootstrapValidator/dist/js/bootstrapValidator
+//= require lib/jquery.inputmask/dist/min/jquery.inputmask
+//= require lib/jquery.inputmask/dist/min/jquery.inputmask.numeric.extensions
+//= require lib/jquery.inputmask/dist/min/jquery.inputmask.date.extensions
 //= require main
 //= require tabs
 

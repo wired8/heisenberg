@@ -2,7 +2,7 @@ extends ../layout
 block content
     .page-header
         h3 Service
-    form.form-horizontal(role='form', id='service', method='POST')
+    form.form-horizontal(role='form', id='serviceForm', method='POST')
         input(type='hidden', name='_csrf', value=_csrf)
         input(type='hidden', name='service_options')
         .form-group
@@ -27,30 +27,48 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='description') Description
                             .col-sm-4
-                                textarea.form-control(type='text', name='description', row="3", cols="10", id='description', value='#{service.description}')
+                                textarea.form-control(type='text', name='description', row="3", cols="10", id='description') #{service.description}
                         .form-group
                             label.col-sm-3.control-label(for='duration') Duration
                             .col-sm-4
-                                input.form-control(type='text', name='duration', id='duration', value='#{service.duration}')
+                                select(class='selectpicker', name='duration_hours', data-width='120px')
+                                    each hour in hours
+                                        option(value=hour.key, selected=service.duration.hours==hour.key) #{hour.value}
+                                &nbsp;
+                                select(class='selectpicker', name='duration_minutes', data-width='120px')
+                                    each minute in minutes
+                                        option(value=minute.key, selected=service.duration.minutes==minute.key) #{minute.value}
                         .form-group
                             label.col-sm-3.control-label(for='cost') Cost
                             .col-sm-4
-                                input.form-control(type='text', name='cost', id='cost', value='#{service.cost}')
+                                input.form-control(type='text', name='cost', id='cost', value='#{service.cost}', placeholder='0.00')
                         .form-group
                             label.col-sm-3.control-label(for='padding_before') Padding Before
                             .col-sm-4
-                                input.form-control(type='text', name='padding_before', id='padding_before', value='#{service.padding_before}')
+                                select(class='selectpicker', name='padding_before_hours', data-width='120px')
+                                    each hour in hours
+                                        option(value=hour.key, selected=service.padding_before.hours==hour.key) #{hour.value}
+                                &nbsp;
+                                select(class='selectpicker', name='padding_before_minutes', data-width='120px')
+                                    each minute in minutes
+                                        option(value=minute.key, selected=service.padding_before.minutes==minute.key) #{minute.value}
                         .form-group
                             label.col-sm-3.control-label(for='padding_after') Padding After
                             .col-sm-4
-                                input.form-control(type='text', name='padding_after', id='padding_after', value='#{service.padding_after}')
+                                select(class='selectpicker', name='padding_after_hours', data-width='120px')
+                                    each hour in hours
+                                        option(value=hour.key, selected=service.padding_after.hours==hour.key) #{hour.value}
+                                &nbsp;
+                                select(class='selectpicker', name='padding_after_minutes', data-width='120px')
+                                    each minute in minutes
+                                        option(value=minute.key, selected=service.padding_after.minutes==minute.key) #{minute.value}
                         .form-group
                             label.col-sm-3.control-label(for='name') Active
                             .col-sm-4
                                 input(type='checkbox', name='active', id='active', checked='#{service.active}'=='true')
                         .form-group
                             .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
+                                button.btn.btn.btn-primary(type='submit', class='save') Save changes
 
                     .tab-pane(id="options")
 
@@ -61,15 +79,24 @@ block content
                             .form-group
                                 label.col-sm-3.control-label(for='option_name') Option Name
                                 .col-sm-4
-                                    input.form-control(type='text', id='option_name')
+                                    input.form-control(type='text', id='option_name', name='option_name')
                             .form-group
                                 label.col-sm-3.control-label(for='option_cost') Cost
                                 .col-sm-4
-                                    input.form-control(type='text', id='option_cost')
+                                    input.form-control(type='text', id='option_cost', name='option_cost', placeholder='0.00')
                             .form-group
                                 label.col-sm-3.control-label(for='option_image') Image
                                 .col-sm-4
-                                    input.form-control(type='text', id='option_image')
+                                    .fileinput.fileinput-new(data-provides="fileinput")
+                                        .fileinput-new.thumbnail(style="width: 200px; height: 150px;")
+                                            img(data-src="holder.js/100%x100%", alt="...")
+                                        .fileinput-preview.fileinput-exists.thumbnail(style="max-width: 200px; max-height: 150px;")
+                                        .fu
+                                            span(class="btn btn-default btn-file")
+                                                span(class="fileinput-new") Select image
+                                                span(class="fileinput-exists") Change
+                                                input.form-control(type='file', name='option_image', id='option_image')
+                                            a(href="#", class="btn btn-default fileinput-exists", data-dismiss="fileinput") Remove
                             .form-group
                                 label.col-sm-3.control-label(for='option_active') Active
                                 .col-sm-4
@@ -85,7 +112,7 @@ block content
                                 .service-options(style="width:auto")
                             .form-group
                                 .col-sm-offset-3.col-sm-4
-                                    button.btn.btn.btn-primary(type='submit') Save changes
+                                    button.btn.btn.btn-primary(id='option_save') Save changes
 
                     .tab-pane(id="providers")
                         .form-group
@@ -94,7 +121,7 @@ block content
 
                         .form-group
                             .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
+                                button.btn.btn.btn-primary(type='submit', class='save') Save changes
 
     link(rel='stylesheet', href='/js/lib/watable/watable.css')
     script(src='/js/lib/jquery/jquery.js')

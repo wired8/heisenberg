@@ -13,12 +13,21 @@ var ServiceSchema = new Schema({
     account_id: {type: String, require: true},
     name: {type: String, required: true},
     description: {type: String},
-    duration: {type: Number},
+    duration: {
+        hours: {type: Number},
+        minutes: {type: Number}
+    },
     active: {type: Boolean, default: false},
     cost: {type: String},
     service_options: Array,
-    padding_before: Number,
-    padding_after: Number,
+    padding_before: {
+        hours: {type: Number},
+        minutes: {type: Number}
+    },
+    padding_after: {
+        hours: {type: Number},
+        minutes: {type: Number}
+    },
     book_online: {type: Boolean, default: true},
     image_url: {type: String},
     order: {type: Number},
@@ -33,12 +42,12 @@ var ServiceSchema = new Schema({
  *      account_id: String
  *      name: String
  *      description: String
- *      duration: {type: Number}
+ *      duration: Object
  *      active: Boolean
  *      cost: String
  *      service_options: Object
- *      padding_before: Number
- *      padding_after: Number
+ *      padding_before: Object
+ *      padding_after: Object
  *      book_online: Boolean
  *      image_url: String
  *      order: Number
@@ -64,12 +73,12 @@ var Service = function (json) {
     this.account_id = json.account_id;
     this.name = json.name || '';
     this.description = json.description || '';
-    this.duration = json.duration || 0;
+    this.duration = json.duration || { hours: 0, minutes: 0 };
     this.active = json.active || false;
     this.cost = json.cost || 0;
     this.service_options = json.service_options || [];
-    this.padding_before = json.padding_before || 0;
-    this.padding_after = json.padding_after || 0;
+    this.padding_before = json.padding_before || { hours: 0, minutes: 0 };
+    this.padding_after = json.padding_after || { hours: 0, minutes: 0 };
     this.book_online = json.book_online || true;
     this.image_url = json.image_url || '';
     this.order = json.order || 0;

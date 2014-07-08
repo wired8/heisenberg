@@ -80,12 +80,20 @@ var resrvo_service = {
             }
         }).data('WATable');
 
-        var data = this.getData(service_options);
+        var data = self.getData(service_options);
         self._waTable.setData(data);
 
         $('.add_option').on('click', function (e) {
 
             e.preventDefault();
+
+            $('#serviceForm').data('bootstrapValidator').validate();
+
+            if (!$('#serviceForm').data('bootstrapValidator').isValid()) {
+                return;
+            }
+
+
             var data = self._waTable.getData();
 
             data.rows.push({
@@ -109,7 +117,91 @@ var resrvo_service = {
             self.setTableHandlers();
         });
 
+        $('.selectpicker').selectpicker();
+
+        $("[name='cost']").inputmask("decimal", {
+            radixPoint:".",
+            groupSeparator: ",",
+            digits: 2,
+            autoGroup: true,
+            prefix: '$'
+        });
+
+        $("#option_cost").inputmask("decimal", {
+            radixPoint:".",
+            groupSeparator: ",",
+            digits: 2,
+            autoGroup: true,
+            prefix: '$'
+        });
+
         self.setTableHandlers();
+
+        $('#serviceForm').bootstrapValidator({
+            excluded: [':disabled', ':hidden', ':not(:visible)'],
+            submitHandler: function(validator, form, submitButton) {
+                var data = self._waTable.getData();
+                $("[name='service_options']").val(JSON.stringify(data.rows));
+                validator.defaultSubmit();
+            },
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            live: 'disabled',
+            fields: {
+                name: {
+                    message: 'Service name is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: 'Service name is required and cannot be empty'
+                        },
+                        stringLength: {
+                            min: 2,
+                            max: 30,
+                            message: 'Service name must be more than 2 and less than 30 characters long'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_]+$/,
+                            message: 'Service name can only consist of alphabetical, number and underscore'
+                        }
+                    }
+                },
+                option_name: {
+                    message: 'Option name is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: 'Option name is required and cannot be empty'
+                        },
+                        stringLength: {
+                            min: 2,
+                            max: 30,
+                            message: 'Option name must be more than 2 and less than 30 characters long'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_]+$/,
+                            message: 'Option name can only consist of alphabetical, number and underscore'
+                        }
+                    }
+                },
+                option_cost: {
+                    message: 'Option cost is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: 'Option cost is required and cannot be empty'
+                        }
+                    }
+                }
+            }
+        });
+
+        $("#option_save").on("click", function(){
+            var data = self._waTable.getData();
+            $("[name='service_options']").val(JSON.stringify(data.rows));
+            $("#serviceForm").bootstrapValidator('defaultSubmit');
+        });
 
     },
 
@@ -174,7 +266,7 @@ var resrvo_service = {
             },
             cost: {
                 index: 2,
-                type: "number"
+                type: "string"
             },
             image: {
                 index: 3,
