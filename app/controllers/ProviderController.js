@@ -110,7 +110,7 @@ var getProvider = function(req, res) {
             }
             res.render('management/provider', {
                 title: 'Edit Provider',
-                titles: titles,
+                personal_titles: titles,
                 provider: provider,
                 provider_breaks: breaks
             });
@@ -121,6 +121,7 @@ var getProvider = function(req, res) {
 
         res.render('management/provider', {
             title: 'New Provider',
+            personal_titles: titles,
             provider: provider,
             provider_breaks: breaks
         });

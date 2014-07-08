@@ -33,8 +33,8 @@ block content
                             label.col-sm-3.control-label(for='title') Title
                             .col-sm-4
                                 select(class='selectpicker', name='title')
-                                    each title in titles
-                                        option(value=title, selected=provider.title==title) #{title}
+                                    each personal_title in personal_titles
+                                        option(value=personal_title, selected=provider.title==personal_title) #{personal_title}
                         .form-group
                             label.col-sm-3.control-label(for='email') Email
                             .col-sm-4
