@@ -8,7 +8,8 @@ var Injct = require('injct'),
     _ = require('underscore'),
     Logger = require('../util/Logger'),
     Util = require('util'),
-    XDate = require('xdate');
+    XDate = require('xdate'),
+    Constants = require('../util/Constants');
 
 
 /**
@@ -97,6 +98,7 @@ var getProvider = function(req, res) {
         startTime = startTime.addMinutes(step);
     }
 
+    var titles = Constants.PERSONAL_TITLES;
 
     if (provider_id !== undefined) {
 
@@ -108,6 +110,7 @@ var getProvider = function(req, res) {
             }
             res.render('management/provider', {
                 title: 'Edit Provider',
+                titles: titles,
                 provider: provider,
                 provider_breaks: breaks
             });
@@ -140,6 +143,37 @@ var postProvider = function(req, res) {
     var provider_id = req.params.provider_id;
     var providerService = Injct.getInstance('providerService');
 
+    var breaks = {
+        sunday: {
+            from: req.body.break_sunday_from,
+            to: req.body.break_sunday_to
+        },
+        monday: {
+            from: req.body.break_monday_from,
+            to: req.body.break_monday_to
+        },
+        tuesday: {
+            from: req.body.break_tuesday_from,
+            to: req.body.break_tuesday_to
+        },
+        wednesday: {
+            from: req.body.break_wednesday_from,
+            to: req.body.break_wednesday_to
+        },
+        thursday: {
+            from: req.body.break_thursday_from,
+            to: req.body.break_thursday_to
+        },
+        friday: {
+            from: req.body.break_friday_from,
+            to: req.body.break_friday_to
+        },
+        saturday: {
+            from: req.body.break_saturday_from,
+            to: req.body.break_saturday_to
+        }
+    };
+
     var provider = new Provider({
         _id: provider_id !== 'undefined' ? provider_id : undefined,
         account_id: account_id,
@@ -151,7 +185,7 @@ var postProvider = function(req, res) {
         image_url: req.body.image_url,
         password: req.body.password,
         services: req.body.services,
-        breaks: req.body.breaks,
+        breaks: breaks,
         active: req.body.active === 'on' ? true : false,
         active_from: req.body.active_from,
         active_to: req.body.active_from,

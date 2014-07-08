@@ -41,7 +41,7 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='name') Country
                             .col-sm-4
-                                select(id="country_code", name="country_code")
+                                select(class='selectpicker', id="country_code", name="country_code")
                                     each country in countries
                                         option(value="#{country.ioc}", selected=account.country==country.ioc) #{country.name}
                         .form-group
@@ -93,7 +93,7 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='name') Rotating schedule
                             .col-sm-7
-                                select(name='schedule_period')
+                                select(class='selectpicker', name='schedule_period')
                                     each schedule in schedule_period
                                         option(value="#{schedule.value}", selected=schedule.value==account.account_options.booking.options.schedule_period) #{schedule.name}
                         .form-group
@@ -117,7 +117,7 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='name') Provider preference
                             .col-sm-8
-                                select(name='provider_random')
+                                select(class='selectpicker', name='provider_random')
                                     each provider in provider_random
                                         option(value="#{provider.value}", selected=provider.value==account.account_options.booking.options.provider_random) #{provider.name}
                         .form-group
@@ -138,3 +138,11 @@ block content
                         .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
+
+            script(src='/js/lib/jquery/jquery.js')
+            script(src='/js/application_settings.js')
+            | <script type='text/javascript'>
+            | $(document).ready(function() {
+            | resrvo_application_settings.init();
+            | });
+            | </script>

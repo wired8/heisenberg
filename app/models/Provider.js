@@ -23,32 +23,32 @@ var ProviderSchema = new Schema({
     services: [String],
     breaks: {
         sunday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         monday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         tuesday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         wednesday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         thursday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         friday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         },
         saturday: {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         }
     }
     ,
@@ -57,8 +57,8 @@ var ProviderSchema = new Schema({
     active_to: {type: Number},
     holidays: [
         {
-            from: Number,
-            to: Number
+            from: String,
+            to: String
         }
     ],
     not_available_message: {type: String},

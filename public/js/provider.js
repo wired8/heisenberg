@@ -6,6 +6,8 @@ var resrvo_provider = {
 
         var self = this;
 
+        $('.selectpicker').selectpicker();
+
         $(".timepicker").datetimepicker({
             pickDate: false
         });
@@ -127,9 +129,12 @@ var resrvo_provider = {
         }
 
         if (index === 0) {
+            $("[name='" + selectToName + "']").selectpicker('refresh');
             return;
         }
 
         $("[name='" + selectToName + "'] option:lt(" + (index + 1) + ")").remove();
+        $("[name='" + selectToName + "']").selectpicker('refresh');
+
     }
 };

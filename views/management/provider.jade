@@ -32,7 +32,9 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='title') Title
                             .col-sm-4
-                                input.form-control(type='text', name='title', id='title', value='#{provider.title}')
+                                select(class='selectpicker', name='title')
+                                    each title in titles
+                                        option(value=title, selected=provider.title==title) #{title}
                         .form-group
                             label.col-sm-3.control-label(for='email') Email
                             .col-sm-4
@@ -48,7 +50,7 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='bio') Bio
                             .col-sm-4
-                                input.form-control(type='text', name='bio', id='bio', value='#{provider.bio}')
+                                textarea.form-control(type='text', name='bio', row="3", cols="10", id='bio', value='#{provider.bio}')
                         .form-group
                             label.col-sm-3.control-label(for='image_url') Image
                             .col-sm-4
@@ -109,85 +111,85 @@ block content
                             .form-group
                             label.col-sm-3.control-label(for='sunday') Sunday
                             .col-sm-3
-                                select(name='break_sunday_from')
+                                select(class='selectpicker', name='break_sunday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.sunday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_sunday_to')
+                                select(class='selectpicker', name='break_sunday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.sunday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='monday') Monday
                             .col-sm-3
-                                select(name='break_monday_from')
+                                select(class='selectpicker', name='break_monday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.monday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_monday_to')
+                                select(class='selectpicker', name='break_monday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.monday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='tuesday') Tuesday
                             .col-sm-3
-                                select(name='break_tuesday_from')
+                                select(class='selectpicker', name='break_tuesday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.tuesday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_tuesday_to')
+                                select(class='selectpicker', name='break_tuesday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.tuesday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='wednesday') Wednesday
                             .col-sm-3
-                                select(name='break_wednesday_from')
+                                select(class='selectpicker', name='break_wednesday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.wednesday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_wednesday_to')
+                                select(class='selectpicker', name='break_wednesday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.wednesday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='thursday') Thursday
                             .col-sm-3
-                                select(name='break_thursday_from')
+                                select(class='selectpicker', name='break_thursday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.thursday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_thursday_to')
+                                select(class='selectpicker', name='break_thursday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.thursday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='friday') Friday
                             .col-sm-3
-                                select(name='break_friday_from')
+                                select(class='selectpicker', name='break_friday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.friday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_friday_to')
+                                select(class='selectpicker', name='break_friday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.friday.to==provider_break) #{provider_break}
                             .form-group
                             label.col-sm-3.control-label(for='thursday') Saturday
                             .col-sm-3
-                                select(name='break_saturday_from')
+                                select(class='selectpicker', name='break_saturday_from')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.saturday.to==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
-                                select(name='break_saturday_to')
+                                select(class='selectpicker', name='break_saturday_to')
                                     each provider_break in provider_breaks
                                         option(value=provider_break, selected=provider.breaks.saturday.to==provider_break) #{provider_break}
                         .form-group
@@ -198,7 +200,7 @@ block content
             script(src='/js/provider.js')
             | <script type='text/javascript'>
             | $(document).ready(function() {
-            | var provider_breaks = !{JSON.stringify(provider_breaks)};
-            | resrvo_provider.init(provider_breaks);
+            |   var provider_breaks = !{JSON.stringify(provider_breaks)};
+            |   resrvo_provider.init(provider_breaks);
             | });
             | </script>
