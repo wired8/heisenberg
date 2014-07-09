@@ -3,213 +3,269 @@ block content
     .page-header
         h3 Schedule Settings Management
     form.form-horizontal(role='form', method='POST')
-        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+            input(type='hidden', name='_csrf', value=_csrf)
             table.table.table-bordered
-            thead
-        tr
-            th
-            th Mon
-            th Tue
-            th Wed
-            th Thu
-            th Fri
-            th Sat
-            th Sun
-        tbody
-            tr.general-schedule
-                td General Hours
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                thead
+                tr
+                    th
+                    th Mon
+                    th Tue
+                    th Wed
+                    th Thu
+                    th Fri
+                    th Sat
+                    th Sun
+                tbody
+                    tr.general-schedule
+                        td General Hours
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.monday.open}'=='true', name='monday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='monday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.monday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='monday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.monday.end==hour.key) #{hour.value}
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.tuesday.open}'=='true', name='tuesday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='tuesday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.tuesday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='tuesday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.tuesday.end==hour.key) #{hour.value}
 
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.wednesday.open}'=='true', name='wednesday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='wednesday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.wednesday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='wednesday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.wednesday.end==hour.key) #{hour.value}
+
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.thursday.open}'=='true', name='thursday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='thursday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.thursday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='thursday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.thursday.end==hour.key) #{hour.value}
+
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.friday.open}'=='true', name='friday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='friday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.friday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='friday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.friday.end==hour.key) #{hour.value}
+
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.saturday.open}'=='true', name='saturday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='saturday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.saturday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='saturday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.saturday.end==hour.key) #{hour.value}
+
+                        td.open
+                            .cell-wrap
+                                a.btn.btn-success.btn-xs.show-times(href='#')
+                                    span.glyphicon.glyphicon-pencil
+                                a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                    span.glyphicon.glyphicon-remove
+                                label.checkbox-inline.schedule-onoff
+                                    input(type='checkbox', checked='#{schedule.sunday.open}'=='true', name='sunday_open')
+                                .schedule-times-wrap
+                                    select.form-control.input-sm.start-time(name='sunday_start')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                    small to
+                                    select.form-control.input-sm.end-time(name='sunday_end')
+                                        each hour in hours
+                                            option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                    each provider in providers
+                        tr.provider-schedule
+                            td #{provider.first_name} #{provider.last_name}
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+                            td.open
+                                .cell-wrap
+                                    a.btn.btn-success.btn-xs.show-times(href='#')
+                                        span.glyphicon.glyphicon-pencil
+                                    a.btn.btn-danger.btn-xs.hide-times(href='#')
+                                        span.glyphicon.glyphicon-remove
+                                    label.checkbox-inline.schedule-onoff
+                                        input(type='checkbox', value='1', checked='', name='schedule[][open]')
+                                    .schedule-times-wrap
+                                        select.form-control.input-sm.start-time(name='schedule[][startTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                        small to
+                                        select.form-control.input-sm.end-time(name='schedule[][endTime]')
+                                            each hour in hours
+                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+
+            .form-group
+                .col-sm-4
+                    button.btn.btn.btn-primary(type='submit') Save changes
 
 
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
 
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
 
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-            tr.provider-schedule
-                td Bob
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                            small to
-                            select.form-control.input-sm.end-time(name='schedule[][endTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
-
-                td.open
-                    .cell-wrap
-                        a.btn.btn-success.btn-xs.show-times(href='#')
-                            span.glyphicon.glyphicon-pencil
-                        a.btn.btn-danger.btn-xs.hide-times(href='#')
-                            span.glyphicon.glyphicon-remove
-                        label.checkbox-inline.schedule-onoff
-                            input(type='checkbox', value='1', checked='', name='schedule[][open]')
-                        .schedule-times-wrap
-                            select.form-control.input-sm.start-time(name='schedule[][startTime]')
 
 
 

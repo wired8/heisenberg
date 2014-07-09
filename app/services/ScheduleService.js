@@ -30,6 +30,16 @@ ScheduleService.prototype.getScheduleById = function (_id, callback) {
     this.scheduleRepository.getScheduleById(_id, callback);
 };
 
+/**
+ * Gets the schedule by account id
+ *
+ * @param account_id string
+ * @param callback
+ */
+ScheduleService.prototype.getScheduleByAccountId = function (account_id, callback) {
+    this.scheduleRepository.getScheduleByAccountId(account_id, callback);
+};
+
 
 /**
  * Update a schedule

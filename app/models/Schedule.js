@@ -13,45 +13,80 @@ var ScheduleSchema = new Schema({
     account_id: {type: String, require: true},
     monday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers: [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     tuesday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     wednesday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     thursday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     friday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     saturday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     sunday: {
         open: {type: Boolean},
-        start: {type: Number},
-        end: {type: Number},
-        providers: [String]
+        start: {type: String},
+        end: {type: String},
+        providers:  [{
+            _id: {type: String},
+            available: {type: Boolean},
+            start: {type: String},
+            end: {type: String}
+        }]
     },
     created_at: {type: Number, required: true},
     updated_at: {type: Number, required: true}

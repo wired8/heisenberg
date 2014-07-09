@@ -47,6 +47,35 @@ ScheduleRepository.prototype.getScheduleById = function (id, fields, callback) {
 };
 
 /**
+ * Get schedule by account_id
+ *
+ * @param {String|HexId} account_id
+ *
+ * @param [String] fields
+ *  the fields to return '_id name nickname'
+ *
+ * @param {Function} callback
+ */
+ScheduleRepository.prototype.getScheduleByAccountId = function (account_id, fields, callback) {
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = null;
+    }
+
+    Schedule.model().findOne({account_id: account_id}, fields, function (err, schedule) {
+
+        if (err) {
+            Logger.error("Error trying to find schedule by account_id %j", account_id, err);
+            return callback(err);
+        }
+
+        callback(null, schedule);
+
+    });
+};
+
+/**
  * Save a schedule
  *
  * @param {Schedule} schedule
@@ -54,24 +83,10 @@ ScheduleRepository.prototype.getScheduleById = function (id, fields, callback) {
  */
 ScheduleRepository.prototype.saveSchedule = function (schedule, callback) {
 
-    if (schedule._id) {
+    Schedule.model().findOneAndUpdate({ account_id: schedule.account_id}, schedule, {upsert: true, new: true}, function (err, result) {
+        callback(err, result);
+    });
 
-        var id = schedule._id;
-        delete schedule._id;
-        Schedule.model().findByIdAndUpdate(id, schedule, {}, function (err, result) {
-            callback(err, result);
-        });
-
-    } else {
-
-        schedule.model().save(function (err, _schedule) {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, new Schedule(_schedule));
-        });
-
-    }
 };
 
 
