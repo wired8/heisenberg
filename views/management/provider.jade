@@ -101,6 +101,12 @@ block content
                             .col-sm-offset-2
                                 h3 Services
                         .form-group
+                            .col-sm-4
+                                each service in services
+                                    p
+                                        input(type='checkbox', name='services', value='#{service._id}', checked='#{service.selected}'=='true')
+                                        |   #{service.name}
+                        .form-group
                             .col-sm-offset-3.col-sm-4
                                 button.btn.btn.btn-primary(type='submit') Save changes
 
@@ -137,7 +143,7 @@ block content
                             .col-sm-3
                                 select(class='selectpicker', name='break_tuesday_from')
                                     each provider_break in provider_breaks
-                                        option(value=provider_break, selected=provider.breaks.tuesday.to==provider_break) #{provider_break}
+                                        option(value=provider_break, selected=provider.breaks.tuesday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
@@ -149,7 +155,7 @@ block content
                             .col-sm-3
                                 select(class='selectpicker', name='break_wednesday_from')
                                     each provider_break in provider_breaks
-                                        option(value=provider_break, selected=provider.breaks.wednesday.to==provider_break) #{provider_break}
+                                        option(value=provider_break, selected=provider.breaks.wednesday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
@@ -161,7 +167,7 @@ block content
                             .col-sm-3
                                 select(class='selectpicker', name='break_thursday_from')
                                     each provider_break in provider_breaks
-                                        option(value=provider_break, selected=provider.breaks.thursday.to==provider_break) #{provider_break}
+                                        option(value=provider_break, selected=provider.breaks.thursday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
@@ -173,7 +179,7 @@ block content
                             .col-sm-3
                                 select(class='selectpicker', name='break_friday_from')
                                     each provider_break in provider_breaks
-                                        option(value=provider_break, selected=provider.breaks.friday.to==provider_break) #{provider_break}
+                                        option(value=provider_break, selected=provider.breaks.friday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3
@@ -185,7 +191,7 @@ block content
                             .col-sm-3
                                 select(class='selectpicker', name='break_saturday_from')
                                     each provider_break in provider_breaks
-                                        option(value=provider_break, selected=provider.breaks.saturday.to==provider_break) #{provider_break}
+                                        option(value=provider_break, selected=provider.breaks.saturday.from==provider_break) #{provider_break}
                             .col-sm-1
                                 label.col-sm-3.control-label(for='to') to
                             .col-sm-3

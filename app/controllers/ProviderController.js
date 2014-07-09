@@ -9,8 +9,8 @@ var Injct = require('injct'),
     Logger = require('../util/Logger'),
     Util = require('util'),
     XDate = require('xdate'),
-    Constants = require('../util/Constants');
-
+    Constants = require('../util/Constants'),
+    Async = require('async');
 
 /**
  * GET /api/providers
@@ -87,45 +87,72 @@ var getProvider = function(req, res) {
     var account_id = req.user.account_id;
     var provider_id = req.params.provider_id;
     var providerService = Injct.getInstance('providerService');
+    var serviceService = Injct.getInstance('serviceService');
 
-    var startTime  = new XDate(2014, 1, 1, 0, 0, 0, 0);
-    var endTime    = new XDate(2014, 1, 1, 23, 55, 0, 0);
-    var step = 30;
-    var breaks  = ["none"];
+    Async.waterfall([getServices, renderProviders], null);
 
-    while (startTime.getTime() <= endTime.getTime()) {
-        breaks.push(startTime.toString("hh:mmTT"));
-        startTime = startTime.addMinutes(step);
+    function getServices(cb) {
+        serviceService.getServicesByAccountId(account_id, cb);
     }
 
-    var titles = Constants.PERSONAL_TITLES;
+    function renderProviders(services, cb) {
 
-    if (provider_id !== undefined) {
+        var startTime = new XDate(2014, 1, 1, 0, 0, 0, 0);
+        var endTime = new XDate(2014, 1, 1, 23, 55, 0, 0);
+        var step = 30;
+        var breaks = ["none"];
 
-        providerService.getProviderById(provider_id, function (err, provider) {
+        while (startTime.getTime() <= endTime.getTime()) {
+            breaks.push(startTime.toString("hh:mmTT"));
+            startTime = startTime.addMinutes(step);
+        }
 
-            if (err) {
-                res.send({ result: 'error', error: err });
-                return;
-            }
+        var titles = Constants.PERSONAL_TITLES;
+
+        var all_services = _.map(services, function(service) {
+            return {
+                _id: service._id.toString(),
+                name: service.name,
+                service_options: service.service_options,
+                selected: false
+            };
+        });
+
+        if (provider_id !== undefined) {
+
+            providerService.getProviderById(provider_id, function (err, provider) {
+
+                _.each(all_services, function(service) {
+                    if (_.contains(provider.services, service._id)) {
+                        service.selected = true;
+                    }
+                });
+
+                if (err) {
+                    res.send({ result: 'error', error: err });
+                    return;
+                }
+                res.render('management/provider', {
+                    title: 'Edit Provider',
+                    personal_titles: titles,
+                    provider: provider,
+                    provider_breaks: breaks,
+                    services: all_services
+                });
+            });
+        } else {
+
+            var provider = new Provider();
+
             res.render('management/provider', {
-                title: 'Edit Provider',
+                title: 'New Provider',
                 personal_titles: titles,
                 provider: provider,
-                provider_breaks: breaks
+                provider_breaks: breaks,
+                services: all_services
             });
-        });
-    } else {
 
-        var provider = new Provider();
-
-        res.render('management/provider', {
-            title: 'New Provider',
-            personal_titles: titles,
-            provider: provider,
-            provider_breaks: breaks
-        });
-
+        }
     }
 
 };

@@ -118,6 +118,12 @@ block content
                         .form-group
                             .col-sm-offset-2
                                 h3 Providers
+                        .form-group
+                            .col-sm-4
+                                each provider in providers
+                                    p
+                                        input(type='checkbox', name='providers', value='#{provider._id}', checked='#{provider.selected}'=='true')
+                                        |   #{provider.first_name} #{provider.last_name}
 
                         .form-group
                             .col-sm-offset-3.col-sm-4

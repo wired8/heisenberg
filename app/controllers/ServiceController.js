@@ -6,6 +6,7 @@ var Injct = require('injct'),
     User = require('../models/User'),
     Service = require('../models/Service'),
     _ = require('underscore'),
+    Async = require('async'),
     Logger = require('../util/Logger'),
     Util = require('util');
 
@@ -84,44 +85,72 @@ var getService = function(req, res) {
     var account_id = req.user.account_id;
     var service_id = req.params.service_id;
     var serviceService = Injct.getInstance('serviceService');
+    var providerService = Injct.getInstance('providerService');
 
-    var hours = [];
-    var minutes = [];
+    Async.waterfall([getProviders, renderService], null);
 
-    for (var i=0; i<24; i++) {
-        hours.push({key: i, value: i + ' hours'});
+    function getProviders(cb) {
+        providerService.getProvidersByAccountId(account_id, cb);
     }
 
-    for (var j=0; j<60; j+=5) {
-        minutes.push({key: j, value: j + ' minutes'});
-    }
+    function renderService(providers, cb) {
 
-    if (service_id !== undefined) {
+        var hours = [];
+        var minutes = [];
 
-        serviceService.getServiceById(service_id, function (err, service) {
+        for (var i=0; i<24; i++) {
+            hours.push({key: i, value: i + ' hours'});
+        }
 
-            if (err) {
-                res.send({ result: 'error', error: err });
-                return;
-            }
+        for (var j=0; j<60; j+=5) {
+            minutes.push({key: j, value: j + ' minutes'});
+        }
+
+        var all_providers = _.map(providers, function(provider) {
+            return {
+                _id: provider._id.toString(),
+                first_name: provider.first_name,
+                last_name: provider.last_name,
+                selected: false
+            };
+        });
+
+
+        if (service_id !== undefined) {
+
+            serviceService.getServiceById(service_id, function (err, service) {
+
+                _.each(all_providers, function(provider) {
+                    if (_.contains(service.providers, provider._id)) {
+                        provider.selected = true;
+                    }
+                });
+
+                if (err) {
+                    res.send({ result: 'error', error: err });
+                    return;
+                }
+                res.render('management/service', {
+                    title: 'Edit Service',
+                    service: service,
+                    providers: all_providers,
+                    hours: hours,
+                    minutes: minutes
+                });
+            });
+        } else {
+
+            var service = new Service();
+
             res.render('management/service', {
                 title: 'Edit Service',
                 service: service,
+                providers: all_providers,
                 hours: hours,
                 minutes: minutes
             });
-        });
-    } else {
 
-        var service = new Service();
-
-        res.render('management/service', {
-            title: 'Edit Service',
-            service: service,
-            hours: hours,
-            minutes: minutes
-        });
-
+        }
     }
 
 };
@@ -159,7 +188,8 @@ var postService = function(req, res) {
             minutes: req.body.padding_after_minutes
         },
         active: req.body.active === 'on' ? true : false,
-        service_options: req.body.service_options
+        service_options: req.body.service_options,
+        providers: req.body.providers
     });
 
     serviceService.updateService(service, function(err, service) {
