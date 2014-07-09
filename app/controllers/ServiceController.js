@@ -189,7 +189,7 @@ var postService = function(req, res) {
         },
         active: req.body.active === 'on' ? true : false,
         service_options: req.body.service_options,
-        providers: req.body.providers
+        providers: Util.isArray(req.body.providers) ? req.body.providers : [req.body.providers]
     });
 
     serviceService.updateService(service, function(err, service) {

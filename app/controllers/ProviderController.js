@@ -212,7 +212,7 @@ var postProvider = function(req, res) {
         bio: req.body.bio,
         image_url: req.body.image_url,
         password: req.body.password,
-        services: req.body.services,
+        services: Util.isArray(req.body.services) ? req.body.services : [req.body.services],
         breaks: breaks,
         active: req.body.active === 'on' ? true : false,
         active_from: req.body.active_from,
