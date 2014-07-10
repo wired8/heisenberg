@@ -131,11 +131,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_monday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.monday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_monday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.monday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -149,11 +149,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_tuesday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.tuesday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_tuesday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.tuesday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -167,11 +167,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_wednesday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.wednesday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_wednesday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.wednesday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -185,11 +185,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_thursday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.thursday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_thursday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.thursday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -203,11 +203,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_friday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.friday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_friday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.friday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -221,11 +221,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_saturday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.saturday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_saturday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.saturday.providers[provider._id].end==hour.key) #{hour.value}
 
                             td.open
                                 .cell-wrap
@@ -239,11 +239,11 @@ block content
                                     .schedule-times-wrap.hidden
                                         select.form-control.input-sm.start-time(name='provider_sunday_start[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.start==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.sunday.providers[provider._id].start==hour.key) #{hour.value}
                                         small to
                                         select.form-control.input-sm.end-time(name='provider_sunday_end[#{provider._id}]')
                                             each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
+                                                option(value=hour.key, selected=schedule.sunday.providers[provider._id].end==hour.key) #{hour.value}
 
             .form-group
                 .col-sm-4
