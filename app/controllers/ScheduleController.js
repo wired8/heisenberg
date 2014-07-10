@@ -154,42 +154,143 @@ var getScheduleSettings = function(req, res) {
     var providerService = Injct.getInstance('providerService');
     var scheduleService = Injct.getInstance('scheduleService');
 
-    Async.parallel({providers: getProviders, schedule: getSchedule}, renderSchedule);
+    Async.waterfall([getProviders, getSchedule], renderSchedule);
 
     function getProviders(cb) {
         providerService.getProvidersByAccountId(account_id, cb);
     }
 
-    function getSchedule(cb) {
+    function getSchedule(providers, cb) {
         scheduleService.getScheduleByAccountId(account_id, function(err, schedule) {
 
             if (schedule === null) {
 
-                var day = {
-                    open: false,
+                var provider_ids = _.pluck(providers, '_id');
+
+                var providers_monday = {};
+                var providers_tuesday = {};
+                var providers_wednesday = {};
+                var providers_thursday = {};
+                var providers_friday = {};
+                var providers_saturday = {};
+                var providers_sunday = {};
+
+                _.each(provider_ids, function(provider_id) {
+                    providers_monday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_tuesday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_wednesday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_thursday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_friday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_saturday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                    providers_sunday[provider_id] = {
+                        _id: provider_id.toString(),
+                        available: false,
+                        start: '0800',
+                        end: '1800'
+                    };
+                });
+
+                var monday = {
+                    open: true,
                     start: '0800',
                     end: '1800',
-                    providers: []
+                    providers: providers_monday
+                };
+
+                var tuesday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_tuesday
+                };
+
+                var wednesday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_wednesday
+                };
+
+                var thursday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_thursday
+                };
+
+                var friday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_friday
+                };
+
+                var saturday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_saturday
+                };
+
+                var sunday = {
+                    open: true,
+                    start: '0800',
+                    end: '1800',
+                    providers: providers_sunday
                 };
 
                 schedule = new Schedule({
                     account_id: account_id,
-                    monday: day,
-                    tuesday: day,
-                    wednesday: day,
-                    thursday: day,
-                    friday: day,
-                    saturday: day,
-                    sunday: day
+                    monday: monday,
+                    tuesday: tuesday,
+                    wednesday: wednesday,
+                    thursday: thursday,
+                    friday: friday,
+                    saturday: saturday,
+                    sunday: sunday
                 });
 
             }
 
-            cb(null, schedule);
+            var result = {};
+            result.providers = providers;
+            result.schedule = schedule;
+
+            cb(null, result);
         });
     }
 
-    function renderSchedule(err, results) {
+    function renderSchedule(err, result) {
 
         if (err) {
             Logger.error('Error getting schedule config', err);
@@ -209,8 +310,8 @@ var getScheduleSettings = function(req, res) {
 
         res.render('management/schedule', {
             title: 'Schedule Settings Management',
-            schedule: results.schedule,
-            providers: results.providers,
+            schedule: result.schedule,
+            providers: result.providers,
             hours: hours
         });
 
@@ -283,8 +384,6 @@ var postScheduleSettings = function(req, res) {
             end: req.body.provider_sunday_end[provider_id]
         };
     });
-
-
 
     var schedule = new Schedule({
         account_id: account_id,

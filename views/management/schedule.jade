@@ -116,134 +116,134 @@ block content
                                         each hour in hours
                                             option(value=hour.key, selected=schedule.sunday.end==hour.key) #{hour.value}
 
-                    each provider in providers
-                        tr.provider-schedule
-                            td #{provider.first_name} #{provider.last_name}
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.monday.providers[provider._id].available}'=='true', name='provider_monday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_monday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.monday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_monday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.monday.providers[provider._id].end==hour.key) #{hour.value}
+                        each provider in providers
+                                tr.provider-schedule
+                                    td #{provider.first_name} #{provider.last_name}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.monday.providers[provider._id].available}'=='true', name='provider_monday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_monday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.monday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_monday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.monday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.tuesday.providers[provider._id].available}'=='true', name='provider_tuesday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_tuesday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.tuesday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_tuesday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.tuesday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.tuesday.providers[provider._id].available}'=='true', name='provider_tuesday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_tuesday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.tuesday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_tuesday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.tuesday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.wednesday.providers[provider._id].available}'=='true', name='provider_wednesday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_wednesday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.wednesday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_wednesday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.wednesday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.wednesday.providers[provider._id].available}'=='true', name='provider_wednesday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_wednesday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.wednesday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_wednesday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.wednesday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.thursday.providers[provider._id].available}'=='true', name='provider_thursday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_thursday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.thursday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_thursday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.thursday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.thursday.providers[provider._id].available}'=='true', name='provider_thursday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_thursday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.thursday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_thursday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.thursday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.friday.providers[provider._id].available}'=='true', name='provider_friday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_friday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.friday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_friday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.friday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.friday.providers[provider._id].available}'=='true', name='provider_friday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_friday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.friday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_friday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.friday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.saturday.providers[provider._id].available}'=='true', name='provider_saturday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_saturday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.saturday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_saturday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.saturday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.saturday.providers[provider._id].available}'=='true', name='provider_saturday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_saturday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.saturday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_saturday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.saturday.providers[provider._id].end==hour.key) #{hour.value}
 
-                            td.open
-                                .cell-wrap
-                                    a.btn.btn-success.btn-xs.show-times(href='#')
-                                        span.glyphicon.glyphicon-pencil
-                                    a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
-                                        span.glyphicon.glyphicon-remove
-                                    label.checkbox-inline.schedule-onoff
-                                        input(type='checkbox', value='#{provider._id}', checked='#{schedule.sunday.providers[provider._id].available}'=='true', name='provider_sunday_open')
-                                        | Available
-                                    .schedule-times-wrap.hidden
-                                        select.form-control.input-sm.start-time(name='provider_sunday_start[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.providers[provider._id].start==hour.key) #{hour.value}
-                                        small to
-                                        select.form-control.input-sm.end-time(name='provider_sunday_end[#{provider._id}]')
-                                            each hour in hours
-                                                option(value=hour.key, selected=schedule.sunday.providers[provider._id].end==hour.key) #{hour.value}
+                                    td.open
+                                        .cell-wrap
+                                            a.btn.btn-success.btn-xs.show-times(href='#')
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-danger.btn-xs.hide-times.hidden(href='#')
+                                                span.glyphicon.glyphicon-remove
+                                            label.checkbox-inline.schedule-onoff
+                                                input(type='checkbox', value='#{provider._id}', checked='#{schedule.sunday.providers[provider._id].available}'=='true', name='provider_sunday_open')
+                                                | Available
+                                            .schedule-times-wrap.hidden
+                                                select.form-control.input-sm.start-time(name='provider_sunday_start[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.sunday.providers[provider._id].start==hour.key) #{hour.value}
+                                                small to
+                                                select.form-control.input-sm.end-time(name='provider_sunday_end[#{provider._id}]')
+                                                    each hour in hours
+                                                        option(value=hour.key, selected=schedule.sunday.providers[provider._id].end==hour.key) #{hour.value}
 
             .form-group
                 .col-sm-4
