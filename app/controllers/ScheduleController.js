@@ -230,49 +230,105 @@ var postScheduleSettings = function(req, res) {
     var account_id = req.user.account_id;
     var scheduleService = Injct.getInstance('scheduleService');
 
+    var provider_ids = _.keys(req.body.provider_monday_start);
+    var providers_monday = {};
+    var providers_tuesday = {};
+    var providers_wednesday = {};
+    var providers_thursday = {};
+    var providers_friday = {};
+    var providers_saturday = {};
+    var providers_sunday = {};
+
+    _.each(provider_ids, function(provider_id) {
+        providers_monday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_monday_open, provider_id) || req.body.provider_monday_open === provider_id,
+            start: req.body.provider_monday_start[provider_id],
+            end: req.body.provider_monday_end[provider_id]
+        };
+        providers_tuesday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_tuesday_open, provider_id) || req.body.provider_tuesday_open === provider_id,
+            start: req.body.provider_tuesday_start[provider_id],
+            end: req.body.provider_tuesday_end[provider_id]
+        };
+        providers_wednesday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_wednesday_open, provider_id) || req.body.provider_wednesday_open === provider_id,
+            start: req.body.provider_wednesday_start[provider_id],
+            end: req.body.provider_wednesday_end[provider_id]
+        };
+        providers_thursday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_thursday_open, provider_id) || req.body.provider_thursday_open === provider_id,
+            start: req.body.provider_thursday_start[provider_id],
+            end: req.body.provider_thursday_end[provider_id]
+        };
+        providers_friday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_friday_open, provider_id) || req.body.provider_friday_open === provider_id,
+            start: req.body.provider_friday_start[provider_id],
+            end: req.body.provider_friday_end[provider_id]
+        };
+        providers_saturday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_saturday_open, provider_id) || req.body.provider_saturday_open === provider_id,
+            start: req.body.provider_saturday_start[provider_id],
+            end: req.body.provider_saturday_end[provider_id]
+        };
+        providers_sunday[provider_id] = {
+            _id: provider_id,
+            available: _.contains(req.body.provider_sunday_open, provider_id) || req.body.provider_sunday_open === provider_id,
+            start: req.body.provider_sunday_start[provider_id],
+            end: req.body.provider_sunday_end[provider_id]
+        };
+    });
+
+
+
     var schedule = new Schedule({
         account_id: account_id,
         monday: {
             open: req.body.monday_open === 'on' ? true : false,
             start: req.body.monday_start,
             end: req.body.monday_end,
-            providers: []
+            providers: providers_monday
         },
         tuesday: {
             open: req.body.tuesday_open === 'on' ? true : false,
             start: req.body.tuesday_start,
             end: req.body.tuesday_end,
-            providers: []
+            providers: providers_tuesday
         },
         wednesday: {
             open: req.body.wednesday_open === 'on' ? true : false,
             start: req.body.wednesday_start,
             end: req.body.wednesday_end,
-            providers: []
+            providers: providers_wednesday
         },
         thursday: {
             open: req.body.thursday_open === 'on' ? true : false,
             start: req.body.thursday_start,
             end: req.body.thursday_end,
-            providers: []
+            providers: providers_thursday
         },
         friday: {
             open: req.body.friday_open === 'on' ? true : false,
             start: req.body.friday_start,
             end: req.body.friday_end,
-            providers: []
+            providers: providers_friday
         },
         saturday: {
             open: req.body.saturday_open === 'on' ? true : false,
             start: req.body.saturday_start,
             end: req.body.saturday_end,
-            providers: []
+            providers: providers_saturday
         },
         sunday: {
             open: req.body.sunday_open === 'on' ? true : false,
             start: req.body.sunday_start,
             end: req.body.sunday_end,
-            providers: []
+            providers: providers_sunday
         }
     });
 

@@ -15,78 +15,43 @@ var ScheduleSchema = new Schema({
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers: [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     tuesday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     wednesday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     thursday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     friday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     saturday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     sunday: {
         open: {type: Boolean},
         start: {type: String},
         end: {type: String},
-        providers:  [{
-            _id: {type: String},
-            available: {type: Boolean},
-            start: {type: String},
-            end: {type: String}
-        }]
+        providers: Schema.Types.Mixed
     },
     created_at: {type: Number, required: true},
     updated_at: {type: Number, required: true}
