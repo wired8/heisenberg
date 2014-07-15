@@ -56,7 +56,7 @@ var paths = {
     // 'public/lib/bootstrap/js/tooltip.js',
     // 'public/lib/bootstrap/js/popover.js',
     // 'public/lib/bootstrap/js/scrollspy.js',
-    // 'public/lib/bootstrap/js/tab.js',
+    'public/lib/bootstrap/js/tab.js',
     // 'public/lib/bootstrap/js/affix.js'
     // =========================================
     'public/lib/fastclick/lib/fastclick.js',

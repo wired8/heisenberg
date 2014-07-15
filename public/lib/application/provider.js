@@ -6,8 +6,6 @@ var resrvo_provider = {
 
         var self = this;
 
-        $('.selectpicker').selectpicker();
-
         $(".timepicker").datetimepicker({
             pickDate: false
         });

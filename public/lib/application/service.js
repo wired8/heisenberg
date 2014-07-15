@@ -117,8 +117,6 @@ var resrvo_service = {
             self.setTableHandlers();
         });
 
-        $('.selectpicker').selectpicker();
-
         $("[name='cost']").inputmask("decimal", {
             radixPoint:".",
             groupSeparator: ",",

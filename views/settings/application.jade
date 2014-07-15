@@ -104,11 +104,11 @@ block content
                                                     option(value="#{schedule.value}", selected=schedule.value==account.account_options.booking.options.schedule_period) #{schedule.name}
                                     .form-group
                                         label.col-sm-3.control-label(for='name') Rotating week 1 start date
-                                            .col-sm-7
-                                        .dp2(id="start_period", name="start_period", class="input-group date date")
-                                            input(data-format="dd/MM/yyyy", readonly, type="text", class="form-control", name="start_period_val", id="start_period_val")
-                                            span(class="input-group-addon")
-                                                span(class="glyphicon glyphicon-calendar")
+                                        .col-sm-7
+                                            .datepicker(id="start_period", name="start_period", class="input-group date")
+                                                input(data-format="dd/MM/yyyy", readonly, type="text", class="form-control", name="start_period_val", id="start_period_val")
+                                                span(class="input-group-addon")
+                                                    span(class="fa fa-calendar")
                                     .form-group
                                         .col-sm-offset-3.col-sm-8
                                             button.btn.btn.btn-primary(type='submit') Save changes
@@ -147,7 +147,11 @@ block content
 
 //- Page-specific stuff
 block scripts
-script(src='/lib/application/application_settings.js')
+    script(src='/lib/bootstrap/dist/js/bootstrap.js')
+    script(src='/lib/application/application_settings.js')
+    script(src='/lib/bootstrapValidator/dist/js/bootstrapValidator.js')
+    script(src='/lib/moment/min/moment.min.js')
+    script(src='/lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js')
     script.
         $(document).ready(function() {
             resrvo_application_settings.init();

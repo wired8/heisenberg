@@ -6,7 +6,9 @@ var resrvo_application_settings = {
 
         var self = this;
 
-        $('.selectpicker').selectpicker();
+        $(".datepicker").datetimepicker({
+            pickTime: false
+        });
 
     }
 };
