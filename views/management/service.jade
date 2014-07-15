@@ -144,11 +144,13 @@ block scripts
     script(src='/lib/moment/min/moment.min.js')
     script(src='/lib/jquery.inputmask/dist/jquery.inputmask.bundle.min.js')
     script(src='/lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js')
-    script(src='/lib/application/service.js')
     script(src='/lib/underscore/underscore-min.js')
 
     script.
         $(document).ready(function() {
-            var service_options = !{JSON.stringify(service.service_options)};
-            resrvo_service.init(service_options);
+            // Load service
+            $.getScript('/lib/application/service.js').done(function () {
+                var service_options = !{JSON.stringify(service.service_options)};
+                resrvo_service.init(service_options);
+            });
         });

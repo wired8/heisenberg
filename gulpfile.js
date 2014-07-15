@@ -48,16 +48,16 @@ var paths = {
     // =========================================
     'public/lib/bootstrap/js/transition.js',
     'public/lib/bootstrap/js/alert.js',
-    // 'public/lib/bootstrap/js/button.js',
-    // 'public/lib/bootstrap/js/carousel.js',
+    'public/lib/bootstrap/js/button.js',
+    'public/lib/bootstrap/js/carousel.js',
     'public/lib/bootstrap/js/collapse.js',
     'public/lib/bootstrap/js/dropdown.js',
-    // 'public/lib/bootstrap/js/modal.js',
-    // 'public/lib/bootstrap/js/tooltip.js',
-    // 'public/lib/bootstrap/js/popover.js',
-    // 'public/lib/bootstrap/js/scrollspy.js',
+    'public/lib/bootstrap/js/modal.js',
+    'public/lib/bootstrap/js/tooltip.js',
+    'public/lib/bootstrap/js/popover.js',
+    'public/lib/bootstrap/js/scrollspy.js',
     'public/lib/bootstrap/js/tab.js',
-    // 'public/lib/bootstrap/js/affix.js'
+    'public/lib/bootstrap/js/affix.js',
     // =========================================
     'public/lib/fastclick/lib/fastclick.js',
     'public/js/main.js'
