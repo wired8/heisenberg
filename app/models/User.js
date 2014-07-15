@@ -94,10 +94,10 @@ var User = function (json) {
     this.email = json.email;
     this.password = json.password;
     this.type = json.type;
-    this.facebook = json.facebook || '';
-    this.twitter = json.twitter || '';
-    this.google = json.google || '';
-    this.tokens = json.tokens || []
+    this.facebook = json.facebook;
+    this.twitter = json.twitter;
+    this.google = json.google;
+    this.tokens = json.tokens || [];
 
     this.profile = json.profile || {};
     this.roles = json.roles || [];

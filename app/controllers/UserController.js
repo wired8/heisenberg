@@ -5,12 +5,15 @@
  */
 
 var User          = require('../models/User'),
+    Account       = require('../models/Account'),
     Async         = require('async'),
     Crypto        = require('crypto'),
     Config        = require('../../config/config'),
     Passport      = require('passport'),
     Nodemailer    = require('nodemailer'),
-    LoginAttempt  = require('../models/LoginAttempt');
+    LoginAttempt  = require('../models/LoginAttempt'),
+    Logger        = require('../util/Logger'),
+    Mongoose      = require('mongoose');
 
 /**
  * User Controller
@@ -379,6 +382,7 @@ module.exports.controller = function (app) {
       req.assert('confirmPassword', 'Your password confirmation cannot be empty.').notEmpty();
       req.assert('password', 'Your password must be at least 4 characters long.').len(4);
       req.assert('confirmPassword', 'Your passwords do not match.').equals(req.body.password);
+      req.assert('subdomain', 'Your url cannot be empty.').notEmpty();
 
       var errors = req.validationErrors();
 
@@ -406,13 +410,13 @@ module.exports.controller = function (app) {
         Crypto.randomBytes(25, function (err, buf) {
           verifyToken = buf.toString('hex');
           // next step
-          workflow.emit('createUser', verified, verifyToken);
+          workflow.emit('createAccount', verified, verifyToken);
         });
       } else {
         verified = true;
         verifyToken = null;
         // next step
-        workflow.emit('createUser', verified, verifyToken);
+        workflow.emit('createAccount', verified, verifyToken);
       }
 
     });
@@ -421,7 +425,37 @@ module.exports.controller = function (app) {
      * Step 3: Create a new account
      */
 
-    workflow.on('createUser', function (verified, verifyToken) {
+    workflow.on('createAccount', function (verified, verifyToken) {
+        // create account
+        var account = new Account({
+            name:      req.body.subdomain.toLowerCase(),
+            subdomain: req.body.subdomain.toLowerCase(),
+            address: '',
+            phone: '',
+            country: ''
+        });
+
+        // save user
+        account.model().save(function (err, _account) {
+            if (err) {
+                if (err.code === 11000) {
+                    req.flash('error', { msg: 'An account with that url already exists!' });
+                    req.flash('info', { msg: 'You should sign into that account.' });
+                }
+                return res.redirect('back');
+            } else {
+                // next step
+                workflow.emit('createUser', verified, verifyToken, _account);
+            }
+        });
+
+    });
+
+    /**
+     * Step 4: Create a new admin user
+     */
+
+    workflow.on('createUser', function (verified, verifyToken, account) {
 
       // create user
       var user = new User({
@@ -429,12 +463,14 @@ module.exports.controller = function (app) {
         'profile.last_name': req.body.last_name.trim(),
         email:          req.body.email.toLowerCase(),
         password:       req.body.password,
+        account_id:     account._id.toString(),
+        type:           'admin',
         verifyToken:    verifyToken,
         verified:       verified
       });
 
       // save user
-      user.model().save(function (err) {
+      user.model().save(function (err, _user) {
         if (err) {
           if (err.code === 11000) {
             req.flash('error', { msg: 'An account with that email address already exists!' });
@@ -442,12 +478,13 @@ module.exports.controller = function (app) {
           }
           return res.redirect('back');
         } else {
+          workflow.emit('updateAccount', _user);
           if (Config.verificationRequired) {
             // next step (4a)
-            workflow.emit('sendValidateEmail', user, verifyToken);
+            workflow.emit('sendValidateEmail', _user, verifyToken);
           } else {
             // next step (4b)
-            workflow.emit('sendWelcomeEmail', user);
+            workflow.emit('sendWelcomeEmail', _user);
           }
         }
       });
@@ -455,7 +492,19 @@ module.exports.controller = function (app) {
     });
 
     /**
-     * Step 4a: Send them a validate email
+     * Step 4a: Make them an account admin
+     */
+
+    workflow.on('updateAccount', function (user) {
+        Account.model().update({_id: new Mongoose.Types.ObjectId(user.account_id)}, {$push: {"admins": user._id.toString()}}, {upsert: false}, function(err, resp) {
+                if (err) {
+                    Logger.error(err);
+                };
+            });
+    });
+
+    /**
+     * Step 4b: Send them a validate email
      */
 
     workflow.on('sendValidateEmail', function (user, verifyToken) {
@@ -517,7 +566,7 @@ module.exports.controller = function (app) {
     });
 
     /**
-     * Step 4b: Send them a welcome email
+     * Step 4c: Send them a welcome email
      */
 
     workflow.on('sendWelcomeEmail', function (user) {
@@ -596,10 +645,10 @@ module.exports.controller = function (app) {
         // send the right welcome message
         if (Config.twoFactor) {
           req.flash('warning', { msg: 'Welcome! We recommend turning on enhanced security in account settings.' });
-          res.redirect('/api');
+          res.redirect('/');
         } else {
           req.flash('info', { msg: 'Thanks for signing up! You rock!' });
-          res.redirect('/api');
+          res.redirect('/');
         }
 
       });

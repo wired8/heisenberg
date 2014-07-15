@@ -11,13 +11,13 @@ var Schema = Mongoose.Schema;
 
 var AccountSchema = new Schema({
     name: {type: String, required: true},
-    subdomain: {type: String, required: true},
-    address: {type: String, required: true},
+    subdomain: {type: String, unique: true, sparse: true, required: true},
+    address: {type: String},
     address_ext: {type: String},
-    phone: {type: String, required: true},
+    phone: {type: String},
     postal: {type: String},
-    country: {type: String, required: true},
-    admins: [String],
+    country: {type: String},
+    admins: Array,
     account_options: {
         booking: {
             options: {

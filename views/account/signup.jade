@@ -39,7 +39,7 @@ block content
           .form-group
               label.sr-only(for='subdomain') Choose your resrvo URL:
               .subdomain(class='input-group')
-                  input.form-control(type='text', name='subdomain', id='subdomain', placeholder='Choose your resrvo URL', autocomplete='off', required, pattern='/[^a-z0-9]/gi', title='At least 3 characters!')
+                  input.form-control(type='text', name='subdomain', id='subdomain', placeholder='Choose your resrvo URL', autocomplete='off', required, pattern='^[a-z0-9]{3,}', title='At least 3 characters!')
                   span(class="input-group-addon")
                       span
                       | .resrvo.com
