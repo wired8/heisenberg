@@ -20,7 +20,6 @@ block content
 block scripts
 
     link(rel='stylesheet', href='/lib/formbuilder/formbuilder.css')
-    script(src="/lib/jquery/jquery.js")
     script(src="/lib/jquery-ui/ui/jquery.ui.core.js")
     script(src="/lib/jquery-ui/ui/jquery.ui.widget.js")
     script(src="/lib/jquery-ui/ui/jquery.ui.mouse.js")
@@ -34,10 +33,13 @@ block scripts
     script(src="/lib/backbone/backbone.js")
     script(src="/lib/backbone-deep-model/src/deep-model.js")
     script(src="/lib/formbuilder/formbuilder.js")
-    script(src="/lib/application/form.js")
 
     script.
         $(document).ready(function() {
-            var form_fields = !{form_fields};
-            resrvo_form.init(form_fields);
+            // Load form
+            $.getScript('/lib/application/form.js').done(function () {
+                var form_fields = !{form_fields};
+                resrvo_form.init(form_fields);
+            });
         });
+

@@ -258,8 +258,12 @@ block content
 //- Page-specific stuff
 block scripts
     link(rel='stylesheet', href='/lib/watable/watable.css')
-    script(src='/lib/application/schedule_settings.js')
+
     script.
         $(document).ready(function() {
-            resrvo_schedule_settings.init();
+            // Load schedule settings
+            $.getScript('/lib/application/schedule_settings.js').done(function () {
+                resrvo_schedule_settings.init();
+            });
         });
+

@@ -215,12 +215,17 @@ block scripts
     script(src='/lib/moment/min/moment.min.js')
     script(src='/lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js')
     script(src='/lib/jquery.inputmask/dist/jquery.inputmask.bundle.min.js')
-    script(src='/lib/application/provider.js')
-    script(src='/lib/application/tabs.js')
 
     script.
         $(document).ready(function() {
-            var provider_breaks = !{JSON.stringify(provider_breaks)};
-            resrvo_provider.init(provider_breaks);
+            // Load tabs
+            $.getScript('/lib/application/tabs.js').done(function () {
+            });
+            // Load provider
+            $.getScript('/lib/application/provider.js').done(function () {
+                var provider_breaks = !{JSON.stringify(provider_breaks)};
+                resrvo_provider.init(provider_breaks);
+            });
         });
+
 
