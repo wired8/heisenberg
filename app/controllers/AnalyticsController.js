@@ -1,25 +1,32 @@
 'use strict';
 
-var Injct = require('injct'),
-    Passport = require('passport'),
-    PassportConf = require('../../config/passport');
+var Injct = require('injct');
+
+
 
 /**
- * GET /
- * Analytics page.
- *
- * @param request
- * @param response
- * @param callback
+ * Analytics Controller
  */
-var getAnalytics = function(req, res) {
 
-    res.render('analytics', {
-        title: 'Analytics'
+module.exports.controller = function (app) {
+
+    /**
+     * GET /
+     * Analytics page.
+     *
+     * @param request
+     * @param response
+     */
+    app.get('/analytics', function (req, res) {
+
+        res.render('analytics/analytics', {
+            title: 'Analytics'
+        });
+
     });
+
 };
 
-Heisenberg.get('/analytics', PassportConf.isAuthenticated, getAnalytics);
 
 
 

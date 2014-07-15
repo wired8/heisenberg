@@ -1,5 +1,41 @@
-footer
-  .container.text-center
-    div © 2014 Wired8, Inc.
-    div
-      strong Resrvo Booking System
+footer.footer.bg-black
+  .container
+    p
+      | Copyright © #{moment().format('YYYY')}&nbsp;
+      img.hidden-xs(src='/favicon.png', width='50px')
+      | &nbsp;#{application}, all rights reserved. |&nbsp;
+      a(href='/terms') Terms of Use&nbsp;
+      | |&nbsp;
+      a(href='/privacy') Privacy Policy
+
+//- Load jQuery, food for thought:
+//- https://palant.de/2014/06/30/please-don-t-use-externally-hosted-javascript-libraries
+script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+//- Backup just in case
+script window.jQuery || document.write('<script src="/lib/jquery/dist/jquery.min.js"><\/script>')
+//- Then use jQuery to async load everything else
+script.
+  $(document).ready(function() {
+    //- Load main project js
+    $.getScript('/js/#{application}.min.js').done(function () {
+      window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+      }, false);
+    });
+    //- Load socket.io
+    $.getScript('//cdn.socket.io/socket.io-1.0.6.js').done(function () {
+      $(function(){
+        //- socket.io processing
+        var socket = io(window.location.hostname);
+        //- var socket = io();
+        socket.on('connect', function () {
+          //- Tell the server your URL
+          socket.emit('pageview', window.location.href);
+        });
+        window.onhashchange = function () {
+          //- Tell the server your new URL
+          socket.emit('pageview', window.location.href);
+        };
+      });
+    });
+  });

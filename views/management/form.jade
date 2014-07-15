@@ -1,32 +1,43 @@
-extends ../layout
+extends ../layouts/layout
+
+block head
+    title #{application} &middot; Booking Form
 block content
-    .page-header
-        h3 Booking Form
-    form.form-horizontal(role='form')
-        input(type='hidden', name='_csrf', value=_csrf)
-        .form-group
-            .formbuilder(id='resrvo_form')
+    .container
+        .row
+            .col-sm-12
+                .page-header
+                    h2
+                        i.fa.fa-file-text-o
+                        | &nbsp;Booking Form
 
-    link(rel='stylesheet', href='/js/lib/formbuilder/formbuilder.css')
-    script(src="/js/lib/jquery/jquery.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.core.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.widget.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.mouse.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.draggable.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.droppable.js")
-    script(src="/js/lib/jquery-ui/ui/jquery.ui.sortable.js")
-    script(src="/js/lib/jquery.scrollWindowTo/index.js")
-    script(src="/js/lib/underscore/underscore-min.js")
-    script(src="/js/lib/underscore.mixin.deepExtend/index.js")
-    script(src="/js/lib/rivets/dist/rivets.js")
-    script(src="/js/lib/backbone/backbone.js")
-    script(src="/js/lib/backbone-deep-model/src/deep-model.js")
-    script(src="/js/lib/formbuilder/formbuilder.js")
-    script(src="/js/form.js")
+                form.form-horizontal(role='form')
+                    input(type='hidden', name='_csrf', value=_csrf)
+                    .form-group
+                        .formbuilder(id='resrvo_form')
 
-    | <script type='text/javascript'>
-    | $(document).ready(function() {
-    |   var form_fields = !{form_fields};
-    |   resrvo_form.init(form_fields);
-    | });
-    | </script>
+//- Page-specific stuff
+block scripts
+
+    link(rel='stylesheet', href='/lib/formbuilder/formbuilder.css')
+    script(src="/lib/jquery/jquery.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.core.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.widget.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.mouse.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.draggable.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.droppable.js")
+    script(src="/lib/jquery-ui/ui/jquery.ui.sortable.js")
+    script(src="/lib/jquery.scrollWindowTo/index.js")
+    script(src="/lib/underscore/underscore-min.js")
+    script(src="/lib/underscore.mixin.deepExtend/index.js")
+    script(src="/lib/rivets/dist/rivets.js")
+    script(src="/lib/backbone/backbone.js")
+    script(src="/lib/backbone-deep-model/src/deep-model.js")
+    script(src="/lib/formbuilder/formbuilder.js")
+    script(src="/lib/application/form.js")
+
+    script.
+        $(document).ready(function() {
+            var form_fields = !{form_fields};
+            resrvo_form.init(form_fields);
+        });

@@ -1,148 +1,154 @@
-extends ../layout
+extends ../layouts/layout
+block head
+    title #{application} &middot; Provider
 block content
-    .page-header
-        h3 Application Settings
-    form.form-horizontal(role='form', method='POST')
-        input(type='hidden', name='_csrf', value=_csrf)
-        input(id="account_id", type="hidden", name="account_id", value="#{account._id}")
-        .form-group
-            .col-sm-3
-                ul(class="nav nav-pills nav-stacked", id="settings_tab")
-                    li(class="active")
-                        a(href="#account", data-toggle="pill") Account
-                    li
-                        a(href="#booking", data-toggle="pill") Booking
-                    li
-                        a(href="#schedule", data-toggle="pill") Schedule
-                    li
-                        a(href="#provider", data-toggle="pill") Provider
-                    li
-                        a(href="#client", data-toggle="pill") Client
-                    li
-                        a(href="#billing", data-toggle="pill") Billing
-            .col-sm-9
-                .tab-content
-                    .tab-pane(id="account", class="active")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Account Settings
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Name
-                            .col-sm-4
-                                input.form-control(type='text', name='name', id='name', value='#{account.name}')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Address
-                            .col-sm-4
-                                input.form-control(type='text', name='address', id='address',value='#{account.address}')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Address Ext
-                            .col-sm-4
-                                input.form-control(type='text', name='address_ext', id='address_ext', value='#{account.address_ext}')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Country
-                            .col-sm-4
-                                select(class='selectpicker', id="country_code", name="country_code")
-                                    each country in countries
-                                        option(value="#{country.ioc}", selected=account.country==country.ioc) #{country.name}
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Postal/Zip Code
-                            .col-sm-4
-                                input.form-control(type='text', name='postal', id='postal', value='#{account.postal}')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Phone
-                            .col-sm-4
-                                input.form-control(type='text', name='phone', id='phone', value='#{account.phone}')
-                        .form-group
-                            .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
-                    .tab-pane(id="booking")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Booking Settings
-                        .form-group
-                            label.col-sm-3.control-label(for='login') Login required
-                            .col-sm-4
-                                input(type='checkbox', name='login_required', id='login_required', checked='#{account.account_options.booking.options.login_required}'=='true')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Bookings admin approved
-                            .col-sm-4
-                                input(type='checkbox', name='admin_approved', id='admin_approved', checked='#{account.account_options.booking.options.admin_approved}'=='true')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Max bookings per day per user
-                            .col-sm-4
-                                input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='#{account.account_options.booking.options.max_per_user_day}')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Waiver required
-                            .col-sm-4
-                                input(type='checkbox', name='waiver_required', id='waiver_required', checked='#{account.account_options.booking.options.waiver_required}'=='true')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Private only
-                            .col-sm-4
-                                input(type='checkbox', name='private_only', id='private_only', checked='#{account.account_options.booking.options.private_only}'=='true')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Allow social login
-                            .col-sm-4
-                                input(type='checkbox', name='social_login', id='social_login', checked='#{account.account_options.booking.options.social_login}'=='true')
-                        .form-group
-                            .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
-                    .tab-pane(id="schedule")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Schedule Settings
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Rotating schedule
-                            .col-sm-7
-                                select(class='selectpicker', name='schedule_period')
-                                    each schedule in schedule_period
-                                        option(value="#{schedule.value}", selected=schedule.value==account.account_options.booking.options.schedule_period) #{schedule.name}
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Rotating week 1 start date
-                                .col-sm-7
-                            .dp2(id="start_period", name="start_period", class="input-group date date")
-                                input(data-format="dd/MM/yyyy", readonly, type="text", class="form-control", name="start_period_val", id="start_period_val")
-                                span(class="input-group-addon")
-                                    span(class="glyphicon glyphicon-calendar")
-                        .form-group
-                            .col-sm-offset-3.col-sm-8
-                                button.btn.btn.btn-primary(type='submit') Save changes
-                    .tab-pane(id="provider")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Provider Settings
-                        .form-group
-                            label.col-sm-3.control-label(for='provider_selection') User selection allowed
-                            .col-sm-8
-                                input(type='checkbox', name='provider_selection', id='provider_selection', checked='#{account.account_options.booking.options.provider_selection}'=='true')
-                        .form-group
-                            label.col-sm-3.control-label(for='name') Provider preference
-                            .col-sm-8
-                                select(class='selectpicker', name='provider_random')
-                                    each provider in provider_random
-                                        option(value="#{provider.value}", selected=provider.value==account.account_options.booking.options.provider_random) #{provider.name}
-                        .form-group
-                            .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
-                    .tab-pane(id="client")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Client Settings
-                        .form-group
-                        .form-group
-                            .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
-                    .tab-pane(id="billing")
-                        .form-group
-                            .col-sm-offset-2
-                                h3 Billing Settings
-                        .form-group
-                            .col-sm-offset-3.col-sm-4
-                                button.btn.btn.btn-primary(type='submit') Save changes
+    .container
+        .row
+            .col-sm-12
+                .page-header
+                    h2
+                        i.fa.fa-file-text-o
+                        | &nbsp;Provider
+                form.form-horizontal(role='form', id='appliactionForm', method='POST')
+                    input(id="account_id", type="hidden", name="account_id", value="#{account._id}")
+                    .form-group
+                        .col-sm-3
+                            ul(class="nav nav-pills nav-stacked", id="settings_tab")
+                                li(class="active")
+                                    a(href="#account", data-toggle="pill") Account
+                                li
+                                    a(href="#booking", data-toggle="pill") Booking
+                                li
+                                    a(href="#schedule", data-toggle="pill") Schedule
+                                li
+                                    a(href="#provider", data-toggle="pill") Provider
+                                li
+                                    a(href="#client", data-toggle="pill") Client
+                                li
+                                    a(href="#billing", data-toggle="pill") Billing
+                        .col-sm-9
+                            .tab-content
+                                .tab-pane(id="account", class="active")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Account Settings
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Name
+                                        .col-sm-4
+                                            input.form-control(type='text', name='name', id='name', value='#{account.name}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Address
+                                        .col-sm-4
+                                            input.form-control(type='text', name='address', id='address',value='#{account.address}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Address Ext
+                                        .col-sm-4
+                                            input.form-control(type='text', name='address_ext', id='address_ext', value='#{account.address_ext}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Country
+                                        .col-sm-4
+                                            select(class='selectpicker', id="country_code", name="country_code")
+                                                each country in countries
+                                                    option(value="#{country.ioc}", selected=account.country==country.ioc) #{country.name}
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Postal/Zip Code
+                                        .col-sm-4
+                                            input.form-control(type='text', name='postal', id='postal', value='#{account.postal}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Phone
+                                        .col-sm-4
+                                            input.form-control(type='text', name='phone', id='phone', value='#{account.phone}')
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+                                .tab-pane(id="booking")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Booking Settings
+                                    .form-group
+                                        label.col-sm-3.control-label(for='login') Login required
+                                        .col-sm-4
+                                            input(type='checkbox', name='login_required', id='login_required', checked='#{account.account_options.booking.options.login_required}'=='true')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Bookings admin approved
+                                        .col-sm-4
+                                            input(type='checkbox', name='admin_approved', id='admin_approved', checked='#{account.account_options.booking.options.admin_approved}'=='true')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Max bookings per day per user
+                                        .col-sm-4
+                                            input.form-control(type='text', name='max_per_user_day', id='max_per_user_day', value='#{account.account_options.booking.options.max_per_user_day}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Waiver required
+                                        .col-sm-4
+                                            input(type='checkbox', name='waiver_required', id='waiver_required', checked='#{account.account_options.booking.options.waiver_required}'=='true')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Private only
+                                        .col-sm-4
+                                            input(type='checkbox', name='private_only', id='private_only', checked='#{account.account_options.booking.options.private_only}'=='true')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Allow social login
+                                        .col-sm-4
+                                            input(type='checkbox', name='social_login', id='social_login', checked='#{account.account_options.booking.options.social_login}'=='true')
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+                                .tab-pane(id="schedule")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Schedule Settings
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Rotating schedule
+                                        .col-sm-7
+                                            select(class='selectpicker', name='schedule_period')
+                                                each schedule in schedule_period
+                                                    option(value="#{schedule.value}", selected=schedule.value==account.account_options.booking.options.schedule_period) #{schedule.name}
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Rotating week 1 start date
+                                            .col-sm-7
+                                        .dp2(id="start_period", name="start_period", class="input-group date date")
+                                            input(data-format="dd/MM/yyyy", readonly, type="text", class="form-control", name="start_period_val", id="start_period_val")
+                                            span(class="input-group-addon")
+                                                span(class="glyphicon glyphicon-calendar")
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-8
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+                                .tab-pane(id="provider")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Provider Settings
+                                    .form-group
+                                        label.col-sm-3.control-label(for='provider_selection') User selection allowed
+                                        .col-sm-8
+                                            input(type='checkbox', name='provider_selection', id='provider_selection', checked='#{account.account_options.booking.options.provider_selection}'=='true')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Provider preference
+                                        .col-sm-8
+                                            select(class='selectpicker', name='provider_random')
+                                                each provider in provider_random
+                                                    option(value="#{provider.value}", selected=provider.value==account.account_options.booking.options.provider_random) #{provider.name}
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+                                .tab-pane(id="client")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Client Settings
+                                    .form-group
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+                                .tab-pane(id="billing")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Billing Settings
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
 
-            script(src='/js/lib/jquery/jquery.js')
-            script(src='/js/application_settings.js')
-            | <script type='text/javascript'>
-            | $(document).ready(function() {
-            |   resrvo_application_settings.init();
-            | });
-            | </script>
+//- Page-specific stuff
+block scripts
+script(src='/lib/application/application_settings.js')
+    script.
+        $(document).ready(function() {
+            resrvo_application_settings.init();
+        });

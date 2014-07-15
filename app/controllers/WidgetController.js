@@ -10,36 +10,39 @@ var Injct = require('injct'),
 
 
 /**
- * GET /management/widget
- * Widget management page.
- *
- * @param request
- * @param response
- * @param callback
+ * Analytics Controller
  */
-var getWidget = function(req, res) {
 
-    var account_id = req.user.account_id;
-    var accountService = Injct.getInstance('accountService');
+module.exports.controller = function (app) {
 
-    res.render('management/widget', {
-        title: 'Widget Management'
+    /**
+     * GET /management/widget
+     * Widget management page.
+     *
+     * @param request
+     * @param response
+     */
+    app.get('/management/widget', PassportConf.isAuthenticated, function (req, res) {
+
+        var account_id = req.user.account_id;
+        var accountService = Injct.getInstance('accountService');
+
+        res.render('management/widget', {
+            title: 'Widget Management'
+        });
+
+    });
+
+    /**
+     * POST /management/widget
+     * Save widgets.
+     *
+     * @param request
+     * @param response
+     */
+    app.post('/management/widget', PassportConf.isAuthenticated,  function (req, res) {
+
+
     });
 
 };
-
-/**
- * POST /management/widget
- * Save widgets.
- *
- * @param request
- * @param response
- * @param callback
- */
-var postWidget = function(req, res) {
-
-
-};
-
-Heisenberg.get('/management/widget', PassportConf.isAuthenticated, getWidget);
-Heisenberg.post('/management/widget', PassportConf.isAuthenticated, postWidget);

@@ -9,74 +9,77 @@ var Injct = require('injct'),
     Util = require('util'),
     Form = require('../models/Form');
 
-
 /**
- * GET /management/form
- * Form management page.
- *
- * @param request
- * @param response
- * @param callback
+ * Form Controller
  */
-var getForm = function(req, res) {
 
-    var account_id = req.user.account_id;
-    var formService = Injct.getInstance('formService');
+module.exports.controller = function (app) {
 
-    formService.getFormByAccountId(account_id, function(err, form) {
 
-        if (err) {
-            res.send({ result: 'error', error: err });
-            return;
-        }
+    /**
+     * GET /management/form
+     * Form management page.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.get('/management/form', PassportConf.isAuthenticated, function (req, res) {
 
-        var form_fields = (form && form.fields !== undefined ? JSON.stringify(form.fields) : JSON.stringify([]));
+        var account_id = req.user.account_id;
+        var formService = Injct.getInstance('formService');
 
-        res.render('management/form', {
-            title: 'Form Management',
-            form_fields: form_fields
+        formService.getFormByAccountId(account_id, function (err, form) {
+
+            if (err) {
+                res.send({ result: 'error', error: err });
+                return;
+            }
+
+            var form_fields = (form && form.fields !== undefined ? JSON.stringify(form.fields) : JSON.stringify([]));
+
+            res.render('management/form', {
+                title: 'Form Management',
+                form_fields: form_fields
+            });
+
         });
 
+
     });
 
+    /**
+     * POST /management/form
+     * Save form.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.post('/management/form', PassportConf.isAuthenticated, function (req, res, next) {
 
+        var account_id = req.user.account_id;
+        var formService = Injct.getInstance('formService');
 
-};
+        Logger.info(req.body);
 
-/**
- * POST /management/form
- * Save form.
- *
- * @param request
- * @param response
- * @param callback
- */
-var postForm = function(req, res) {
+        var form = new Form({
+            account_id: account_id,
+            fields: req.body.fields
+        });
 
-    var account_id = req.user.account_id;
-    var formService = Injct.getInstance('formService');
+        formService.updateForm(form, function (err, result) {
 
-    Logger.info(req.body);
+            if (err) {
+                req.flash('errors', { msg: 'Error updating form.' });
+                res.redirect('/management/form');
+                return;
+            }
 
-    var form = new Form({
-        account_id: account_id,
-        fields: req.body.fields
-    });
-
-    formService.updateForm(form, function(err, result) {
-
-        if (err) {
-            req.flash('errors', { msg: 'Error updating form.' });
+            req.flash('success', { msg: 'Form updated.' });
             res.redirect('/management/form');
-            return;
-        }
+        });
 
-        req.flash('success', { msg: 'Form updated.' });
-        res.redirect('/management/form');
+
     });
-
-
 };
-
-Heisenberg.get('/management/form', PassportConf.isAuthenticated, getForm);
-Heisenberg.post('/management/form', PassportConf.isAuthenticated, postForm);

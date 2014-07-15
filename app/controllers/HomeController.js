@@ -2,22 +2,29 @@
 
 var Injct = require('injct');
 
+
 /**
- * GET /
- * Home page.
- *
- * @param request
- * @param response
- * @param callback
+ * Home Controller
  */
-var getHome = function(req, res) {
 
-    res.render('home', {
-        title: 'Home'
+module.exports.controller = function (app) {
+
+    /**
+     * GET /
+     * Home page.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.get('/', function (req, res) {
+
+        res.render('home/home', {
+            title: 'Home'
+        });
     });
-};
 
-Heisenberg.get('/home', getHome);
+};
 
 
 

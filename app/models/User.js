@@ -1,39 +1,68 @@
 'use strict';
 
 /**
- * User model
+ * Module Dependencies
  */
 
 var Mongoose = require('mongoose'),
     XDate = require('xdate'),
     SchemaUtil = require('./common/SchemaUtil.js'),
-    Bcrypt = require('bcrypt-nodejs'),
+    Bcrypt = require('Bcrypt-nodejs'),
     Crypto = require('crypto');
+
 
 var Schema = Mongoose.Schema;
 
+/**
+ * Define User Schema
+ */
+
 var UserSchema = new Schema({
-    account_id: { type: String },
-    email: { type: String, unique: true, lowercase: true },
-    password: String,
-    facebook: { type: String, default: '' },
-    twitter: { type: String, default: '' },
-    google: { type: String, default: '' },
-    tokens: Array,
+  account_id: { type: String, index: true },
+  email: { type: String, unique: true, index: true },
+  password: { type: String },
+  type: { type: String, default: 'user' },
+  facebook: { type: String, unique: true, sparse: true },
+  twitter: { type: String, unique: true, sparse: true },
+  google: { type: String, unique: true, sparse: true },
+  tokens: Array,
 
-    profile: {
-        name: { type: String, default: '' },
-        location: { type: String, default: '' },
-        website: { type: String, default: '' },
-        picture: { type: String, default: '' }
-    },
+  profile: {
+    name: { type: String, default: '' },
+    gender: { type: String, default: '' },
+    location: { type: String, default: '' },
+    website: { type: String, default: '' },
+    picture: { type: String, default: '' },
+    phone: {
+      work: { type: String, default: '' },
+      home: { type: String, default: '' },
+      mobile: { type: String, default: '' }
+    }
+  },
 
-    roles: [String],
+  roles: [String],
 
-    resetPasswordToken: String,
-    resetPasswordExpires: Number,
-    created_at: Number,
-    updated_at: Number
+  activity: {
+    date_established: { type: Date, default: Date.now },
+    last_logon: { type: Date, default: Date.now },
+    last_updated: { type: Date }
+  },
+
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
+
+  verified: { type: Boolean, default: true },
+  verifyToken: { type: String },
+
+  enhancedSecurity: {
+    enabled: { type: Boolean, default: false },
+    type: { type: String },  // sms or totp
+    token: { type: String },
+    period: { type: Number },
+    sms: { type: String },
+    smsExpires: { type: Date }
+  }
+
 });
 
 /**
@@ -63,19 +92,27 @@ var User = function (json) {
     this.account_id = json.account_id || '';
     this.email = json.email;
     this.password = json.password;
+    this.type = json.type;
     this.facebook = json.facebook || '';
     this.twitter = json.twitter || '';
     this.google = json.google || '';
     this.tokens = json.tokens || []
 
     this.profile = json.profile || {};
+    this.roles = json.roles || [];
+    this.activity = json.activity || {};
+
     this.resetPasswordToken = json.resetPasswordToken || '';
     this.resetPasswordExpires = json.resetPasswordExpires || -1;
 
+    this.verified = json.verified || false;
+    this.verifyToken = json.verifyToken || '';
+    this.enhancedSecurity = json.enhancedSecurity || {};
+
     var now = new XDate(true).getTime();
 
-    this.created_at = json.created_at || now;
-    this.updated_at = json.updated_at || now;
+  //  this.created_at = json.created_at || now;
+//    this.updated_at = json.updated_at || now;
 };
 
 var model = SchemaUtil.model('User', UserSchema);
@@ -91,54 +128,75 @@ User.model = function () {
 module.exports = User;
 
 
-
-
 /**
- * Hash the password for security.
- * "Pre" is a Mongoose middleware that executes before each user.save() call.
+ * Hash the password and sms token for security.
  */
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
+
   var user = this;
+  var SALT_FACTOR = 5;
 
-  if (!user.isModified('password')) return next();
-
-    Bcrypt.genSalt(5, function(err, salt) {
-    if (err) return next(err);
-
-    Bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      next();
+  if (!user.isModified('password')) {
+    return next();
+  } else {
+    Bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+      if (err) {
+        return next(err);
+      }
+      Bcrypt.hash(user.password, salt, null, function (err, hash) {
+        if (err) {
+          return next(err);
+        }
+        user.password = hash;
+        next();
+      });
     });
-  });
+  }
+
 });
 
 /**
- * Validate user's password.
- * Used by Passport-Local Strategy for password validation.
+ * Check the user's password
  */
 
-User.prototype.comparePassword = function(candidatePassword, cb) {
-    Bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) return cb(err);
+User.prototype.comparePassword = function (candidatePassword, cb) {
+  Bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    if (err) {
+      return cb(err);
+    }
     cb(null, isMatch);
   });
 };
 
 /**
- * Get URL to a user's gravatar.
- * Used in Navbar and Account Management page.
+ * Check user's SMS token
  */
 
-User.prototype.gravatar = function(size) {
-  if (!size) size = 200;
+User.prototype.compareSMS = function (candidateSMS, cb) {
+  Bcrypt.compare(candidateSMS, this.enhancedSecurity.sms, function (err, isMatch) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, isMatch);
+  });
+};
 
-  if (!this.email) {
-    return 'https://gravatar.com/avatar/?s=' + size + '&d=retro';
+/**
+ *  Get a URL to a user's Gravatar email.
+ */
+
+User.prototype.gravatar = function (size, defaults) {
+  if (!size) {
+    size = 200;
   }
-
-  var md5 = Crypto.createHash('md5').update(this.email).digest('hex');
-  return 'https://gravatar.com/avatar/' + md5 + '?s=' + size + '&d=retro';
+  if (!defaults) {
+    defaults = 'retro';
+  }
+  if (!this.email) {
+    return 'https://gravatar.com/avatar/?s=' + size + '&d=' + defaults;
+  }
+  var md5 = Crypto.createHash('md5').update(this.email);
+  return 'https://gravatar.com/avatar/' + md5.digest('hex').toString() + '?s=' + size + '&d=' + defaults;
 };
 

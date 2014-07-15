@@ -1,47 +1,61 @@
-extends ../layout
+extends ../layouts/layout
+
+block head
+  title #{application} &middot; Last.fm
 
 block content
-  .page-header
-    h2
-      i.fa.fa-play-circle-o(style='color: #db1302')
-      | Last.fm API
-  .btn-group.btn-group-justified
-    a.btn.btn-primary(href='https://github.com/jammus/lastfm-node#lastfm-node', target='_blank')
-      i.fa.fa-check-square-o
-      | Last.fm Node Docs
-    a.btn.btn-primary(href='http://www.last.fm/api/account/create', target='_blank')
-      i.fa.fa-laptop
-      | Create API Account
-    a.btn.btn-primary(href='http://www.last.fm/api', target='_blank')
-      i.fa.fa-code-fork
-      | API Endpoints
+  .container
+    .page-header
+      h2
+        i.fa.fa-music
+        | &nbsp;Last.fm API
 
-  h3= artist.name
-  img.thumbnail(src='#{artist.image}')
+    .btn-group.btn-group-justified.hidden-xs
+      a.btn.btn-primary(href='https://github.com/jammus/lastfm-node#lastfm-node', rel='external')
+        i.fa.fa-check-square-o
+        | &nbsp;Last.fm Node Docs
+      a.btn.btn-primary(href='http://www.last.fm/api/account/create', rel='external')
+        i.fa.fa-laptop
+        | &nbsp;Create API Account
+      a.btn.btn-primary(href='http://www.last.fm/api', rel='external')
+        i.fa.fa-code-fork
+        | &nbsp;API Endpoints
 
-  h3 Tags
-  for tag in artist.tags
-    span.label.label-primary
-      i.fa.fa-tag
-      | #{tag.name}
-    |&nbsp;
+    h3.text-primary Artist Information
 
-  h3 Biography
-  p!= artist.bio
-
-  h3 Top Albums
-  for album in artist.topAlbums
-    img(src='#{album}', width=150, height=150)
-    |&nbsp;
-
-  h3 Top Tracks
-  ol
-    for track in artist.topTracks
+    h4= artist.name
+    ul.list-inline
       li
-        a(href='#{track.url}') #{track.name}
-
-  h3 Similar Artists
-  ul.list-unstyled.list-inline
-    for similarArtist in artist.similar
+        small.text-primary
+          i.fa.fa-users
+          | &nbsp;Listeners: #{artist.stats.listeners}
       li
-        a(href='#{similarArtist.url}') #{similarArtist.name}
+        small.text-primary
+          i.fa.fa-headphones
+          | &nbsp;Scrobbles: #{artist.stats.playcount}
+
+    p
+      img.img-rounded.img-responsive(src='#{artist.image}')
+
+    p
+      for tag in artist.tags
+        span.label.label-primary
+          i.fa.fa-tag
+          | &nbsp;#{tag.name}
+        |&nbsp;
+
+    .panel.panel-primary
+      .panel-heading Biography
+      .panel-body
+        != artist.bio
+
+    h4 Top Albums
+    for album in artist.topAlbums
+      img(src='#{album}', width=150, height=150)
+      |&nbsp;
+
+    h4 Similar Artists
+    ul.list-unstyled
+      for similarArtist in artist.similar
+        li
+          a.lead(href='#{similarArtist.url}') #{similarArtist.name}

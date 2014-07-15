@@ -1,403 +1,1139 @@
 'use strict';
 
-var Injct = require('injct'),
-     _ = require('lodash'),
-    Async = require('async'),
-    Crypto = require('crypto'),
-    Nodemailer = require('nodemailer'),
-    Passport = require('passport'),
-    PassportConf = require('../../config/passport'),
-    User = require('../models/User');
+/**
+ * Module Dependencies
+ */
 
+var User          = require('../models/User'),
+    Async         = require('async'),
+    Crypto        = require('crypto'),
+    Config        = require('../../config/config'),
+    Passport      = require('passport'),
+    Nodemailer    = require('nodemailer'),
+    LoginAttempt  = require('../models/LoginAttempt');
 
+/**
+ * User Controller
+ */
+
+module.exports.controller = function (app) {
 
 /**
  * GET /login
- * Login page.
- *
- * @param req
- * @param res
+ * Render login page
  */
-var getLogin = function(req, res) {
-    if (req.user) return res.redirect('/');
+
+  app.get('/login', function (req, res) {
+    // Check if user is already logged in
+    if (req.user) {
+      req.flash('info', { msg: 'You are already logged in!' });
+      return res.redirect('/api');
+    }
+    // Turn off login form if too many attempts
+    var tooManyAttempts = req.session.tooManyAttempts || false;
+    req.session.tooManyAttempts = null;
+    // Render Login form
     res.render('account/login', {
-        title: 'Login'
+      tooManyAttempts: tooManyAttempts,
+      url: req.url
     });
-};
+  });
 
 /**
  * POST /login
- * Sign in using email and password.
- * @param req
- * @param res
+ * Log the user in
  */
-var postLogin = function(req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('password', 'Password cannot be blank').notEmpty();
 
-    var errors = req.validationErrors();
+  app.post('/login', function (req, res, next) {
 
-    if (errors) {
-        req.flash('errors', errors);
+    // Begin a workflow
+    var workflow = new (require('events').EventEmitter)();
+
+    /**
+     * Step 1: Validate the data
+     */
+
+    workflow.on('validate', function () {
+
+      // Validate the form fields
+      req.assert('email', 'Your email cannot be empty.').notEmpty();
+      req.assert('email', 'Your email is not valid').isEmail();
+      req.assert('password', 'Your password cannot be blank').notEmpty();
+      req.assert('password', 'Your password must be at least 4 characters long.').len(4);
+
+      var errors = req.validationErrors();
+
+      if (errors) {
+        req.flash('error', errors);
         return res.redirect('/login');
-    }
+      }
 
-    Passport.authenticate('local', function(err, user, info) {
-        if (err) return next(err);
-        if (!user) {
-            req.flash('errors', { msg: info.message });
-            return res.redirect('/login');
-        }
-        req.logIn(user, function(err) {
-            if (err) return next(err);
-            req.flash('success', { msg: 'Success! You are logged in.' });
-            res.redirect(req.session.returnTo || '/');
+      // next step
+      workflow.emit('abuseFilter');
+    });
+
+    /**
+     * Step 2: Prevent brute force login hacking
+     */
+
+    workflow.on('abuseFilter', function () {
+
+      var getIpCount = function (done) {
+        var conditions = { ip: req.ip };
+        LoginAttempt.count(conditions, function (err, count) {
+          if (err) {
+            return done(err);
+          }
+          done(null, count);
         });
-    })(req, res, next);
-};
+      };
 
+      var getIpUserCount = function (done) {
+        var conditions = { ip: req.ip, user: req.body.email.toLowerCase() };
+        LoginAttempt.count(conditions, function (err, count) {
+          if (err) {
+            return done(err);
+          }
+          done(null, count);
+        });
+      };
+
+      var AsyncFinally = function (err, results) {
+        if (err) {
+          return workflow.emit('exception', err);
+        }
+
+        if (results.ip >= Config.loginAttempts.forIp || results.ipUser >= Config.loginAttempts.forUser) {
+          req.flash('error', { msg: 'You\'ve reached the maximum number of login attempts. Please try again later or reset your password.' });
+          req.session.tooManyAttempts = true;
+          return res.redirect('/login');
+        }
+        else {
+          workflow.emit('authenticate');
+        }
+
+      };
+
+      Async.parallel({ ip: getIpCount, ipUser: getIpUserCount }, AsyncFinally);
+    });
+
+    /**
+     * Step 3: Authenticate the user
+     */
+
+    workflow.on('authenticate', function () {
+
+      // Authenticate the user
+      Passport.authenticate('local', function (err, user, info) {
+        if (err) {
+          req.flash('error', { msg: err.message });
+          return res.redirect('back');
+        }
+
+        if (!user) {
+
+          // Update abuse count
+          var fieldsToSet = { ip: req.ip, user: req.body.email };
+          LoginAttempt.create(fieldsToSet, function (err, doc) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+              return res.redirect('back');
+            } else {
+              // User Not Found (Return)
+              req.flash('error', { msg: info.message });
+              return res.redirect('/login');
+            }
+          });
+
+        } else {
+
+          // update the user's record with login timestamp
+          user.activity.last_logon = Date.now();
+          user.save(function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+              return res.redirect('back');
+            }
+          });
+
+          // Log user in
+          req.logIn(user, function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+              return res.redirect('back');
+            }
+
+            // Send user on their merry way
+            if (req.session.attemptedURL) {
+              var redirectURL = req.session.attemptedURL;
+              delete req.session.attemptedURL;
+              res.redirect(redirectURL);
+            } else {
+              res.redirect('/');
+            }
+
+          });
+
+        }
+
+      })(req, res, next);
+
+    });
+
+    /**
+     * Initiate the workflow
+     */
+
+    workflow.emit('validate');
+
+  });
 
 /**
  * GET /logout
- * Log out.
+ * Log the user out
  */
-var logout = function(req, res) {
+
+  app.get('/logout', function (req, res) {
+    // Augment Logout to handle enhanced security
+    delete req.session.passport.secondFactor;
     req.logout();
     res.redirect('/');
-};
+  });
 
+  /**
+   * GET /verify/:id/:token
+   * Verify the user after signup
+   */
 
-/**
- * GET /signup
- * Signup page.
- */
-var getSignup = function(req, res) {
-    if (req.user) return res.redirect('/');
-    res.render('account/signup', {
-        title: 'Create Account'
-    });
-};
+  app.get('/verify/:id/:token', function (req, res) {
 
-/**
- * POST /signup
- * Create a new local account.
- * @param email
- * @param password
- */
-var postSignup = function(req, res, next) {
-    var userService = Injct.getInstance('userService');
+    // Create a workflow
+    var workflow = new (require('events').EventEmitter)();
 
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('password', 'Password must be at least 4 characters long').len(4);
-    req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
+    /**
+     * Step 1: Validate the user and token
+     */
 
-    var errors = req.validationErrors();
+    workflow.on('validate', function () {
 
-    if (errors) {
-        req.flash('errors', errors);
-        return res.redirect('/signup');
-    }
-
-    var user = new User({
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    User.model().findOne({ email: req.body.email }, function(err, existingUser) {
-        if (existingUser) {
-            req.flash('errors', { msg: 'Account with that email address already exists.' });
-            return res.redirect('/signup');
+      // Get the user using their ID and token
+      User.findOne({ _id: req.params.id, verifyToken: req.params.token }, function (err, user) {
+        if (err) {
+          req.flash('error', { msg: err.message });
+          req.flash('warning', { msg: 'Your account verification is invalid or has expired.' });
+          return res.redirect('/');
         }
-        userService.updateUser(user, function(err, _user) {
-            if (err) return next(err);
-            req.logIn(_user, function(err) {
-                if (err) return next(err);
-                res.redirect('/');
-            });
-        });
-    });
-};
 
-/**
- * GET /account
- * Profile page.
- */
-var getAccount = function(req, res) {
-    res.render('account/profile', {
-        title: 'Account Management'
-    });
-};
+        if (!user) {
+          req.flash('warning', { msg: 'Your password reset request is invalid or has expired.' });
+          return res.redirect('/');
+        } else {
 
-/**
- * POST /account/profile
- * Update profile information.
- */
-var postUpdateProfile = function(req, res, next) {
+          // Let's verify the user!
+          user.verified = true;
+          user.verifyToken = undefined;
+          user.activity.last_logon = Date.now();
 
-    var userService = Injct.getInstance('userService');
-
-    userService.getUserById(req.user._id, function(err, user) {
-        if (err) return next(err);
-        user.email = req.body.email || '';
-        user.profile.name = req.body.name || '';
-        user.profile.location = req.body.location || '';
-        user.profile.website = req.body.website || '';
-
-        userService.updateUser(user, function(err, result) {
-            if (err) return next(err);
-            req.flash('success', { msg: 'Profile information updated.' });
-            res.redirect('/account');
-        });
-    });
-};
-
-/**
- * POST /account/password
- * Update current password.
- * @param password
- */
-var postUpdatePassword = function(req, res, next) {
-    req.assert('password', 'Password must be at least 4 characters long').len(4);
-    req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
-
-    var errors = req.validationErrors();
-
-    if (errors) {
-        req.flash('errors', errors);
-        return res.redirect('/account');
-    }
-
-    User.findById(req.user.id, function(err, user) {
-        if (err) return next(err);
-
-        user.password = req.body.password;
-
-        user.save(function(err) {
-            if (err) return next(err);
-            req.flash('success', { msg: 'Password has been changed.' });
-            res.redirect('/account');
-        });
-    });
-};
-
-/**
- * POST /account/delete
- * Delete user account.
- */
-var postDeleteAccount = function(req, res, next) {
-    User.remove({ _id: req.user.id }, function(err) {
-        if (err) return next(err);
-        req.logout();
-        req.flash('info', { msg: 'Your account has been deleted.' });
-        res.redirect('/');
-    });
-};
-
-/**
- * GET /account/unlink/:provider
- * Unlink OAuth provider.
- * @param provider
- */
-var getOauthUnlink = function(req, res, next) {
-    var provider = req.params.provider;
-    User.findById(req.user.id, function(err, user) {
-        if (err) return next(err);
-
-        user[provider] = undefined;
-        user.tokens = _.reject(user.tokens, function(token) { return token.kind === provider; });
-
-        user.save(function(err) {
-            if (err) return next(err);
-            req.flash('info', { msg: provider + ' account has been unlinked.' });
-            res.redirect('/account');
-        });
-    });
-};
-
-/**
- * GET /reset/:token
- * Reset Password page.
- */
-var getReset = function(req, res) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/');
-    }
-    User
-        .findOne({ resetPasswordToken: req.params.token })
-        .where('resetPasswordExpires').gt(Date.now())
-        .exec(function(err, user) {
-            if (!user) {
-                req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
-                return res.redirect('/forgot');
+          // update the user record
+          user.model().save(function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+              return res.redirect('back');
             }
-            res.render('account/reset', {
-                title: 'Password Reset'
-            });
-        });
-};
 
-/**
- * POST /reset/:token
- * Process the reset password request.
- * @param token
- */
-var postReset = function(req, res, next) {
-    req.assert('password', 'Password must be at least 4 characters long.').len(4);
-    req.assert('confirm', 'Passwords must match.').equals(req.body.password);
+            // next step
+            workflow.emit('sendWelcomeEmail', user);
+          });
+        }
+      });
+    });
 
-    var errors = req.validationErrors();
+    /**
+     * Step 2: Send them a welcome email
+     */
 
-    if (errors) {
-        req.flash('errors', errors);
+    workflow.on('sendWelcomeEmail', function (user) {
+
+      // Create a reusable Nodemailer transport method (opens a pool of SMTP connections)
+      var smtpTransport = Nodemailer.createTransport('SMTP',{
+        service: 'Gmail',
+        auth: {
+          user: Config.gmail.user,
+          pass: Config.gmail.password
+        }
+      });
+
+      // Render HTML to send using .jade mail template (just like rendering a page)
+      res.render('mail/welcome', {
+        name:          user.profile.name,
+        mailtoName:    Config.smtp.name,
+        mailtoAddress: Config.smtp.address,
+        blogLink:      req.protocol + '://' + req.headers.host, // + '/blog',
+        forumLink:     req.protocol + '://' + req.headers.host  // + '/forum'
+      }, function (err, html) {
+        if (err) {
+          return (err, null);
+        }
+        else {
+
+          // Now create email text (multiline string as array FTW)
+          var text = [
+            'Hello ' + user.profile.name + '!',
+            'We would like to welcome you as our newest member!',
+            'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
+            'If you want to get the latest scoop check out our <a href="' +
+            req.protocol + '://' + req.headers.host + '/blog' +
+            '">blog</a> and our <a href="' +
+            req.protocol + '://' + req.headers.host + '/forums">forums</a>.',
+            '  - The ' + Config.smtp.name + ' team'
+          ].join('\n\n');
+
+          // Create email
+          var mailOptions = {
+            to:       user.profile.name + ' <' + user.email + '>',
+            from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
+            subject:  'Welcome to ' + app.locals.application + '!',
+            text:     text,
+            html:     html
+          };
+
+          // send email via Nodemailer
+          smtpTransport.sendMail(mailOptions, function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+            }
+            // shut down the connection pool, no more messages
+            smtpTransport.close();
+          });
+
+        }
+      });
+
+      // next step
+      workflow.emit('logUserIn', user);
+    });
+
+    /**
+     * Step 3: Log them in
+     */
+
+    workflow.on('logUserIn', function (user) {
+
+      // log the user in
+      req.logIn(user, function (err) {
+        if (err) {
+          req.flash('error', { msg: err.message });
+          return res.redirect('back');
+        }
+        req.flash('info', { msg: 'Your account verification is completed!' });
+        res.redirect('/api');
+      });
+
+      // WORKFLOW COMPLETED
+    });
+
+    /**
+     * Initiate the workflow
+     */
+
+    workflow.emit('validate');
+
+  });
+
+  /**
+   * GET /signup
+   * Render signup page
+   */
+
+  app.get('/signup', function (req, res) {
+    if (req.user) {
+      return res.redirect('/');
+    }
+    res.render('account/signup', {
+      url: req.url
+    });
+  });
+
+  /**
+   * POST /signup
+   * Process a *regular* signup
+   */
+
+  app.post('/signup', function (req, res, next) {
+
+    // Begin a workflow
+    var workflow = new (require('events').EventEmitter)();
+
+    /**
+     * Step 1: Validate the form fields
+     */
+
+    workflow.on('validate', function () {
+
+      // Check for form errors
+      req.assert('name', 'Your name cannot be empty.').notEmpty();
+      req.assert('email', 'Your email cannot be empty.').notEmpty();
+      req.assert('email', 'Your email is not valid.').isEmail();
+      req.assert('password', 'Your password cannot be empty.').notEmpty();
+      req.assert('confirmPassword', 'Your password confirmation cannot be empty.').notEmpty();
+      req.assert('password', 'Your password must be at least 4 characters long.').len(4);
+      req.assert('confirmPassword', 'Your passwords do not match.').equals(req.body.password);
+
+      var errors = req.validationErrors();
+
+      if (errors) {
+        req.flash('error', errors);
         return res.redirect('back');
-    }
+      }
 
-    Async.waterfall([
-        function(done) {
-            User
-                .findOne({ resetPasswordToken: req.params.token })
-                .where('resetPasswordExpires').gt(Date.now())
-                .exec(function(err, user) {
-                    if (!user) {
-                        req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
-                        return res.redirect('back');
-                    }
+      // next step
+      workflow.emit('verification');
+    });
 
-                    user.password = req.body.password;
-                    user.resetPasswordToken = undefined;
-                    user.resetPasswordExpires = undefined;
+    /**
+     * Step 2: Account verification step
+     */
 
-                    user.save(function(err) {
-                        if (err) return next(err);
-                        req.logIn(user, function(err) {
-                            done(err, user);
-                        });
-                    });
-                });
-        },
-        function(user, done) {
-            var smtpTransport = Nodemailer.createTransport('SMTP', {
-                service: 'SendGrid',
-                auth: {
-                    user: secrets.sendgrid.user,
-                    pass: secrets.sendgrid.password
-                }
-            });
-            var mailOptions = {
-                to: user.email,
-                from: 'hackathon@starter.com',
-                subject: 'Your Hackathon Starter password has been changed',
-                text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function(err) {
-                req.flash('success', { msg: 'Success! Your password has been changed.' });
-                done(err);
-            });
+    workflow.on('verification', function () {
+
+      var verified;
+      var verifyToken;
+
+      if (Config.verificationRequired) {
+        verified = false;
+        // generate verification token
+        Crypto.randomBytes(25, function (err, buf) {
+          verifyToken = buf.toString('hex');
+          // next step
+          workflow.emit('createUser', verified, verifyToken);
+        });
+      } else {
+        verified = true;
+        verifyToken = null;
+        // next step
+        workflow.emit('createUser', verified, verifyToken);
+      }
+
+    });
+
+    /**
+     * Step 3: Create a new account
+     */
+
+    workflow.on('createUser', function (verified, verifyToken) {
+
+      // create user
+      var user = new User({
+        'profile.name': req.body.name.trim(),
+        email:          req.body.email.toLowerCase(),
+        password:       req.body.password,
+        verifyToken:    verifyToken,
+        verified:       verified
+      });
+
+      // save user
+      user.model().save(function (err) {
+        if (err) {
+          if (err.code === 11000) {
+            req.flash('error', { msg: 'An account with that email address already exists!' });
+            req.flash('info', { msg: 'You should sign in with that account.' });
+          }
+          return res.redirect('back');
+        } else {
+          if (Config.verificationRequired) {
+            // next step (4a)
+            workflow.emit('sendValidateEmail', user, verifyToken);
+          } else {
+            // next step (4b)
+            workflow.emit('sendWelcomeEmail', user);
+          }
         }
-    ], function(err) {
-        if (err) return next(err);
-        res.redirect('/');
+      });
+
     });
-};
 
-/**
- * GET /forgot
- * Forgot Password page.
- */
-var getForgot = function(req, res) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/');
-    }
-    res.render('account/forgot', {
-        title: 'Forgot Password'
-    });
-};
+    /**
+     * Step 4a: Send them a validate email
+     */
 
-/**
- * POST /forgot
- * Create a random token, then the send user an email with a reset link.
- * @param email
- */
-var postForgot = function(req, res, next) {
-    req.assert('email', 'Please enter a valid email address.').isEmail();
+    workflow.on('sendValidateEmail', function (user, verifyToken) {
 
-    var errors = req.validationErrors();
-
-    if (errors) {
-        req.flash('errors', errors);
-        return res.redirect('/forgot');
-    }
-
-    Async.waterfall([
-        function(done) {
-            Crypto.randomBytes(16, function(err, buf) {
-                var token = buf.toString('hex');
-                done(err, token);
-            });
-        },
-        function(token, done) {
-            User.findOne({ email: req.body.email.toLowerCase() }, function(err, user) {
-                if (!user) {
-                    req.flash('errors', { msg: 'No account with that email address exists.' });
-                    return res.redirect('/forgot');
-                }
-
-                user.resetPasswordToken = token;
-                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-                user.save(function(err) {
-                    done(err, token, user);
-                });
-            });
-        },
-        function(token, user, done) {
-            var smtpTransport = Nodemailer.createTransport('SMTP', {
-                service: 'SendGrid',
-                auth: {
-                    user: secrets.sendgrid.user,
-                    pass: secrets.sendgrid.password
-                }
-            });
-            var mailOptions = {
-                to: user.email,
-                from: 'hackathon@starter.com',
-                subject: 'Reset your password on Hackathon Starter',
-                text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function(err) {
-                req.flash('info', { msg: 'An e-mail has been sent to ' + user.email + ' with further instructions.' });
-                done(err, 'done');
-            });
+      // Create a reusable Nodemailer transport method (opens a pool of SMTP connections)
+      var smtpTransport = Nodemailer.createTransport('SMTP',{
+        service: 'Gmail',
+        auth: {
+          user: Config.gmail.user,
+          pass: Config.gmail.password
         }
-    ], function(err) {
-        if (err) return next(err);
-        res.redirect('/forgot');
+      });
+
+      // Render HTML to send using .jade mail template (just like rendering a page)
+      res.render('mail/accountVerification', {
+        name:          user.profile.name,
+        mailtoName:    Config.smtp.name,
+        validateLink:  req.protocol + '://' + req.headers.host + '/verify/' + user.id + '/' + verifyToken
+      }, function (err, html) {
+        if (err) {
+          return (err, null);
+        }
+        else {
+
+          // Now create email text (multiline string as array FTW)
+          var text = [
+            'Hello ' + user.profile.name + '!',
+            'Welcome to ' + app.locals.application + '!  Here is a special link to activate your new account:',
+            req.protocol + '://' + req.headers.host + '/verify/' + user.id + '/' + user.verifyToken,
+            '  - The ' + Config.smtp.name + ' team'
+          ].join('\n\n');
+
+          // Create email
+          var mailOptions = {
+            to:       user.profile.name + ' <' + user.email + '>',
+            from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
+            subject:  'Activate your new ' + app.locals.application + ' account',
+            text:     text,
+            html:     html
+          };
+
+          // send email via Nodemailer
+          smtpTransport.sendMail(mailOptions, function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+            }
+            // shut down the connection pool, no more messages
+            smtpTransport.close();
+          });
+
+        }
+      });
+
+      req.flash('info', { msg: 'Please check your email to verify your account. Thanks for signing up!' });
+      res.redirect('/signup');
+
+      // WORKFLOW COMPLETED
+
     });
+
+    /**
+     * Step 4b: Send them a welcome email
+     */
+
+    workflow.on('sendWelcomeEmail', function (user) {
+
+      // Create a reusable Nodemailer transport method (opens a pool of SMTP connections)
+      var smtpTransport = Nodemailer.createTransport('SMTP',{
+        service: 'Gmail',
+        auth: {
+          user: Config.gmail.user,
+          pass: Config.gmail.password
+        }
+      });
+
+      // Render HTML to send using .jade mail template (just like rendering a page)
+      res.render('mail/welcome', {
+        name:          user.profile.name,
+        mailtoName:    Config.smtp.name,
+        mailtoAddress: Config.smtp.address,
+        blogLink:      req.protocol + '://' + req.headers.host, // + '/blog',
+        forumLink:     req.protocol + '://' + req.headers.host  // + '/forum'
+      }, function (err, html) {
+        if (err) {
+          return (err, null);
+        }
+        else {
+
+          // Now create email text (multiline string as array FTW)
+          var text = [
+            'Hello ' + user.profile.name + '!',
+            'We would like to welcome you as our newest member!',
+            'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
+            'If you want to get the latest scoop check out our <a href="' +
+            req.protocol + '://' + req.headers.host + '/blog' +
+            '">blog</a> and our <a href="' +
+            req.protocol + '://' + req.headers.host + '/forums">forums</a>.',
+            '  - The ' + Config.smtp.name + ' team'
+          ].join('\n\n');
+
+          // Create email
+          var mailOptions = {
+            to:       user.profile.name + ' <' + user.email + '>',
+            from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
+            subject:  'Welcome to ' + app.locals.application + '!',
+            text:     text,
+            html:     html
+          };
+
+          // send email via Nodemailer
+          smtpTransport.sendMail(mailOptions, function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+            }
+            // shut down the connection pool, no more messages
+            smtpTransport.close();
+          });
+
+        }
+      });
+
+      // next step
+      workflow.emit('logUserIn', user);
+    });
+
+    /**
+     * Step 5: Log them in
+     */
+
+    workflow.on('logUserIn', function (user) {
+
+      // log the user in
+      req.logIn(user, function (err) {
+        if (err) {
+          req.flash('error', { msg: err.message });
+          return res.redirect('back');
+        }
+        // send the right welcome message
+        if (Config.twoFactor) {
+          req.flash('warning', { msg: 'Welcome! We recommend turning on enhanced security in account settings.' });
+          res.redirect('/api');
+        } else {
+          req.flash('info', { msg: 'Thanks for signing up! You rock!' });
+          res.redirect('/api');
+        }
+
+      });
+
+      // WORKFLOW COMPLETED
+
+    });
+
+    /**
+     * Initiate the workflow
+     */
+
+    workflow.emit('validate');
+
+  });
+
+
+  /**
+   * GET /signupsocial
+   * Confirm social email address
+   */
+
+  app.get('/signupsocial', function (req, res) {
+    res.render('account/signupsocial', {
+      url: req.url,
+      email: ''
+    });
+  });
+
+  /**
+   * POST /signupsocial
+   * Process a *Social* signup & confirm email address
+   */
+
+  app.post('/signupsocial', function (req, res, next) {
+
+    // Begin a workflow
+    var workflow = new (require('events').EventEmitter)();
+
+    /**
+     * Step 1: Validate the form fields
+     */
+
+    workflow.on('validate', function () {
+
+      // Check for form errors
+      req.assert('email', 'Your email cannot be empty.').notEmpty();
+      req.assert('email', 'Your email is not valid.').isEmail();
+
+      var errors = req.validationErrors();
+
+      if (errors) {
+        req.flash('error', errors);
+        return res.redirect('/signupsocial');
+      }
+
+      // next step
+      workflow.emit('duplicateEmailCheck');
+    });
+
+    /**
+     * Step 2: Make sure the email address is unique
+     */
+
+    workflow.on('duplicateEmailCheck', function () {
+
+      // Make sure we have a unique email address!
+      User.findOne({ email: req.body.email.toLowerCase() }, function (err, user) {
+        if (err) {
+          req.flash('error', { msg: err.msg });
+          return res.redirect('/signupsocial');
+        }
+        if (user) {
+          req.flash('error', { msg: 'Sorry that email address has already been used!' });
+          req.flash('info', { msg: 'You can sign in with that account and link this provider, or you can create a new account by entering a different email address.' });
+          return res.redirect('/signupsocial');
+        } else {
+          // next step
+          workflow.emit('createUser');
+        }
+      });
+
+    });
+
+    /**
+     * Step 4: Create a new account
+     */
+
+    workflow.on('createUser', function () {
+
+      var newUser = req.session.socialProfile;
+      var user = new User();
+
+      user.verified         = true;  // social users don't require verification
+      user.email            = req.body.email.toLowerCase();
+      user.profile.name     = newUser.profile.name;
+      user.profile.gender   = newUser.profile.gender;
+      user.profile.location = newUser.profile.location;
+      user.profile.website  = newUser.profile.website;
+      user.profile.picture  = newUser.profile.picture;
+
+      if (newUser.source === 'twitter') {
+        user.twitter = newUser.id;
+        user.tokens.push({ kind: 'twitter', token: newUser.token, tokenSecret: newUser.tokenSecret });
+
+      } else if (newUser.source === 'facebook') {
+        user.facebook = newUser.id;
+        user.tokens.push({ kind: 'facebook', accessToken: newUser.accessToken, refreshToken: newUser.refreshToken });
+
+      } else if (newUser.source === 'github') {
+        user.github = newUser.id;
+        user.tokens.push({ kind: 'github', accessToken: newUser.accessToken, refreshToken: newUser.refreshToken });
+
+      } else if (newUser.source === 'google') {
+        user.google = newUser.id;
+        user.tokens.push({ kind: 'google', accessToken: newUser.accessToken, refreshToken: newUser.refreshToken });
+      }
+
+      // save user
+      user.model().save(function (err) {
+        if (err) {
+          if (err.code === 11000) {
+            req.flash('error', { msg: 'An account with that email already exists!' });
+          }
+          return res.redirect('/signupsocial');
+        } else {
+          // next step
+          workflow.emit('sendWelcomeEmail', user);
+        }
+      });
+
+    });
+
+    /**
+     * Step 5: Send them a welcome email
+     */
+
+    workflow.on('sendWelcomeEmail', function (user) {
+
+      // Create a reusable Nodemailer transport method (opens a pool of SMTP connections)
+      var smtpTransport = Nodemailer.createTransport('SMTP',{
+        service: 'Gmail',
+        auth: {
+          user: Config.gmail.user,
+          pass: Config.gmail.password
+        }
+      });
+
+      // Render HTML to send using .jade mail template (just like rendering a page)
+      res.render('mail/welcome', {
+        name:          user.profile.name,
+        mailtoName:    Config.smtp.name,
+        mailtoAddress: Config.smtp.address,
+        blogLink:      req.protocol + '://' + req.headers.host, // + '/blog',
+        forumLink:     req.protocol + '://' + req.headers.host  // + '/forum'
+      }, function (err, html) {
+        if (err) {
+          return (err, null);
+        }
+        else {
+
+          // Now create email text (multiline string as array FTW)
+          var text = [
+            'Hello ' + user.profile.name + '!',
+            'We would like to welcome you as our newest member!',
+            'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
+            'If you want to get the latest scoop check out our <a href="' +
+            req.protocol + '://' + req.headers.host + '/blog' +
+            '">blog</a> and our <a href="' +
+            req.protocol + '://' + req.headers.host + '/forums">forums</a>.',
+            '  - The ' + Config.smtp.name + ' team'
+          ].join('\n\n');
+
+          // Create email
+          var mailOptions = {
+            to:       user.profile.name + ' <' + user.email + '>',
+            from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
+            subject:  'Welcome to ' + app.locals.application + '!',
+            text:     text,
+            html:     html
+          };
+
+          // send email via Nodemailer
+          smtpTransport.sendMail(mailOptions, function (err) {
+            if (err) {
+              req.flash('error', { msg: err.message });
+            }
+            // shut down the connection pool, no more messages
+            smtpTransport.close();
+          });
+
+        }
+      });
+
+      // next step
+      workflow.emit('logUserIn', user);
+    });
+
+    /**
+     * Step 6: Log them in
+     */
+
+    workflow.on('logUserIn', function (user) {
+
+      // log the user in
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+        req.flash('info', { msg: 'Thanks for signing up! You rock!' });
+        res.redirect('/api');
+      });
+
+    });
+
+    /**
+     * Initiate the workflow
+     */
+
+    workflow.emit('validate');
+
+  });
+
+  /**
+   * Facebook Authentication
+   */
+
+  app.get('/auth/facebook',
+    Passport.authenticate('facebook', {
+      callbackURL: '/auth/facebook/callback'
+    })
+  );
+
+  app.get('/auth/facebook/callback', function (req, res, next) {
+    Passport.authenticate('facebook', {
+      callbackURL: '/auth/facebook/callback',
+      failureRedirect: '/login'
+    }, function (err, user, info) {
+
+      // Check for data
+      if (!info || !info.profile) {
+        req.flash('error', { msg: 'We have no data. Something went wrong!' });
+        return res.redirect('/login');
+      }
+
+      // Do we already have a user with this Facebook ID?
+      // If so, then it's just a login - timestamp it.
+      User.findOne({ facebook: info.profile._json.id }, function (err, justLogin) {
+        if (err) {
+          return next(err);
+        }
+        if (justLogin) {
+          // Update the user's record with login timestamp
+          justLogin.activity.last_logon = Date.now();
+          justLogin.save(function (err) {
+            if (err) {
+              return next(err);
+            }
+            // Log the user in
+            req.login(justLogin, function (err) {
+              if (err) {
+                return next(err);
+              }
+
+              // Send user on their merry way
+              if (req.session.attemptedURL) {
+                var redirectURL = req.session.attemptedURL;
+                delete req.session.attemptedURL;
+                return res.redirect(redirectURL);
+              } else {
+                return res.redirect('/api');
+              }
+
+            });
+          });
+        } else {
+          // Brand new Facebook user!
+          // Save their profile data into the session
+          var newSocialUser               = {};
+
+          newSocialUser.source            = 'facebook';
+          newSocialUser.id                = info.profile._json.id;
+          newSocialUser.accessToken       = info.accessToken;
+          newSocialUser.refreshToken      = info.refreshToken;
+          newSocialUser.email             = info.profile._json.email;
+
+          newSocialUser.profile           = {};
+
+          newSocialUser.profile.name      = info.profile._json.name;
+          newSocialUser.profile.gender    = info.profile._json.gender;
+          newSocialUser.profile.location  = info.profile._json.location.name;
+          newSocialUser.profile.website   = info.profile._json.link;
+          newSocialUser.profile.picture   = 'https://graph.facebook.com/' + info.profile.id + '/picture?type=large';
+
+          req.session.socialProfile = newSocialUser;
+          res.render('account/signupsocial', { email: newSocialUser.email });
+        }
+      });
+
+    })(req, res, next);
+  });
+
+  /**
+   * Github Authentication
+   */
+
+  app.get('/auth/github',
+    Passport.authenticate('github', {
+      callbackURL: '/auth/github/callback'
+    })
+  );
+
+  app.get('/auth/github/callback', function (req, res, next) {
+    Passport.authenticate('github', {
+      callbackURL: '/auth/github/callback',
+      failureRedirect: '/login'
+    }, function (err, user, info) {
+      if (!info || !info.profile) {
+        req.flash('error', { msg: 'We have no data. Something went wrong!' });
+        return res.redirect('/login');
+      }
+
+      // Do we already have a user with this GitHub ID?
+      // If so, then it's just a login - timestamp it.
+      User.findOne({ github: info.profile._json.id }, function (err, justLogin) {
+        if (err) {
+          return next(err);
+        }
+        if (justLogin) {
+          // Update the user's record with login timestamp
+          justLogin.activity.last_logon = Date.now();
+          justLogin.save(function (err) {
+            if (err) {
+              return next(err);
+            }
+            // Log the user in
+            req.login(justLogin, function (err) {
+              if (err) {
+                return next(err);
+              }
+
+              // Send user on their merry way
+              if (req.session.attemptedURL) {
+                var redirectURL = req.session.attemptedURL;
+                delete req.session.attemptedURL;
+                return res.redirect(redirectURL);
+              } else {
+                return res.redirect('/api');
+              }
+
+            });
+          });
+        } else {
+          // Brand new GitHub user!
+          // Save their profile data into the session
+          var newSocialUser               = {};
+
+          newSocialUser.source            = 'github';
+          newSocialUser.id                = info.profile._json.id;
+          newSocialUser.accessToken       = info.accessToken;
+          newSocialUser.refreshToken      = info.refreshToken;
+          newSocialUser.email             = info.profile._json.email;
+
+          newSocialUser.profile           = {};
+
+          newSocialUser.profile.name      = info.profile._json.name;
+          newSocialUser.profile.gender    = ''; // No gender from Github
+          newSocialUser.profile.location  = info.profile._json.location;
+          newSocialUser.profile.website   = info.profile._json.html_url;
+          newSocialUser.profile.picture   = info.profile._json.avatar_url;
+
+          req.session.socialProfile = newSocialUser;
+          res.render('account/signupsocial', { email: newSocialUser.email });
+        }
+      });
+
+    })(req, res, next);
+  });
+
+  /**
+   * Google Authentication
+   */
+
+  app.get('/auth/google',
+    Passport.authenticate('google', {
+      callbackURL: '/auth/google/callback'
+    })
+  );
+
+  app.get('/auth/google/callback', function (req, res, next) {
+    Passport.authenticate('google', {
+      callbackURL: '/auth/google/callback',
+      failureRedirect: '/login'
+    }, function (err, user, info) {
+      if (!info || !info.profile) {
+        req.flash('error', { msg: 'We have no data. Something went wrong!' });
+        return res.redirect('/login');
+      }
+
+      // Do we already have a user with this Google ID?
+      // If so, then it's just a login - timestamp it.
+      User.findOne({ google: info.profile._json.id }, function (err, justLogin) {
+        if (err) {
+          return next(err);
+        }
+        if (justLogin) {
+          // Update the user's record with login timestamp
+          justLogin.activity.last_logon = Date.now();
+          justLogin.save(function (err) {
+            if (err) {
+              return next(err);
+            }
+            // Log the user in
+            req.login(justLogin, function (err) {
+              if (err) {
+                return next(err);
+              }
+
+              // Send user on their merry way
+              if (req.session.attemptedURL) {
+                var redirectURL = req.session.attemptedURL;
+                delete req.session.attemptedURL;
+                return res.redirect(redirectURL);
+              } else {
+                return res.redirect('/api');
+              }
+
+            });
+          });
+        } else {
+          // Brand new Google user!
+          // Save their profile data into the session
+          var newSocialUser               = {};
+
+          newSocialUser.source            = 'google';
+          newSocialUser.id                = info.profile.id;
+          newSocialUser.accessToken       = info.accessToken;
+          newSocialUser.refreshToken      = info.refreshToken;
+          newSocialUser.email             = info.profile._json.email;
+
+          newSocialUser.profile           = {};
+
+          newSocialUser.profile.name      = info.profile._json.name;
+          newSocialUser.profile.gender    = info.profile._json.gender;
+          newSocialUser.profile.location  = ''; // No location from Google
+          newSocialUser.profile.website   = info.profile._json.link;
+          newSocialUser.profile.picture   = info.profile._json.picture;
+
+          req.session.socialProfile = newSocialUser;
+          res.render('account/signupsocial', { email: newSocialUser.email });
+        }
+      });
+
+    })(req, res, next);
+  });
+
+  /**
+   * Twitter Authentication
+   */
+
+  app.get('/auth/twitter',
+    Passport.authenticate('twitter', {
+      callbackURL: '/auth/twitter/callback'
+    })
+  );
+
+  app.get('/auth/twitter/callback', function (req, res, next) {
+    Passport.authenticate('twitter', {
+      callbackURL: '/auth/twitter/callback',
+      failureRedirect: '/login'
+    }, function (err, user, info) {
+      if (!info || !info.profile) {
+        req.flash('error', { msg: 'We have no data. Something went wrong!' });
+        return res.redirect('/login');
+      }
+
+      // Do we already have a user with this Twitter ID?
+      // If so, then it's just a login - timestamp it.
+      User.findOne({ twitter: info.profile._json.id }, function (err, justLogin) {
+        if (err) {
+          return next(err);
+        }
+        if (justLogin) {
+          // Update the user's record with login timestamp
+          justLogin.activity.last_logon = Date.now();
+          justLogin.save(function (err) {
+            if (err) {
+              return next(err);
+            }
+            // Log the user in
+            req.login(justLogin, function (err) {
+              if (err) {
+                return next(err);
+              }
+
+              // Send user on their merry way
+              if (req.session.attemptedURL) {
+                var redirectURL = req.session.attemptedURL;
+                delete req.session.attemptedURL;
+                return res.redirect(redirectURL);
+              } else {
+                return res.redirect('/api');
+              }
+
+            });
+          });
+        } else {
+          // Brand new Twitter user!
+          // Save their profile data into the session
+          var newSocialUser               = {};
+
+          newSocialUser.source            = 'twitter';
+          newSocialUser.id                = info.profile.id;
+          newSocialUser.token             = info.token;
+          newSocialUser.tokenSecret       = info.tokenSecret;
+          newSocialUser.email             = '';  // Twitter does not provide email addresses
+
+          newSocialUser.profile           = {};
+
+          newSocialUser.profile.name      = info.profile._json.name;
+          newSocialUser.profile.gender    = '';  // No gender from Twitter either
+          newSocialUser.profile.location  = info.profile._json.location || '';
+          // // Twitter may or may not provide a URL
+          if (typeof info.profile._json.entities.url !== 'undefined') {
+            newSocialUser.profile.website = info.profile._json.entities.url.urls[0].expanded_url;
+          } else {
+            newSocialUser.profile.website = '';
+          }
+          newSocialUser.profile.picture   = info.profile._json.profile_image_url;
+
+          req.session.socialProfile = newSocialUser;
+          res.render('account/signupsocial', { email: newSocialUser.email });
+        }
+      });
+
+    })(req, res, next);
+  });
+
 };
-
-Heisenberg.get('/login', getLogin);
-Heisenberg.post('/login', postLogin);
-Heisenberg.get('/logout', logout);
-Heisenberg.get('/forgot', getForgot);
-Heisenberg.post('/forgot', postForgot);
-Heisenberg.get('/reset/:token', getReset);
-Heisenberg.post('/reset/:token', postReset);
-Heisenberg.get('/signup', getSignup);
-Heisenberg.post('/signup', postSignup);
-Heisenberg.get('/account', PassportConf.isAuthenticated, getAccount);
-Heisenberg.post('/account/profile', PassportConf.isAuthenticated, postUpdateProfile);
-Heisenberg.post('/account/password', PassportConf.isAuthenticated, postUpdatePassword);
-Heisenberg.post('/account/delete', PassportConf.isAuthenticated, postDeleteAccount);
-Heisenberg.get('/account/unlink/:provider', PassportConf.isAuthenticated, getOauthUnlink);
-
-
-
-
-
-
-
-

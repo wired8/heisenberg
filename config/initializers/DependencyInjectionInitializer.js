@@ -4,7 +4,6 @@ var injct = require('injct'),
     util = require('util'),
     config = require('config'),
     redis = require('redis'),
-//    DatabaseSetup = require('./DatabaseSetup.js'),
     Constants = require('../../app/util/Constants.js');
 
 /**

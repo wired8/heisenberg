@@ -1,8 +1,21 @@
-extends ../layout
+extends ../layouts/layout
+
+block head
+    title #{application} &middot; Booking Widget
 block content
-    .page-header
-        h3 Widgets
-    form.form-horizontal(role='form', method='POST')
-        input(type='hidden', name='_csrf', value=_csrf)
+    .container
+        .row
+            .col-sm-12
+                .page-header
+                    h2
+                        i.fa.fa-file-text-o
+                        | &nbsp;Booking Widget
+                form.form-horizontal(role='form')
+                    input(type='hidden', name='_csrf', value=_csrf)
+
+//- Page-specific stuff
+block scripts
+
+
 
 

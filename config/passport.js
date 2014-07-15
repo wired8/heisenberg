@@ -1,409 +1,291 @@
-var _ = require('lodash');
-var passport = require('passport');
-var InstagramStrategy = require('passport-instagram').Strategy;
-var LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
-var TwitterStrategy = require('passport-twitter').Strategy;
-var GitHubStrategy = require('passport-github').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
-var OAuthStrategy = require('passport-oauth').OAuthStrategy; // Tumblr
-var OAuth2Strategy = require('passport-oauth').OAuth2Strategy; // Venmo, Foursquare
-var User = require('../app/models/User');
-var secrets = require('./secrets');
-var Mongoose = require('mongoose');
+'use strict';
 
-passport.serializeUser(function(user, done) {
-  done(null, user._id);
+/**
+ * Module dependencies.
+ */
+
+var _                 = require('lodash');
+var User              = require('../app/models/User');
+var Mongoose          = require('mongoose');
+var utils             = require('./utils');
+var config            = require('./config');
+var passport          = require('passport');
+var TotpStrategy      = require('passport-totp').Strategy;
+var LocalStrategy     = require('passport-local').Strategy;
+var OAuthStrategy     = require('passport-oauth').OAuthStrategy;
+var OAuth2Strategy    = require('passport-oauth').OAuth2Strategy;
+var GitHubStrategy    = require('passport-github').Strategy;
+var GoogleStrategy    = require('passport-google-oauth').OAuth2Strategy;
+var TwitterStrategy   = require('passport-twitter').Strategy;
+var FacebookStrategy  = require('passport-facebook').Strategy;
+
+/**
+ * Serialize and Deserialize the User
+ */
+
+// Passport session setup.
+//   To support persistent login sessions, Passport needs to be able to
+//   serialize users into and deserialize users out of the session.  Typically,
+//   this will be as simple as storing the user ID when serializing, and finding
+//   the user by ID when deserializing.
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-  User.model().findOne({_id: new Mongoose.Types.ObjectId(id)}, function(err, user) {
-    done(err, new User(user));
-  });
+    User.model().findOne({_id: new Mongoose.Types.ObjectId(id)}, function(err, user) {
+        done(err, new User(user));
+    });
 });
 
-// Sign in with Instagram.
+/**
+ * Local authentication
+ */
 
-passport.use(new InstagramStrategy(secrets.instagram,function(req, accessToken, refreshToken, profile, done) {
-  if (req.user) {
-    User.model().findOne({ instagram: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already an Instagram account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.model().findById(req.user.id, function(err, user) {
-          user.instagram = profile.id;
-          user.tokens.push({ kind: 'instagram', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile._json.data.profile_picture;
-          user.profile.website = user.profile.website || profile._json.data.website;
-          user.save(function(err) {
-            req.flash('info', { msg: 'Instagram account has been linked.' });
-            done(err, user);
+// Use the LocalStrategy within Passport.
+//   Strategies in passport accept credentials (in this case, a username and password),
+//   and invoke a callback with a user object.
+
+passport.use(new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
+    User.model().findOne({ email: email }, function (err, user) {
+    if (!user) {
+      return done(null, false, { message: 'Invalid email or password.' });
+    }
+
+    // Only authenticate if the user is verified
+    if (user.verified) {
+      new User(user).comparePassword(password, function (err, isMatch) {
+        if (isMatch) {
+
+          // update the user's record with login timestamp
+          user.activity.last_logon = Date.now();
+          user.save(function (err) {
+            if (err) {
+              return (err);
+            }
           });
-        });
-      }
-    });
-  } else {
-    User.model().findOne({ instagram: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
 
-      var user = new User();
-      user.instagram = profile.id;
-      user.tokens.push({ kind: 'instagram', accessToken: accessToken });
-      user.profile.name = profile.displayName;
-      // Similar to Twitter API, assigns a temporary e-mail address
-      // to get on with the registration process. It can be changed later
-      // to a valid e-mail address in Profile Management.
-      user.email = profile.username + "@instagram.com";
-      user.profile.website = profile._json.data.website;
-      user.profile.picture = profile._json.data.profile_picture;
-      user.save(function(err) {
-        done(err, user);
+          return done(null, user);
+        } else {
+          return done(null, false, { message: 'Invalid email or password.' });
+        }
       });
-    });
-  }
+    } else {
+      return done(null, false, { message: 'Your account must be verified first!' });
+    }
+  });
 }));
 
-// Sign in using Email and Password.
+// The TOTP authentication strategy authenticates a user using a TOTP value
+// generated by a hardware device or software application (known as a token).
+// The strategy requires a setup callback. The setup callback accepts a previously
+// authenticated user and calls done providing a key and period used to verify
+// the HOTP value. Authentication fails if the value is not verified.
 
-passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
-  User.model().findOne({ email: email }, function(err, user) {
-    if (!user) return done(null, false, { message: 'Email ' + email + ' not found'});
-    new User(user).comparePassword(password, function(err, isMatch) {
-      if (isMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, { message: 'Invalid email or password.' });
-      }
+passport.use(new TotpStrategy(function (user, done) {
+  // setup function, supply key and period to done callback
+  User.model().findById(user.id, function (err, user) {
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false, { message: 'User not found' });
+    } else {
+      return done(null, user.enhancedSecurity.token, user.enhancedSecurity.period);
+    }
+  });
+}));
+
+/**
+ * Sign in with Facebook.
+ */
+
+passport.use('facebook', new FacebookStrategy({
+  clientID: config.facebook.clientID,
+  clientSecret: config.facebook.clientSecret,
+  scope: ['email', 'user_location']
+}, function (accessToken, refreshToken, profile, done) {
+  done(null, false, {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    profile: profile
+  });
+}));
+
+/**
+ * Sign in with GitHub.
+ */
+
+passport.use('github', new GitHubStrategy({
+  clientID: config.github.clientID,
+  clientSecret: config.github.clientSecret,
+  customHeaders: { 'User-Agent': config.name }
+}, function (accessToken, refreshToken, profile, done) {
+  done(null, false, {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    profile: profile
+  });
+}));
+
+/**
+ * Sign in with Twitter. (OAuth 1.0a)
+ * NOTE: different function args!
+ */
+
+passport.use('twitter', new TwitterStrategy({
+  consumerKey: config.twitter.consumerKey,
+  consumerSecret: config.twitter.consumerSecret
+}, function (token, tokenSecret, profile, done) {
+  done(null, false, {
+    token: token,
+    tokenSecret: tokenSecret,
+    profile: profile
+  });
+}));
+
+/**
+ * Sign in with Google. (OAuth 2.0)
+ */
+
+passport.use('google', new GoogleStrategy({
+  clientID: config.google.clientID,
+  clientSecret: config.google.clientSecret,
+  scope: ['profile email']  // get the user's email address
+}, function (accessToken, refreshToken, profile, done) {
+  done(null, false, {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    profile: profile
+  });
+}));
+
+/**
+ * Tumblr API
+ * Uses OAuth 1.0a Strategy.
+ */
+
+passport.use('tumblr', new OAuthStrategy({
+  requestTokenURL: 'http://www.tumblr.com/oauth/request_token',
+  accessTokenURL: 'http://www.tumblr.com/oauth/access_token',
+  userAuthorizationURL: 'http://www.tumblr.com/oauth/authorize',
+  consumerKey: config.tumblr.key,
+  consumerSecret: config.tumblr.secret,
+  callbackURL: config.tumblr.callbackURL,
+  passReqToCallback: true
+}, function (req, token, tokenSecret, profile, done) {
+  User.findById(req.user._id, function (err, user) {
+    user.tokens.push({ kind: 'tumblr', token: token, tokenSecret: tokenSecret });
+    user.save(function (err) {
+      done(err, user);
     });
   });
 }));
 
 /**
- * OAuth Strategy Overview
- *
- * - User is already logged in.
- *   - Check if there is an existing account with a <provider> id.
- *     - If there is, return an error message. (Account merging not supported)
- *     - Else link new OAuth account with currently logged-in user.
- * - User is not logged in.
- *   - Check if it's a returning user.
- *     - If returning user, sign in and we are done.
- *     - Else check if there is an existing account with user's email.
- *       - If there is, return an error message.
- *       - Else create a new account.
+ * Foursquare API
+ * Uses OAuth 2.0 Strategy.
  */
 
-// Sign in with Facebook.
-
-passport.use(new FacebookStrategy(secrets.facebook, function(req, accessToken, refreshToken, profile, done) {
-  if (req.user) {
-    User.model().findOne({ facebook: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.model().findById(req.user.id, function(err, user) {
-          user.facebook = profile.id;
-          user.tokens.push({ kind: 'facebook', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.gender = user.profile.gender || profile._json.gender;
-          user.profile.picture = user.profile.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
-          user.save(function(err) {
-            req.flash('info', { msg: 'Facebook account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
-    });
-  } else {
-    User.model().findOne({ facebook: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
-      User.model().findOne({ email: profile._json.email }, function(err, existingEmailUser) {
-        if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings.' });
-          done(err);
-        } else {
-          var user = new User();
-          user.email = profile._json.email;
-          user.facebook = profile.id;
-          user.tokens.push({ kind: 'facebook', accessToken: accessToken });
-          user.profile.name = profile.displayName;
-          user.profile.gender = profile._json.gender;
-          user.profile.picture = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
-          user.profile.location = (profile._json.location) ? profile._json.location.name : '';
-          user.model().save(function(err) {
-            done(err, user);
-          });
-        }
-      });
-    });
-  }
-}));
-
-// Sign in with GitHub.
-
-passport.use(new GitHubStrategy(secrets.github, function(req, accessToken, refreshToken, profile, done) {
-  if (req.user) {
-    User.findOne({ github: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a GitHub account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, user) {
-          user.github = profile.id;
-          user.tokens.push({ kind: 'github', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile._json.avatar_url;
-          user.profile.location = user.profile.location || profile._json.location;
-          user.profile.website = user.profile.website || profile._json.blog;
-          user.save(function(err) {
-            req.flash('info', { msg: 'GitHub account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
-    });
-  } else {
-    User.findOne({ github: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
-      User.findOne({ email: profile._json.email }, function(err, existingEmailUser) {
-        if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with GitHub manually from Account Settings.' });
-          done(err);
-        } else {
-          var user = new User();
-          user.email = profile._json.email;
-          user.github = profile.id;
-          user.tokens.push({ kind: 'github', accessToken: accessToken });
-          user.profile.name = profile.displayName;
-          user.profile.picture = profile._json.avatar_url;
-          user.profile.location = profile._json.location;
-          user.profile.website = profile._json.blog;
-          user.save(function(err) {
-            done(err, user);
-          });
-        }
-      });
-    });
-  }
-}));
-
-// Sign in with Twitter.
-
-passport.use(new TwitterStrategy(secrets.twitter, function(req, accessToken, tokenSecret, profile, done) {
-  if (req.user) {
-    User.findOne({ twitter: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Twitter account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, user) {
-          user.twitter = profile.id;
-          user.tokens.push({ kind: 'twitter', accessToken: accessToken, tokenSecret: tokenSecret });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.location = user.profile.location || profile._json.location;
-          user.profile.picture = user.profile.picture || profile._json.profile_image_url;
-          user.save(function(err) {
-            req.flash('info', { msg: 'Twitter account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
-    });
-
-  } else {
-    User.findOne({ twitter: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
-      var user = new User();
-      // Twitter will not provide an email address.  Period.
-      // But a person’s twitter username is guaranteed to be unique
-      // so we can "fake" a twitter email address as follows:
-      user.email = profile.username + "@twitter.com";
-      user.twitter = profile.id;
-      user.tokens.push({ kind: 'twitter', accessToken: accessToken, tokenSecret: tokenSecret });
-      user.profile.name = profile.displayName;
-      user.profile.location = profile._json.location;
-      user.profile.picture = profile._json.profile_image_url;
-      user.save(function(err) {
-        done(err, user);
-      });
-    });
-  }
-}));
-
-// Sign in with Google.
-
-passport.use(new GoogleStrategy(secrets.google, function(req, accessToken, refreshToken, profile, done) {
-  if (req.user) {
-    User.findOne({ google: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Google account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, user) {
-          user.google = profile.id;
-          user.tokens.push({ kind: 'google', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.gender = user.profile.gender || profile._json.gender;
-          user.profile.picture = user.profile.picture || profile._json.picture;
-          user.save(function(err) {
-            req.flash('info', { msg: 'Google account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
-    });
-  } else {
-    User.findOne({ google: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
-      User.findOne({ email: profile._json.email }, function(err, existingEmailUser) {
-        if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' });
-          done(err);
-        } else {
-          var user = new User();
-          user.email = profile._json.email;
-          user.google = profile.id;
-          user.tokens.push({ kind: 'google', accessToken: accessToken });
-          user.profile.name = profile.displayName;
-          user.profile.gender = profile._json.gender;
-          user.profile.picture = profile._json.picture;
-          user.save(function(err) {
-            done(err, user);
-          });
-        }
-      });
-    });
-  }
-}));
-
-// Sign in with LinkedIn.
-
-passport.use(new LinkedInStrategy(secrets.linkedin, function(req, accessToken, refreshToken, profile, done) {
-  if (req.user) {
-    User.findOne({ linkedin: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a LinkedIn account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, user) {
-          user.linkedin = profile.id;
-          user.tokens.push({ kind: 'linkedin', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.location = user.profile.location || profile._json.location.name;
-          user.profile.picture = user.profile.picture || profile._json.pictureUrl;
-          user.profile.website = user.profile.website || profile._json.publicProfileUrl;
-          user.save(function(err) {
-            req.flash('info', { msg: 'LinkedIn account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
-    });
-  } else {
-    User.findOne({ linkedin: profile.id }, function(err, existingUser) {
-      if (existingUser) return done(null, existingUser);
-      User.findOne({ email: profile._json.emailAddress }, function(err, existingEmailUser) {
-        if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with LinkedIn manually from Account Settings.' });
-          done(err);
-        } else {
-          var user = new User();
-          user.linkedin = profile.id;
-          user.tokens.push({ kind: 'linkedin', accessToken: accessToken });
-          user.email = profile._json.emailAddress;
-          user.profile.name = profile.displayName;
-          user.profile.location = profile._json.location.name;
-          user.profile.picture = profile._json.pictureUrl;
-          user.profile.website = profile._json.publicProfileUrl;
-          user.save(function(err) {
-            done(err, user);
-          });
-        }
-      });
-    });
-  }
-}));
-
-// Tumblr API setup.
-
-passport.use('tumblr', new OAuthStrategy({
-    requestTokenURL: 'http://www.tumblr.com/oauth/request_token',
-    accessTokenURL: 'http://www.tumblr.com/oauth/access_token',
-    userAuthorizationURL: 'http://www.tumblr.com/oauth/authorize',
-    consumerKey: secrets.tumblr.consumerKey,
-    consumerSecret: secrets.tumblr.consumerSecret,
-    callbackURL: secrets.tumblr.callbackURL,
-    passReqToCallback: true
-  },
-  function(req, token, tokenSecret, profile, done) {
-    User.findById(req.user._id, function(err, user) {
-      user.tokens.push({ kind: 'tumblr', accessToken: token, tokenSecret: tokenSecret });
-      user.save(function(err) {
-        done(err, user);
-      });
-    });
-  }
-));
-
-// Foursquare API setup.
-
 passport.use('foursquare', new OAuth2Strategy({
-    authorizationURL: 'https://foursquare.com/oauth2/authorize',
-    tokenURL: 'https://foursquare.com/oauth2/access_token',
-    clientID: secrets.foursquare.clientId,
-    clientSecret: secrets.foursquare.clientSecret,
-    callbackURL: secrets.foursquare.redirectUrl,
-    passReqToCallback: true
-  },
-  function(req, accessToken, refreshToken, profile, done) {
-    User.findById(req.user._id, function(err, user) {
-      user.tokens.push({ kind: 'foursquare', accessToken: accessToken });
-      user.save(function(err) {
-        done(err, user);
-      });
+  authorizationURL: 'https://foursquare.com/oauth2/authorize',
+  tokenURL: 'https://foursquare.com/oauth2/access_token',
+  clientID: config.foursquare.clientId,
+  clientSecret: config.foursquare.clientSecret,
+  callbackURL: config.foursquare.redirectUrl,
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, profile, done) {
+  User.findById(req.user._id, function (err, user) {
+    user.tokens.push({ kind: 'foursquare', accessToken: accessToken });
+    user.save(function (err) {
+      done(err, user);
     });
+  });
+}));
+
+/**
+ * Login Required middleware.
+ */
+
+exports.isAuthenticated = function (req, res, next) {
+  // Is the user authenticated?
+  if (req.isAuthenticated()) {
+    // Does the user have enhanced security enabled?
+    if (req.user.enhancedSecurity.enabled) {
+      // If we already have validated the second factor it's
+      // a noop, otherwise redirect to capture the OTP.
+      if (req.session.passport.secondFactor === 'validated') {
+        return next();
+      } else {
+        // Verify their OTP code
+        res.redirect('/verify-setup');
+      }
+    } else {
+      // If enhanced security is disabled just continue.
+      return next();
+    }
+  } else {
+    req.session.attemptedURL = req.url;  // Save URL so we can redirect to it after authentication
+    res.set('X-Auth-Required', 'true');
+    req.flash('error', { msg: 'You must be logged in to reach that page.' });
+    res.redirect('/login');
   }
-));
-
-// Venmo API setup.
-
-passport.use('venmo', new OAuth2Strategy({
-    authorizationURL: 'https://api.venmo.com/v1/oauth/authorize',
-    tokenURL: 'https://api.venmo.com/v1/oauth/access_token',
-    clientID: secrets.venmo.clientId,
-    clientSecret: secrets.venmo.clientSecret,
-    callbackURL: secrets.venmo.redirectUrl,
-    passReqToCallback: true
-  },
-  function(req, accessToken, refreshToken, profile, done) {
-    User.findById(req.user._id, function(err, user) {
-      user.tokens.push({ kind: 'venmo', accessToken: accessToken });
-      user.save(function(err) {
-        done(err, user);
-      });
-    });
-  }
-));
-
-// Login Required middleware.
-
-exports.isAuthenticated = function(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.redirect('/login');
 };
 
-// Authorization Required middleware.
+/**
+ * Authorization Required middleware.
+ */
 
-exports.isAuthorized = function(req, res, next) {
+exports.isAuthorized = function (req, res, next) {
   var provider = req.path.split('/').slice(-1)[0];
-
   if (_.find(req.user.tokens, { kind: provider })) {
+    // we found the provider so just continue
     next();
   } else {
-    res.redirect('/auth/' + provider);
+    // we have to get authorized first
+    if (provider === 'facebook' || provider === 'twitter' || provider === 'github' || provider === 'google') {
+      req.flash('info', { msg: 'You must connect ' + utils.capitalize(provider) + ' first!' });
+      res.redirect('/account');
+    } else {
+      res.redirect('/auth/' + provider);
+    }
+  }
+};
+
+/**
+ * Check if the account is an Administrator
+ */
+
+exports.isAdministrator = function (req, res, next) {
+  // make sure we are logged in first
+  if (req.isAuthenticated()) {
+    // user must be be an administrator
+    if (req.user.type !== 'admin') {
+      req.flash('error', { msg: 'You must be an Administrator reach that page.' });
+      return res.redirect('/api');
+    } else {
+      return next();
+    }
+  } else {
+    req.flash('error', { msg: 'You must be logged in to reach that page.' });
+    res.redirect('/login');
+  }
+};
+
+/**
+ * Redirect to HTTPS (SSL) connection
+ *
+ * Good middleware for login forms, etc.
+ * Not currently used since we are directing
+ * *all* traffic to ssl in production
+ */
+
+exports.isSecure = function (req, res, next) {
+  // Reroute HTTP traffic to HTTPS
+  if ((req.secure) || (req.headers['x-forwarded-proto'] === 'https')) {
+    return next();
+  } else {
+    res.redirect('https://' + req.headers.host + req.url);
   }
 };
