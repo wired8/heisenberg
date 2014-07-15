@@ -13,8 +13,11 @@ block content
           input(type='hidden', name='_csrf', value=_csrf)
           legend Sign Up
           .form-group
-            label.sr-only(for='name') Name:
-            input.form-control(type='text', name='name', id='name', placeholder='Your Name', autofocus=true, required)
+            label.sr-only(for='first_name') First Name:
+            input.form-control(type='text', name='first_name', id='first_name', placeholder='Your First Name', autofocus=true, required)
+          .form-group
+            label.sr-only(for='last_name') Last Name:
+            input.form-control(type='text', name='last_name', id='last_name', placeholder='Your Last Name', autofocus=true, required)
           .form-group
             label.sr-only(for='email') Email:
             input.form-control(type='email', name='email', id='email', placeholder='Your Email', required)
@@ -32,6 +35,16 @@ block content
           .form-group
             label.sr-only(for='confirmPassword') Confirm Password:
             input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', autocomplete='off', required, pattern='^[^\S]{4,}', title='At least 4 characters!')
+
+          .form-group
+              label.sr-only(for='subdomain') Choose your resrvo URL:
+              .subdomain(class='input-group')
+                  input.form-control(type='text', name='subdomain', id='subdomain', placeholder='Choose your resrvo URL', autocomplete='off', required, pattern='/[^a-z0-9]/gi', title='At least 3 characters!')
+                  span(class="input-group-addon")
+                      span
+                      | .resrvo.com
+                  .available
+
           .form-group
             button.btn.btn-success(type='submit')
               i.fa.fa-check
@@ -58,6 +71,8 @@ block content
 block scripts
   script.
     $(document).ready(function() {
+
+
 
       //- Get Mailcheck Script
       $.getScript('/lib/mailcheck/src/mailcheck.min.js')
@@ -167,4 +182,37 @@ block scripts
           console.log('Complexify banlist load failed.');
       });
 
+      var timeout = null;
+      var availabilityUri = "/subdomain/--subdomain--";
+
+      $('#subdomain').focus(function (e) {
+        $(this).css('text-align','right');
+      });
+
+      $('#subdomain').keyup(function (e) {
+
+        var input = $(this);
+        var el = $(this).parent();
+        el.addClass('loading');
+        el.removeClass('available');
+        el.removeClass('not-available');
+        clearTimeout(timeout);
+
+        timeout = setTimeout(function () {
+            var currentVal = $(input).val();
+            input.val(currentVal.replace(/[^a-z0-9]/gi, ''));
+
+            var pattern = /--subdomain--/g;
+            $.get(availabilityUri.replace(pattern, $('#subdomain').val()), function (result) {
+                el.removeClass('loading');
+                if (result.available === 0) {
+                    el.addClass('not-available');
+                    el.removeClass('available');
+                    return;
+                }
+                el.removeClass('not-available');
+                el.addClass('available');
+            }, 'json');
+        }, 800);
+      });
     });

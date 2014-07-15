@@ -30,6 +30,16 @@ AccountService.prototype.getAccountById = function (_id, callback) {
     this.accountRepository.getAccountById(_id, callback);
 };
 
+/**
+ * Get an account from mongo
+ *
+ * @param subdomain string
+ * @param callback
+ */
+AccountService.prototype.getAccountBySubdomain = function (subdomain, callback) {
+    this.accountRepository.getAccountBySubdomain(subdomain, callback);
+};
+
 
 /**
  * Update a account

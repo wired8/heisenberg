@@ -53,7 +53,8 @@ module.exports.controller = function (app) {
 
     workflow.on('validate', function () {
 
-      req.assert('name', 'Your name cannot be empty.').notEmpty();
+      req.assert('first_name', 'Your first name cannot be empty.').notEmpty();
+      req.assert('last_name', 'Your first name cannot be empty.').notEmpty();
       req.assert('email', 'Your email cannot be empty.').notEmpty();
       req.assert('email', 'Your email is not valid.').isEmail();
       req.assert('website', 'Website URL is not valid.').isURL();
@@ -81,8 +82,8 @@ module.exports.controller = function (app) {
         }
 
         user.email = req.body.email.toLowerCase() || '';
-        user.profile.name = req.body.name.trim() || '';
-        user.profile.gender = req.body.gender || '';
+        user.profile.first_name = req.body.first_name.trim() || '';
+        user.profile.last_name = req.body.last_name.trim() || '';
         user.profile.location = req.body.location.trim() || '';
         user.profile.phone.mobile = req.body.phoneMobile.trim() || '';
         user.profile.website = req.body.website.trim() || '';
@@ -120,7 +121,7 @@ module.exports.controller = function (app) {
 
       // Render HTML to send using .jade mail template (just like rendering a page)
       res.render('mail/accountChange', {
-        name:          user.profile.name,
+        name:          user.profile.first_name + ' ' + user.profile.last_name,
         mailtoName:    Config.smtp.name,
         mailtoAddress: Config.smtp.address
       }, function (err, html) {
@@ -131,7 +132,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'This is a courtesy message to confirm that your profile information was just updated.',
             'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
             '  - The ' + Config.smtp.name + ' team'
@@ -139,7 +140,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Your ' + app.locals.application + ' profile was updated',
             text:     text,
@@ -250,7 +251,7 @@ module.exports.controller = function (app) {
 
       // Render HTML to send using .jade mail template (just like rendering a page)
       res.render('mail/passwordChange', {
-        name:          user.profile.name,
+        name:          user.profile.first_name + ' ' + user.profile.last_name,
         mailtoName:    Config.smtp.name,
         mailtoAddress: Config.smtp.address
       }, function (err, html) {
@@ -261,7 +262,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'This is a courtesy message to confirm that your password was just changed.',
             'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
             '  - The ' + Config.smtp.name + ' team'
@@ -269,7 +270,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Your ' + app.locals.application + ' password was changed',
             text:     text,
@@ -470,7 +471,8 @@ module.exports.controller = function (app) {
 
             user.github = info.profile.id;
             user.tokens.push({ kind: 'github', accessToken: info.accessToken });
-            user.profile.name = user.profile.name || info.profile._json.name;
+            user.profile.first_name = user.profile.first_name || info.profile._json.first_name;
+            user.profile.last_name = user.profile.last_name || info.profile._json.last_name;
             user.profile.picture = user.profile.picture || info.profile._json.avatar_url;
             user.profile.location = user.profile.location || info.profile._json.location;
             user.profile.website = user.profile.website || info.profile._json.html_url;
@@ -519,8 +521,8 @@ module.exports.controller = function (app) {
 
             user.google = info.profile.id;
             user.tokens.push({ kind: 'google', accessToken: info.accessToken });
-            user.profile.name = user.profile.name || info.profile._json.name;
-            user.profile.gender = user.profile.gender || info.profile._json.gender;
+            user.profile.first_name = user.profile.first_name || info.profile._json.first_name;
+            user.profile.last_name = user.profile.last_name || info.profile._json.last_name;
             user.profile.website = user.profile.website || info.profile._json.link;
             user.profile.picture = user.profile.picture || info.profile._json.picture;
 

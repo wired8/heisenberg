@@ -74,4 +74,37 @@ AccountRepository.prototype.saveAccount = function (account, callback) {
     }
 };
 
+/**
+ * Finds a account by subdomain
+ *
+ * @param {String} subdomain
+ *
+ * @param [String] fields
+ *  the fields to return '_id name nickname'
+ *
+ * @param {Function} callback
+ */
+AccountRepository.prototype.getAccountBySubdomain = function (subdomain, fields, callback) {
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = null;
+    }
+
+    Account.model().findOne({subdomain: subdomain}, fields, function (err, account) {
+
+        if (err) {
+            Logger.error("Error trying to find account by id %j", id, err);
+            return callback(err);
+        }
+
+        if (!account) {
+            return callback();
+        }
+
+        callback(null, new Account(account.toObject()));
+
+    });
+};
+
 

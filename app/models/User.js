@@ -22,14 +22,15 @@ var UserSchema = new Schema({
   email: { type: String, unique: true, index: true },
   password: { type: String },
   type: { type: String, default: 'user' },
+
   facebook: { type: String, unique: true, sparse: true },
   twitter: { type: String, unique: true, sparse: true },
   google: { type: String, unique: true, sparse: true },
   tokens: Array,
 
   profile: {
-    name: { type: String, default: '' },
-    gender: { type: String, default: '' },
+    first_name: { type: String, default: '' },
+    last_name: { type: String, default: '' },
     location: { type: String, default: '' },
     website: { type: String, default: '' },
     picture: { type: String, default: '' },

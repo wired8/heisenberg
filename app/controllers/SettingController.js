@@ -91,6 +91,7 @@ module.exports.controller = function (app) {
         var account = new Account({
             _id: req.body.account_id !== 'undefined' ? req.body.account_id : undefined,
             name: req.body.name,
+            subdomain: req.body.subdomain,
             address: req.body.address,
             address_ext: req.body.address_ext,
             country: req.body.country_code,
@@ -146,6 +147,36 @@ module.exports.controller = function (app) {
             }
 
         });
+    });
+
+    /**
+     * GET /subdomain
+     * Subdomain availability check.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.get('/subdomain/:subdomain', function (req, res) {
+        var accountService = Injct.getInstance('accountService');
+        var subdomain = req.params.subdomain;
+
+        accountService.getAccountBySubdomain(subdomain, function (err, result) {
+            if (err) {
+                req.flash('errors', { msg: 'Error getting account by subdomain.' });
+                return;
+            }
+
+            if (result !== undefined && result !== null) {
+                res.send({ available: 0 });
+            } else {
+                res.send({ available: 1 });
+            }
+
+        });
+
+
+
     });
 
 };

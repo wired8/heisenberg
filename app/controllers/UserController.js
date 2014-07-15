@@ -265,7 +265,7 @@ module.exports.controller = function (app) {
 
       // Render HTML to send using .jade mail template (just like rendering a page)
       res.render('mail/welcome', {
-        name:          user.profile.name,
+        name:          user.profile.first_name + ' ' + user.profile.last_name,
         mailtoName:    Config.smtp.name,
         mailtoAddress: Config.smtp.address,
         blogLink:      req.protocol + '://' + req.headers.host, // + '/blog',
@@ -278,7 +278,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'We would like to welcome you as our newest member!',
             'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
             'If you want to get the latest scoop check out our <a href="' +
@@ -290,7 +290,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Welcome to ' + app.locals.application + '!',
             text:     text,
@@ -371,7 +371,8 @@ module.exports.controller = function (app) {
     workflow.on('validate', function () {
 
       // Check for form errors
-      req.assert('name', 'Your name cannot be empty.').notEmpty();
+      req.assert('first_name', 'Your first name cannot be empty.').notEmpty();
+      req.assert('last_name', 'Your last name cannot be empty.').notEmpty();
       req.assert('email', 'Your email cannot be empty.').notEmpty();
       req.assert('email', 'Your email is not valid.').isEmail();
       req.assert('password', 'Your password cannot be empty.').notEmpty();
@@ -424,7 +425,8 @@ module.exports.controller = function (app) {
 
       // create user
       var user = new User({
-        'profile.name': req.body.name.trim(),
+        'profile.first_name': req.body.first_name.trim(),
+        'profile.last_name': req.body.last_name.trim(),
         email:          req.body.email.toLowerCase(),
         password:       req.body.password,
         verifyToken:    verifyToken,
@@ -469,7 +471,7 @@ module.exports.controller = function (app) {
 
       // Render HTML to send using .jade mail template (just like rendering a page)
       res.render('mail/accountVerification', {
-        name:          user.profile.name,
+        name:          user.profile.first_name + ' ' + user.profile.last_name,
         mailtoName:    Config.smtp.name,
         validateLink:  req.protocol + '://' + req.headers.host + '/verify/' + user.id + '/' + verifyToken
       }, function (err, html) {
@@ -480,7 +482,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'Welcome to ' + app.locals.application + '!  Here is a special link to activate your new account:',
             req.protocol + '://' + req.headers.host + '/verify/' + user.id + '/' + user.verifyToken,
             '  - The ' + Config.smtp.name + ' team'
@@ -488,7 +490,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Activate your new ' + app.locals.application + ' account',
             text:     text,
@@ -531,7 +533,7 @@ module.exports.controller = function (app) {
 
       // Render HTML to send using .jade mail template (just like rendering a page)
       res.render('mail/welcome', {
-        name:          user.profile.name,
+        name:          user.profile.first_name + ' ' + user.profile.last_name,
         mailtoName:    Config.smtp.name,
         mailtoAddress: Config.smtp.address,
         blogLink:      req.protocol + '://' + req.headers.host, // + '/blog',
@@ -544,7 +546,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'We would like to welcome you as our newest member!',
             'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
             'If you want to get the latest scoop check out our <a href="' +
@@ -556,7 +558,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Welcome to ' + app.locals.application + '!',
             text:     text,
@@ -691,10 +693,11 @@ module.exports.controller = function (app) {
       var newUser = req.session.socialProfile;
       var user = new User();
 
-      user.verified         = true;  // social users don't require verification
-      user.email            = req.body.email.toLowerCase();
-      user.profile.name     = newUser.profile.name;
-      user.profile.gender   = newUser.profile.gender;
+      user.verified             = true;  // social users don't require verification
+      user.email                = req.body.email.toLowerCase();
+      user.profile.first_name   = newUser.profile.first_name;
+      user.profile.last_name   = newUser.profile.last_name;
+
       user.profile.location = newUser.profile.location;
       user.profile.website  = newUser.profile.website;
       user.profile.picture  = newUser.profile.picture;
@@ -761,7 +764,7 @@ module.exports.controller = function (app) {
 
           // Now create email text (multiline string as array FTW)
           var text = [
-            'Hello ' + user.profile.name + '!',
+            'Hello ' + user.profile.first_name + ' ' + user.profile.last_name + '!',
             'We would like to welcome you as our newest member!',
             'Thanks so much for using our services! If you have any questions, or suggestions, feel free to email us here at ' + Config.smtp.address + '.',
             'If you want to get the latest scoop check out our <a href="' +
@@ -773,7 +776,7 @@ module.exports.controller = function (app) {
 
           // Create email
           var mailOptions = {
-            to:       user.profile.name + ' <' + user.email + '>',
+            to:       user.profile.first_name + ' ' + user.profile.last_name + ' <' + user.email + '>',
             from:     Config.smtp.name + ' <' + Config.smtp.address + '>',
             subject:  'Welcome to ' + app.locals.application + '!',
             text:     text,

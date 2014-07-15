@@ -11,6 +11,7 @@ var Schema = Mongoose.Schema;
 
 var AccountSchema = new Schema({
     name: {type: String, required: true},
+    subdomain: {type: String, required: true},
     address: {type: String, required: true},
     address_ext: {type: String},
     phone: {type: String, required: true},
@@ -95,6 +96,7 @@ var Account = function (json) {
     }
 
     this.name = json.name || '';
+    this.subdomain = json.subdomain || '';
     this.address = json.address || '';
     this.address_ext = json.address_ext || '';
     this.phone = json.phone || '';

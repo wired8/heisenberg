@@ -10532,3 +10532,15 @@ a.noDecoration:hover {
   padding-top: 0px !important;
   vertical-align: middle;
 }
+.loading #subdomain {
+  background: url("/img/loading.gif") no-repeat scroll 6px 9px #ffffff;
+}
+.available #subdomain {
+  background: url("/img/available.png") no-repeat scroll 6px 5px #ffffff;
+}
+.not-available #subdomain {
+  background: none repeat scroll 0 0 #ffe5e5;
+}
+.not-available #subdomain:after {
+  content: "Not Available";
+}
