@@ -19,14 +19,14 @@ var Injct = require('injct'),
 module.exports.controller = function (app) {
 
     /**
-     * GET /management/schedule
+     * GET /schedule
      * Schedule page.
      *
      * @param request
      * @param response
      * @param callback
      */
-    app.get('/management/schedule', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/schedule', PassportConf.isAuthenticated, function (req, res) {
 
         res.render('schedule/schedule', {
             title: 'Schedule'

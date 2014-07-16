@@ -31,6 +31,9 @@ var passport          = require('passport');                // https://npmjs.org
 var MongoStore        = require('connect-mongo')(session);  // https://npmjs.org/package/connect-mongo
 var expressValidator  = require('express-validator');       // https://npmjs.org/package/express-validator
 
+// App modules
+var Account           = require('./app/models/Account');
+
 /**
  * Create Express App
  */
@@ -303,6 +306,43 @@ fs.readdirSync('./config/initializers').forEach(function (file) {
         });
     }
 });
+
+
+/**
+ * Subdomains
+ */
+app.use(require('express-subdomain-handler')({ baseUrl: 'resrvo.com', prefix: '', logger: true }));
+
+app.get('*', function(req, res, next) {
+    var regex = /(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i;
+    var subdomain = req.headers.host.match(regex);
+    if (subdomain != null) {
+        console.log('subdomain: ' + subdomain[1]);
+        if (subdomain[1] == 'www') {
+            console.log(req);
+            res.redirect("http://resrvo.com" + req.url, 301);
+        } else {
+            // Lookup subdomain
+            Account.findOne({ subdomain: subdomain[1] }, function(account, err) {
+                if (err || account == null) {
+                    console.log("Account is: " + account);
+                    res.render('404.jade', { locals:
+                    {
+                        host: app.set('host'),
+                        menu: 'home',
+                        title: 'resrvo.io : page not found'
+                    }
+                    });
+                } else {
+                    next();
+                }
+            });
+        }
+    } else {
+        next();
+    }
+});
+
 
 /**
  * Routes/Routing

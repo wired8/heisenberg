@@ -88,7 +88,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.get('/management/service', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/management/service/:service_id', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var service_id = req.params.service_id;
@@ -171,7 +171,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.post('/management/service', PassportConf.isAuthenticated, function (req, res) {
+    app.post('/management/service/:service_id', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var service_id = req.params.service_id;
