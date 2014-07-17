@@ -147,9 +147,11 @@ block scripts
 
     script.
         $(document).ready(function() {
-            // Load service
-            $.getScript('/lib/application/service.js').done(function () {
-                var service_options = !{JSON.stringify(service.service_options)};
-                resrvo_service.init(service_options);
+            $.getScript('/lib/watable/jquery.watable.js').done(function() {
+                // Load service
+                $.getScript('/lib/application/service.js').done(function () {
+                    var service_options = !{JSON.stringify(service.service_options)};
+                    resrvo_service.init(service_options);
+                });
             });
         });

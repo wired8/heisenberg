@@ -47,5 +47,3 @@ var resrvo_scheduler = {
 
     }
 };
-
-resrvo_scheduler.init();

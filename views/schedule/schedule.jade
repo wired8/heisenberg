@@ -1,8 +1,6 @@
 extends ../layouts/layout
-
 block head
     title #{application} &middot; Schedule
-
 block content
     .container
         .row
@@ -29,5 +27,11 @@ block content
 
 //- Page-specific stuff
 block scripts
-    script(src='/lib/dhtmlxscheduler/dhtmlxscheduler.js')
-    script(src='/lib/application/scheduler.js')
+    script(src='/lib/dhtmlxscheduler/sources/dhtmlxscheduler.js')
+    script.
+        $(document).ready(function() {
+            // Load scheduler
+            $.getScript('/lib/application/scheduler.js').done(function () {
+                resrvo_scheduler.init();
+            });
+        });

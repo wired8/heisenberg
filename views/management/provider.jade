@@ -59,7 +59,7 @@ block content
                                         label.col-sm-3.control-label(for='bio') Bio
                                         .col-sm-4
                                             textarea.form-control(name='bio', row="3", cols="10", id='bio')
-                                                | #{provider.bio}
+                                    |
                                     .form-group
                                         label.col-sm-3.control-label(for='image_url') Image
                                         .col-sm-4
@@ -220,8 +220,7 @@ block scripts
     script.
         $(document).ready(function() {
             // Load tabs
-            $.getScript('/lib/application/tabs.js').done(function () {
-            });
+            $.getScript('/lib/application/tabs.js');
             // Load provider
             $.getScript('/lib/application/provider.js').done(function () {
                 var provider_breaks = !{JSON.stringify(provider_breaks)};
