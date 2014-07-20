@@ -28,8 +28,12 @@ block content
 //- Page-specific stuff
 block scripts
     script(src='/lib/dhtmlxscheduler/sources/dhtmlxscheduler.js')
+    script(src='/lib/dhtmlxscheduler/live_updates.js')
     script.
         $(document).ready(function() {
+            //- Load sync
+            $.getScript('/sync.js').done(function () {
+            });
             // Load scheduler
             $.getScript('/lib/application/scheduler.js').done(function () {
                 resrvo_scheduler.init();

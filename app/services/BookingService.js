@@ -40,8 +40,6 @@ BookingService.prototype.getBookingsByAccountId = function (account_id, callback
     this.bookingRepository.getBookingsByAccountId(account_id, callback);
 };
 
-
-
 /**
  * Update a booking
  *
@@ -50,4 +48,14 @@ BookingService.prototype.getBookingsByAccountId = function (account_id, callback
  */
 BookingService.prototype.updateBooking = function(booking, callback) {
     this.bookingRepository.saveBooking(booking, callback);
+};
+
+/**
+ * Delete a booking
+ *
+ * @param {Booking} booking
+ * @param {Function} callback
+ */
+BookingService.prototype.deleteBooking = function(booking, callback) {
+    this.bookingRepository.deleteBooking(booking, callback);
 };

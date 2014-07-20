@@ -41,7 +41,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.get('/api/bookings', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/api/bookings/:timeshift?', PassportConf.isAuthenticated, function (req, res) {
         var account_id = req.user.account_id;
         var bookingService = Injct.getInstance('bookingService');
 
@@ -90,23 +90,23 @@ module.exports.controller = function (app) {
             if (err)
                 mode = "error";
             else if (mode == "inserted")
-                tid = data._id;
+                tid = result._id;
 
             res.setHeader("Content-Type", "text/xml");
             res.send("<data><action type='" + mode + "' sid='" + sid + "' tid='" + tid + "'/></data>");
         }
 
         var booking = new Booking({
-            _id: sid,
+            id: sid,
             account_id: account_id,
-            first_name: '',
-            last_name: '',
-            phone: '',
-            email: '',
-            start_date: req.body.start_date,
-            end_date: req.body.start_date,
-            service: '',
-            provider: ''
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            phone: req.body.phone,
+            email: req.body.email,
+            start_date: new XDate(req.body.start_date).getTime(),
+            end_date: new XDate(req.body.end_date).getTime(),
+            service: 'ffff',
+            provider: 'ffff'
         });
 
         //run db operation
@@ -116,7 +116,7 @@ module.exports.controller = function (app) {
                 bookingService.updateBooking(booking, update_response);
                 break;
             case 'deleted':
-
+                bookingService.deleteBooking(booking, update_response);
                 break;
             default:
                 res.send("Not supported operation");

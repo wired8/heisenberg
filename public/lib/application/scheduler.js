@@ -5,38 +5,78 @@ var resrvo_scheduler = {
     init: function() {
         var self = this;
 
-        scheduler.form_blocks["editor"] = {
+        scheduler.form_blocks["editor_view"]={
             render:function(sns){
-                return "<div class='dhx_cal_ltext' style='height:60px;'>Name&nbsp;" +
-                       "<input type='text'><br/>Email&nbsp;" +
-                       "<input type='text'>";
+                var html = '<div class="dhx_cal_ltext" style="height:160px;">';
+                html += 'First Name:&nbsp;<input type="text" placeholder="First Name" size="25" class="search" id="first_name"><br/>';
+                html += 'Last Name:&nbsp;<input type="text" placeholder="Last Name" size="25" class="search" id="last_name"><br/>';
+                html += 'Phone:&nbsp;<input type="text" placeholder="Phone" size="25" class="search" id="phone"><br/>';
+                html += 'Email:&nbsp;<input type="text" placeholder="Email" size="25" class="search" id="email"><br/>';
+                html += '</div>';
+                return html;
             },
             set_value:function(node,value,ev){
-                node.childNodes[1].value=value||"";
-                node.childNodes[4].value=ev.details||"";
+                node.childNodes[0].value=value||"";
+                // we must loop through all nodes because we use the autocomplete plugin which sometimes adds
+                // additional html elements therefore changing the position of the inputs
+                $.each(node.childNodes, function(index, item) {
+                    if ($(item).attr("id") == "email") {
+                        node.childNodes[index].value=ev.email||"";
+                    }
+                    if ($(item).attr("id") == "first_name") {
+                        node.childNodes[index].value=ev.first_name||"";
+                    }
+                    if ($(item).attr("id") == "last_name") {
+                        node.childNodes[index].value=ev.last_name||"";
+                    }
+                    if ($(item).attr("id") == "phone") {
+                        node.childNodes[index].value=ev.phone||"";
+                    }
+                });
             },
             get_value:function(node,ev){
-                ev.location = node.childNodes[4].value;
-                return node.childNodes[1].value;
+                // we must loop through all nodes because we use the autocomplete plugin which sometimes adds
+                // additional html elements therefore changing the position of the inputs
+                $.each(node.childNodes, function(index, item) {
+                    if ($(item).attr("id") == "email") {
+                        ev.email = node.childNodes[index].value;
+                    }
+                    if ($(item).attr("id") == "first_name") {
+                        ev.first_name = node.childNodes[index].value;
+                    }
+                    if ($(item).attr("id") == "last_name") {
+                        ev.last_name = node.childNodes[index].value;
+                    }
+                    if ($(item).attr("id") == "phone") {
+                        ev.phone = node.childNodes[index].value;
+                    }
+                });
+                return node.childNodes[0].value;
             },
             focus:function(node){
-                var a=node.childNodes[1]; a.select(); a.focus();
+               // var a=node.childNodes[0];
+               // a.select();
+               // a.focus();
             }
         };
 
 
+        scheduler.locale.labels.section_customer = "";
+
         scheduler.config.lightbox.sections=[
-            { name:"description", height:200, map_to:"text", type:"editor", focus:true},
+            { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
+
 
         scheduler.config.xml_date="%Y-%m-%d %H:%i";
         scheduler.init('resrvo_scheduler',new Date(2014,8,4),"month");
 
         scheduler.templates.xml_date = function(value){ return new Date(value); };
-        scheduler.load("/management/schedule", "json");
+        scheduler.load("/api/bookings", "json");
 
-        var dp = new dataProcessor("/management/schedule");
+        var dp = new dataProcessor("/management/schedule/");
+        dp.live_updates("/sync");
         dp.init(scheduler);
         dp.setTransactionMode("POST", false);
 

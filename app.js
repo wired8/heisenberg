@@ -41,11 +41,18 @@ var Account           = require('./app/models/Account');
 var app         = module.exports = express();  // export app for testing ;)
 
 /**
- * Create Express HTTP Server and socket.io listener
+ * Create Express HTTP Server and faye
  */
 
 var server      = require('http').Server(app);
-var io          = require('socket.io')(server);
+var faye        = require('faye');
+var bayeux      = new faye.NodeAdapter({mount: '/sync', timeout: 45});
+
+bayeux.attach(server);
+bayeux.getClient().subscribe('/broadcast', function(data) {
+    bayeux.getClient().publish('/update', data);
+});
+
 
 /**
  * Configure Logging
@@ -154,7 +161,7 @@ if (app.get('env') === 'production') {
 }
 
 // Port to listen on.
-app.set('port', config.port);
+app.set('port', process.env.port || 3000);
 
 // Favicon - This middleware will come very early in your stack
 // (maybe even first) to avoid processing any other middleware
@@ -519,6 +526,7 @@ db.on('open', function () {
  * Web Page (Client) <<--- (`dashUpdate` messages) <<--- Server
  */
 
+  /*
 var connectedCount = 0;
 
 io.on('connection', function (socket) {
@@ -543,3 +551,5 @@ io.on('connection', function (socket) {
     });
   });
 });
+ */
+

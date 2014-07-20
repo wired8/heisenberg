@@ -108,4 +108,28 @@ BookingRepository.prototype.saveBooking = function (booking, callback) {
     }
 };
 
+/**
+ * Delete a booking
+ *
+ * @param {Booking} booking
+ * @param {Function(err, booking)} callback
+ */
+BookingRepository.prototype.deleteBooking = function (booking, callback) {
+
+    if (booking.id) {
+
+        Booking.model().remove({id: booking.id}, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            callback(null, result);
+        });
+
+    } else {
+
+        callback('Booking doesnt have valid _id!');
+
+    }
+};
+
 

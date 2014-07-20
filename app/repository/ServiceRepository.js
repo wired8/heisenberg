@@ -83,24 +83,13 @@ ServiceRepository.prototype.getServicesByAccountId = function (account_id, field
  */
 ServiceRepository.prototype.saveService = function (service, callback) {
 
-    if (service._id) {
+  Service.model().findOneAndUpdate({ id: service.id}, service, {upsert: true}, function (err, _service) {
+      if (err) {
+          return callback(err);
+      }
+      callback(null, new Service(_service));
+  });
 
-        var id = service._id;
-        delete service._id;
-        Service.model().findByIdAndUpdate(id, service, {}, function (err, result) {
-            callback(err, result);
-        });
-
-    } else {
-
-        service.model().save(function (err, _service) {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, new Service(_service));
-        });
-
-    }
 };
 
 

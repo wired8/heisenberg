@@ -37,6 +37,7 @@
     "express-sslify": "^0.1.0",
     "express-subdomain-handler": "^0.1.0",
     "express-validator": "~2.3.0",
+    "faye": "^1.0.3",
     "fbgraph": "^0.2.10",
     "github-api": "^0.7.0",
     "helmet": "~0.3.2",

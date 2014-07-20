@@ -10,6 +10,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var BookingSchema = new Schema({
+    id: {type: String, require: true},
     account_id: {type: String, require: true},
     first_name: {type: String, required: true},
     last_name: {type: String, required: true},
@@ -27,6 +28,7 @@ var BookingSchema = new Schema({
  *
  * @param {Object} json
  *  {
+ *      id: String
  *      account_id: String
  *      first_name: String
  *      last_name: String
@@ -55,6 +57,7 @@ var Booking = function (json) {
         this._id = json._id;
     }
 
+    this.id = json.id;
     this.account_id = json.account_id;
     this.first_name = json.first_name;
     this.last_name = json.last_name;
