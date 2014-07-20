@@ -46,11 +46,11 @@ block content
                                     .form-group
                                         label.col-sm-3.control-label(for='email') Email
                                         .col-sm-4
-                                            input.form-control(type='text', name='email', id='email', value='#{provider.email}')
+                                            input.form-control(type='text', name='email', id='email', autocomplete='off', value='#{provider.email}')
                                     .form-group
                                         label.col-sm-3.control-label(for='password') Password
                                         .col-sm-4
-                                            input.form-control(type='password', name='password', id='password')
+                                            input.form-control(type='password', name='password', autocomplete='off', id='password')
                                     .form-group
                                         label.col-sm-3.control-label(for='retype_password') Retype Password
                                         .col-sm-4
@@ -59,7 +59,6 @@ block content
                                         label.col-sm-3.control-label(for='bio') Bio
                                         .col-sm-4
                                             textarea.form-control(name='bio', row="3", cols="10", id='bio')
-                                    |
                                     .form-group
                                         label.col-sm-3.control-label(for='image_url') Image
                                         .col-sm-4

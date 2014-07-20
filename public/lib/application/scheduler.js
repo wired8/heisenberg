@@ -62,9 +62,13 @@ var resrvo_scheduler = {
 
 
         scheduler.locale.labels.section_customer = "";
+        scheduler.locale.labels.section_services = "Services";
+        scheduler.locale.labels.section_providers = "Providers";
 
         scheduler.config.lightbox.sections=[
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
+            { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:updateProviders},
+            { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers")},
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
 
@@ -74,6 +78,22 @@ var resrvo_scheduler = {
 
         scheduler.templates.xml_date = function(value){ return new Date(value); };
         scheduler.load("/api/bookings", "json");
+
+        function updateProviders() {
+            var self = this;
+            var service_id = this.value; //selection from first list
+            var providers = $(scheduler.formSection('providers').control);
+
+            $.get('/api/providers/' + service_id, function(providers) {
+                scheduler.updateCollection("providers", providers);
+                scheduler.showLightbox(scheduler.getState().lightbox_id);
+                $(scheduler.formSection('services').control).val(service_id);
+            });
+        }
+
+        dhtmlxAjax.get("/api/services", function(services){
+            scheduler.updateCollection("services", services);
+        });
 
         var dp = new dataProcessor("/management/schedule/");
         dp.live_updates("/sync");

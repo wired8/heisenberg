@@ -44,17 +44,69 @@ module.exports.controller = function (app) {
     app.get('/api/bookings/:timeshift?', PassportConf.isAuthenticated, function (req, res) {
         var account_id = req.user.account_id;
         var bookingService = Injct.getInstance('bookingService');
+        var providerService = Injct.getInstance('providerService');
+        var serviceService = Injct.getInstance('serviceService');
+        var bookings = [];
 
-        bookingService.getBookingsByAccountId(account_id, function (err, bookings) {
+        Async.waterfall([getServices, getProviders, getBookings], null);
 
-            //set id property for all records
-            for (var i = 0; i < bookings.length; i++)
-                bookings[i].id = bookings[i]._id;
+        function getServices(cb) {
+            serviceService.getServicesByAccountId(account_id, function(err, _services) {
+                if (err) {
+                    res.send({ result: 'error', error: err });
+                    return;
+                }
+                var services = [];
 
-            //output response
-            res.send(bookings);
+                _.each(_services, function(service) {
+                    services.push({ key: service._id.toString(), label: service.name });
+                });
 
-        });
+                cb(null, services);
+            });
+        }
+
+        function getProviders(services, cb) {
+
+            var service_id = services[0].key;
+
+            providerService.getProvidersByServiceId(service_id, function(err, _providers) {
+                if (err) {
+                    res.send({ result: 'error', error: err });
+                    return;
+                }
+
+                var providers = [];
+
+                _.each(_providers, function(provider) {
+                    providers.push({ key: provider._id, label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name });
+                });
+
+                cb(null, services, providers);
+            });
+        }
+
+        function getBookings(services, providers, cb) {
+            bookingService.getBookingsByAccountId(account_id, function (err, _bookings) {
+
+                //set id property for all records
+                for (var i = 0; i < _bookings.length; i++) {
+                    var booking = new Booking(_bookings[i]);
+                    booking.id = _bookings[i]._id;
+                    booking.text = booking.first_name + ' ' + booking.last_name;
+                    bookings.push(booking);
+                }
+                //output response
+                res.send({
+                    data: bookings,
+                    collections: {
+                        services: services,
+                        providers: providers
+                    }
+                });
+
+            });
+        }
     });
 
     /**

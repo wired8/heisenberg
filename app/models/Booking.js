@@ -67,6 +67,7 @@ var Booking = function (json) {
     this.end_date = json.end_date;
     this.service = json.service;
     this.provider = json.provider;
+    this.description = json.description;
 
     var now = new XDate(true).getTime();
 

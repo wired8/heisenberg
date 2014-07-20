@@ -24,9 +24,35 @@ module.exports.controller = function (app) {
      *
      * @param request
      * @param response
-     * @param callback
      */
     app.get('/api/services', PassportConf.isAuthenticated, function (req, res) {
+
+        var account_id = req.user.account_id;
+        var serviceService = Injct.getInstance('serviceService');
+
+        serviceService.getServicesByAccountId(account_id, function(err, services) {
+
+            if (err) {
+                res.send({ result: 'error', error: err });
+                return;
+            }
+
+            var test = [
+                { key: 1, label: 'John Smith'}
+            ];
+            res.send(test);
+        });
+    });
+
+    /**
+     * GET /api/services
+     * Service management list.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.get('/management/services/list', PassportConf.isAuthenticated, function (req, res) {
         var limit = req.query.iDisplayLength;
         var skip = req.query.iDisplayStart;
         var aaData = [];
@@ -88,7 +114,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.get('/management/service/:service_id', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/management/service/:service_id?', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var service_id = req.params.service_id;
@@ -171,7 +197,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.post('/management/service/:service_id', PassportConf.isAuthenticated, function (req, res) {
+    app.post('/management/service/:service_id?', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var service_id = req.params.service_id;

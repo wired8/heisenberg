@@ -40,6 +40,16 @@ ProviderService.prototype.getProvidersByAccountId = function (account_id, callba
     this.providerRepository.getProvidersByAccountId(account_id, callback);
 };
 
+/**
+ * Get providers by service id
+ *
+ * @param service_id string
+ * @param callback
+ */
+ProviderService.prototype.getProvidersByServiceId = function (service_id, callback) {
+    this.providerRepository.getProvidersByServiceId(service_id, callback);
+};
+
 
 /**
  * Update a provider

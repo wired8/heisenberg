@@ -41,7 +41,7 @@ var resrvo_services = {
             "bServerSide": true,
             "sDefaultContent": "",
             "sPaginationType": "bootstrap",
-            "sAjaxSource": "/api/services",
+            "sAjaxSource": "/management/services/list",
             "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
                 oSettings.jqXHR = $.ajax({
                     "dataType": 'json',

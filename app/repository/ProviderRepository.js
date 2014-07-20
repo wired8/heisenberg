@@ -81,6 +81,35 @@ ProviderRepository.prototype.getProvidersByAccountId = function (account_id, fie
 };
 
 /**
+ * Get all providers by service_id
+ *
+ * @param {String|HexId} service_id
+ *
+ * @param [String] fields
+ *  the fields to return '_id name nickname'
+ *
+ * @param {Function} callback
+ */
+ProviderRepository.prototype.getProvidersByServiceId = function (service_id, fields, callback) {
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = null;
+    }
+
+    Provider.model().find({services: { "$in" : [service_id]} }, fields, function (err, providers) {
+
+        if (err) {
+            Logger.error("Error trying to get providers by service_id %j", service_id, err);
+            return callback(err);
+        }
+
+        callback(null, providers);
+
+    });
+};
+
+/**
  * Save a provider
  *
  * @param {Provider} provider

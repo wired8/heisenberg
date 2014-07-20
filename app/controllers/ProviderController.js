@@ -67,6 +67,35 @@ module.exports.controller = function (app) {
     });
 
     /**
+     * GET /api/providers/:service_id
+     * Provider management list.
+     *
+     * @param request
+     * @param response
+     * @param callback
+     */
+    app.get('/api/providers/:service_id', PassportConf.isAuthenticated, function (req, res) {
+        var service_id = req.params.service_id;
+        var providerService = Injct.getInstance('providerService');
+
+        providerService.getProvidersByServiceId(service_id, function (err, _providers) {
+
+            if (err) {
+                res.send({ result: 'error', error: err });
+                return;
+            }
+
+            var providers = [];
+
+            _.each(_providers, function(provider) {
+                providers.push({ key: provider._id, label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name });
+            });
+
+            res.send(providers);
+        });
+    });
+
+    /**
      * GET /management/providers
      * Provider management list.
      *
@@ -89,7 +118,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.get('/management/provider/:provider_id', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/management/provider/:provider_id?', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var provider_id = req.params.provider_id;
@@ -172,7 +201,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.post('/management/provider/:provider_id', PassportConf.isAuthenticated, function (req, res) {
+    app.post('/management/provider/:provider_id?', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var provider_id = req.params.provider_id;
