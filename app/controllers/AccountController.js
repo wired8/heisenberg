@@ -10,7 +10,7 @@ var _             = require('lodash'),
     Config        = require('../../config/config'),
     Passport      = require('passport'),
     Nodemailer    = require('nodemailer'),
-    PassportConf  = require('../../Config/Passport');
+    PassportConf  = require('../../config/passport');
 
 
 /**
