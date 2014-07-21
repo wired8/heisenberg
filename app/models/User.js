@@ -7,7 +7,7 @@
 var Mongoose = require('mongoose'),
     XDate = require('xdate'),
     SchemaUtil = require('./common/SchemaUtil.js'),
-    Bcrypt = require('Bcrypt-nodejs'),
+    Bcrypt = require('bcrypt-nodejs'),
     Crypto = require('crypto');
 
 
