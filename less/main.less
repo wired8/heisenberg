@@ -7,6 +7,7 @@
 @import (less) "../public/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
 @import (less) "../public/lib/bootstrapValidator/src/css/bootstrapValidator.css";
 @import (less) "../public/lib/dhtmlxscheduler/dhtmlxscheduler.css";
+@import (less) "schedule.css";
 @import (less) "../public/lib/watable/watable.css";
 @import "../public/lib/jasny-bootstrap/less/build/jasny-bootstrap.less";
 
@@ -562,4 +563,10 @@ a.noDecoration:hover {
 }
 .not-available #subdomain:after {
   content: "Not Available";
+}
+
+html, body {
+
+  height:100%; /*mandatory*/
+  overflow:hidden;
 }

@@ -79,7 +79,11 @@ module.exports.controller = function (app) {
                 var providers = [];
 
                 _.each(_providers, function(provider) {
-                    providers.push({ key: provider._id, label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name });
+                    providers.push({
+                        key: provider._id,
+                        label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name,
+                        name: provider.first_name + ' ' + provider.last_name
+                    });
                 });
 
                 cb(null, services, providers);
@@ -94,6 +98,7 @@ module.exports.controller = function (app) {
                     var booking = new Booking(_bookings[i]);
                     booking.id = _bookings[i]._id;
                     booking.text = booking.first_name + ' ' + booking.last_name;
+                    booking.unit_id = booking.provider;
                     bookings.push(booking);
                 }
                 //output response
@@ -101,7 +106,8 @@ module.exports.controller = function (app) {
                     data: bookings,
                     collections: {
                         services: services,
-                        providers: providers
+                        providers: providers,
+                        units: providers
                     }
                 });
 

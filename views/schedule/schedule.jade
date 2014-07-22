@@ -1,6 +1,7 @@
 extends ../layouts/layout
 block head
     title #{application} &middot; Schedule
+    meta(name="viewport", content="width=device-width, initial-scale=1")
 block content
     .container
         .row
@@ -18,6 +19,8 @@ block content
                                 .dhx_cal_next_button &nbsp;
                                 .dhx_cal_today_button
                                 .dhx_cal_date
+                                .dhx_minical_icon(id="dhx_minical_icon")
+                                .dhx_cal_tab(name='unit_tab', style='right:280px;')
                                 .dhx_cal_tab(name='day_tab', style='right:204px;')
                                 .dhx_cal_tab(name='week_tab', style='right:140px;')
                                 .dhx_cal_tab(name='month_tab', style='right:76px;')
@@ -29,6 +32,11 @@ block content
 block scripts
     script(src='/lib/application/scheduler.js')
     script(src='/lib/dhtmlxscheduler/sources/dhtmlxscheduler.js')
+    script(src='/lib/dhtmlxscheduler/ext/dhtmlxscheduler_units.js')
+    script(src='/lib/dhtmlxscheduler/ext/dhtmlxscheduler_limit.js')
+    script(src='/lib/dhtmlxscheduler/ext/dhtmlxscheduler_collision.js')
+    script(src='/lib/dhtmlxscheduler/ext/dhtmlxscheduler_quick_info.js')
+    script(src='/lib/dhtmlxscheduler/ext/dhtmlxscheduler_minical.js')
     script(src='/lib/dhtmlxscheduler/live_updates.js')
     script.
         $(document).ready(function() {

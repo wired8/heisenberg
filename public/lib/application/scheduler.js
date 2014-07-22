@@ -72,9 +72,66 @@ var resrvo_scheduler = {
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
 
+        scheduler.locale.labels.unit_tab = "Providers";
+
+        scheduler.createUnitsView({
+            name:"unit",
+            property:"key",
+            list:scheduler.serverList("units"),
+            size:20,
+            step:1
+        });
+
+        scheduler.config.collision_limit = 1;
+        scheduler.attachEvent("onEventLoading", function(ev) {
+            return scheduler.checkCollision(ev);
+        });
+
+        // Short events
+        //scheduler.config.hour_size_px = 84;
+        scheduler.config.separate_short_events = true;
+        scheduler.xy.min_event_height = 21; // 30 minutes is the shortest duration to be displayed as is
+
+        var format = scheduler.date.date_to_str("%H:%i");
+        var step = 30;
+
+        scheduler.config.first_hour = 7;
+
+        scheduler.templates.event_class = function(start, end, event) {
+            return "my_event";
+        };
+
+        scheduler.renderEvent = function(container, ev, width, height, header_content, body_content) {
+            var container_width = container.style.width; // e.g. "105px"
+
+            // move section
+            var html = "<div class='dhx_event_move my_event_move' style='width: " + container_width + "'></div>";
+
+            // container for event contents
+            html+= "<div class='my_event_body'>";
+            html += "<span class='event_date'>";
+            // two options here: show only start date for short events or start+end for long
+            if ((ev.end_date - ev.start_date) / 60000 > 40) { // if event is longer than 40 minutes
+                html += scheduler.templates.event_header(ev.start_date, ev.end_date, ev);
+                html += "</span><br/>";
+            } else {
+                html += scheduler.templates.event_date(ev.start_date) + "</span>";
+            }
+            // displaying event text
+            html += "<span>" + scheduler.templates.event_text(ev.start_date, ev.end_date, ev) + "</span>";
+            html += "</div>";
+
+            // resize section
+            html += "<div class='dhx_event_resize my_event_resize' style='width: " + container_width + "'></div>";
+
+            container.innerHTML = html;
+            return true; // required, true - we've created custom form; false - display default one instead
+        };
+
+
 
         scheduler.config.xml_date="%Y-%m-%d %H:%i";
-        scheduler.init('resrvo_scheduler',new Date(2014,8,4),"month");
+        scheduler.init('resrvo_scheduler', new Date(),"day");
 
         scheduler.templates.xml_date = function(value){ return new Date(value); };
         scheduler.load("/api/bookings", "json");
@@ -117,6 +174,22 @@ var resrvo_scheduler = {
         dp.attachEvent("onBeforeUpdate",function(id,status, data){
             data["_csrf"] = document.getElementById("_csrf").value;
             return true;
+        });
+
+        $('#dhx_minical_icon').on('click', function() {
+            if (scheduler.isCalendarVisible()){
+                scheduler.destroyCalendar();
+            } else {
+                scheduler.renderCalendar({
+                    position:"dhx_minical_icon",
+                    date:scheduler._date,
+                    navigation:true,
+                    handler:function(date,calendar){
+                        scheduler.setCurrentView(date);
+                        scheduler.destroyCalendar()
+                    }
+                });
+            }
         });
 
     }
