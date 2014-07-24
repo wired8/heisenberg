@@ -67,7 +67,7 @@ var resrvo_scheduler = {
 
         var lightbox_sections=[
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
-            { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:updateProviders},
+            { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getService},
             { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers")},
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
@@ -96,6 +96,7 @@ var resrvo_scheduler = {
         var step = 30;
 
         scheduler.config.first_hour = 7;
+        scheduler.config.last_hour = 18;
 
         scheduler.templates.event_class = function(start, end, event) {
             return "my_event";
@@ -135,6 +136,15 @@ var resrvo_scheduler = {
 
         scheduler.templates.xml_date = function(value){ return new Date(value); };
         scheduler.load("/api/bookings", "json");
+
+        // Get service and available time slots
+        function getService() {
+
+            $.get('/api/services/' + service_id, function(providers) {
+
+                updateProviders();
+            });
+        }
 
         function updateProviders() {
             var self = this;

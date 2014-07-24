@@ -46,7 +46,9 @@ ScheduleService.prototype.getScheduleByAccountId = function (account_id, callbac
  *
  * @param {Schedule} schedule
  * @param {Function} callback
- */
+*/
 ScheduleService.prototype.updateSchedule = function(schedule, callback) {
     this.scheduleRepository.saveSchedule(schedule, callback);
 };
+
+
