@@ -82,7 +82,8 @@
     "validator": "^3.13.0",
     "winston": "~0.7.3",
     "xdate": "~0.8.0",
-    "yui": "^3.17.1"
+    "yui": "^3.17.1",
+    "chance": "~0.5.9"
   },
   "devDependencies": {
     "browser-sync": "^1.2.1",

@@ -43,7 +43,7 @@ function setupDependencies(cb) {
         scheduleRepository: reqRepository('ScheduleRepository'),
         scheduleService: reqService('ScheduleService'),
         timeSlotRepository: reqRepository('TimeSlotRepository'),
-        timeSlotService: reqRepository('TimeSlotService'),
+        timeSlotService: reqService('TimeSlotService'),
         userRepository: reqRepository('UserRepository'),
         userService: reqService('UserService')
     });

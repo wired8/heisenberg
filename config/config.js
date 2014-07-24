@@ -30,7 +30,7 @@ config.keywords       = pkg.keywords;
 config.nodeVersion    = pkg.engines.node;
 
 config.port           = process.env.PORT || 3000;
-config.ga             = process.env.GA   || 'UA-44765020-2';
+config.ga             = process.env.GA   || 'UA-99999999-2';
 
 /**
  * Logging Configuration
@@ -44,6 +44,17 @@ config.logfilename    = process.env.LOGFILE ||'resrvo.log';
  */
 config.mongodb        = {};
 config.mongodb.url    = process.env.MONGODB_URL || 'localhost:27017/resrvo';
+
+config.mongodbTest        = {};
+config.mongodbTest.url    = 'localhost:27017/resrvo_test';
+
+/**
+ * Redis Configuration
+ */
+config.redis          = {};
+config.redis.host     = process.env.REDIS_HOST || '127.0.0.1';
+config.redis.port     = process.env.REDIS_PORT || 6739;
+
 
 /**
  * Session Configuration

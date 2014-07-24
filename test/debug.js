@@ -20,9 +20,7 @@ var mocha = new Mocha({
  */
 var debugMode = 'file';
 var testDir = './test/integration/';
-var testFile = './test/integration/models.js';
-//var testDir = './test/integration/';
-//var testFile = './test/integration/FriendServiceTest.js';
+var testFile = './test/integration/TimeSlotServiceTests.js';
 
 if (debugMode == 'dir') {
     debugDir();
