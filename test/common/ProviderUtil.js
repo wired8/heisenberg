@@ -17,9 +17,13 @@ var ProviderUtil = function() {
 /*
  Create n number of database providers
  */
-ProviderUtil.prototype.createProviders = function(n, account_id, callback) {
+ProviderUtil.prototype.createProviders = function(n, account_id, services, callback) {
 
     var providers = [];
+
+    var service_ids = _.map(services, function(service) {
+        return service._id.toString();
+    });
 
     Async.whilst(
         function () { return _.size(providers) < n; },
@@ -31,9 +35,9 @@ ProviderUtil.prototype.createProviders = function(n, account_id, callback) {
                 title: 'Mr',
                 bio: '',
                 image_url: '',
-                email: '',
+                email: _chance.email(),
                 password: '',
-                services: [],
+                services: service_ids,
                 breaks: {
                     sunday: {
                         from: '12:30pm',

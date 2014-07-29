@@ -6,7 +6,8 @@ var _ = require('underscore'),
     ServiceService = TestUtil.require('/services/ServiceService.js'),
     ServiceService = TestUtil.require('/services/ServiceService.js'),
     Async = require('async'),
-    Chance = require('chance');
+    Chance = require('chance'),
+    Injct = require('injct');
 
 var _chance = {};
 
@@ -23,7 +24,7 @@ ServiceUtil.prototype.createServices = function(n, account_id, callback) {
 
     Async.whilst(
         function () { return _.size(services) < n; },
-        function(callback) {
+        function(cb) {
             var s = new Service({
                 account_id: account_id,
                 name: _chance.word(),
@@ -49,14 +50,13 @@ ServiceUtil.prototype.createServices = function(n, account_id, callback) {
                 active: true,
                 created_at: new Date().getTime()
             });
-
-            new ServiceService().updateService(s, function (err, service) {
+            Injct.getInstance('serviceService').updateService(s, function (err, service) {
                 if (err) {
                     console.log('create service error: %j', err);
                     return callback(err, null);
                 }
                 services.push(service);
-                callback(null, service);
+                cb();
             });
         },
         function(err) {

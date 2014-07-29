@@ -75,6 +75,7 @@ winston.remove(winston.transports.Console);
 
 mongoose.connect(config.mongodb.url);
 var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 // Use Mongo for session store
 config.session.store  = new MongoStore({

@@ -12,9 +12,11 @@ var injct = require('injct'),
  */
 exports.setup = function (done) {
 
-    exports.flushRedis();
+   // exports.flushRedis();
 
     mongoose.connect(config.mongodbTest.url);
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
     console.log(config.mongodbTest.url);
 
     initDependencies();
@@ -37,6 +39,8 @@ exports.setupUnit = function (done) {
  */
 exports.tearDown = function (done) {
 
+    Account.model().remove({}, logDrop);
+    Account.model().collection.dropAllIndexes(logDrop);
     Provider.model().remove({}, logDrop);
     Provider.model().collection.dropAllIndexes(logDrop);
     Service.model().remove({}, logDrop);
@@ -44,7 +48,7 @@ exports.tearDown = function (done) {
 
     mongoose.connection.close();
 
-    exports.flushRedis();
+   // exports.flushRedis();
 
     if (done) {
         done();
