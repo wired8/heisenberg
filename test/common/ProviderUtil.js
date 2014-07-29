@@ -17,7 +17,7 @@ var ProviderUtil = function() {
 /*
  Create n number of database providers
  */
-ProviderUtil.prototype.createProviders = function(n, callback) {
+ProviderUtil.prototype.createProviders = function(n, account_id, callback) {
 
     var providers = [];
 
@@ -25,12 +25,51 @@ ProviderUtil.prototype.createProviders = function(n, callback) {
         function () { return _.size(providers) < n; },
         function(callback) {
             var p = new Provider({
+                account_id: account_id,
+                first_name: _chance.word(),
+                last_name: _chance.word(),
                 title: 'Mr',
-                first_name: _chance.name(),
-                last_name: _chance.name(),
-                email: _chance.email(),
-                created_at: new Date().getTime(),
-                updated_at: new Date().getTime()
+                bio: '',
+                image_url: '',
+                email: '',
+                password: '',
+                services: [],
+                breaks: {
+                    sunday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    monday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    tuesday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    wednesday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    thursday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    friday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    },
+                    saturday: {
+                        from: '12:30pm',
+                        to: '1:00pm'
+                    }
+                },
+                active: true,
+                active_from: 0,
+                active_to: 9,
+                not_available_message: '',
+                book_online: true,
+                created_at: new Date().getTime()
             });
 
             new ProviderService().updateProvider(p, function (err, provider) {

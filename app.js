@@ -85,7 +85,7 @@ config.session.store  = new MongoStore({
 /**
  * Configure Redis
  */
-redis.createClient(config.redis.port, config.redis.host, config.redis.options || {});
+//redis.createClient(config.redis.port, config.redis.host, config.redis.options || {});
 
 
 /**

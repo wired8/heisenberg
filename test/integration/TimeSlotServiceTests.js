@@ -6,11 +6,13 @@ var Assert = require('assert'),
     TimeSlotService = TestUtil.require('/services/TimeSlotService.js'),
     XDate = require('xdate');
 
+var 
 
 describe('TimeSlotServiceTests', function() {
 
     before(function(done) {
         TestUtil.setup(function() {
+            new ServiceUtil().createUsers(1, function(err, _users) {
             done();
         });
     });
