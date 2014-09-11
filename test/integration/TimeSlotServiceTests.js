@@ -70,7 +70,7 @@ describe('TimeSlotServiceTests', function() {
            var provider_id = _providers[0]._id.toString();
            var service_id = _services[0]._id.toString();
 
-           new TimeSlotService().getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, from,  function(err, result) {
+           new TimeSlotService().getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, from, function(err, result) {
 
                Assert.ifError(err);
                Assert(result.length, 4);
