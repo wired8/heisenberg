@@ -28,44 +28,44 @@ ScheduleUtil.prototype.createSchedules = function(n, account_id, providers, call
                 account_id: account_id,
                 monday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 tuesday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 wednesday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 thursday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 friday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 saturday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 sunday: {
                     open: true,
-                    start: '9:00am',
-                    end: '6:00pm',
+                    start: '9:00',
+                    end: '18:00',
                     providers: providers
                 },
                 created_at: new Date().getTime()

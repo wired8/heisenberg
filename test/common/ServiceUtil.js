@@ -40,7 +40,7 @@ ServiceUtil.prototype.createServices = function(n, account_id, callback) {
                 },
                 padding_after: {
                     hours: 0,
-                    minutes: 0
+                    minutes: 10
                 },
                 book_online: true,
                 image_url: '',

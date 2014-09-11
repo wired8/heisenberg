@@ -65,14 +65,19 @@ describe('TimeSlotServiceTests', function() {
 
         it('should be able to get available time slots for provider by date', function(done) {
 
-           var from = new XDate('2014-1-1 00:00', true).getTime();
-           var to = new XDate('2014-1-1 23:59:59', true).getTime();
+           var from = new XDate('2014-1-1', true);
            var account_id = _accounts[0]._id.toString();
            var provider_id = _providers[0]._id.toString();
+           var service_id = _services[0]._id.toString();
 
-           new TimeSlotService().getAvailableTimeSlotsForProviderByDate(account_id, provider_id, from, to, function(err, result) {
+           new TimeSlotService().getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, from,  function(err, result) {
 
-
+               Assert.ifError(err);
+               Assert(result.length, 4);
+               Assert(result[0], '09:00:AM');
+               Assert(result[1], '10:30:AM');
+               Assert(result[2], '13:30:AM');
+               Assert(result[3], '16:30:AM');
                done();
 
            });

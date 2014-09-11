@@ -25,34 +25,34 @@ var ProviderSchema = new Schema({
         options: [String]
     },
     breaks: {
-        sunday: {
+        sunday: [{
             from: String,
             to: String
-        },
-        monday: {
+        }],
+        monday: [{
             from: String,
             to: String
-        },
-        tuesday: {
+        }],
+        tuesday: [{
             from: String,
             to: String
-        },
-        wednesday: {
+        }],
+        wednesday: [{
             from: String,
             to: String
-        },
-        thursday: {
+        }],
+        thursday: [{
             from: String,
             to: String
-        },
-        friday: {
+        }],
+        friday: [{
             from: String,
             to: String
-        },
-        saturday: {
+        }],
+        saturday: [{
             from: String,
             to: String
-        }
+        }]
     },
     active: {type: Boolean, default: false},
     active_from: {type: Number},

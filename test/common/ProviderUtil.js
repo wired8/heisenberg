@@ -10,24 +10,26 @@ var _ = require('underscore'),
 
 var _chance = {};
 
-var ProviderUtil = function() {
+var ProviderUtil = function () {
     _chance = new Chance();
 };
 
 /*
  Create n number of database providers
  */
-ProviderUtil.prototype.createProviders = function(n, account_id, services, callback) {
+ProviderUtil.prototype.createProviders = function (n, account_id, services, callback) {
 
     var providers = [];
 
-    var service_ids = _.map(services, function(service) {
+    var service_ids = _.map(services, function (service) {
         return service._id.toString();
     });
 
     Async.whilst(
-        function () { return _.size(providers) < n; },
-        function(callback) {
+        function () {
+            return _.size(providers) < n;
+        },
+        function (callback) {
             var p = new Provider({
                 account_id: account_id,
                 first_name: _chance.word(),
@@ -39,34 +41,76 @@ ProviderUtil.prototype.createProviders = function(n, account_id, services, callb
                 password: '',
                 services: service_ids,
                 breaks: {
-                    sunday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    monday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    tuesday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    wednesday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    thursday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    friday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    },
-                    saturday: {
-                        from: '12:30pm',
-                        to: '1:00pm'
-                    }
+                    sunday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    monday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    tuesday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    wednesday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    thursday:  [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    friday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ],
+                    saturday: [
+                        {
+                            from: '12:30',
+                            to: '13:00'
+                        },
+                        {
+                            from: '15:30',
+                            to: '15:45'
+                        }
+                    ]
                 },
                 active: true,
                 active_from: 0,
@@ -85,7 +129,7 @@ ProviderUtil.prototype.createProviders = function(n, account_id, services, callb
                 callback(null, provider);
             });
         },
-        function(err) {
+        function (err) {
             if (err) {
                 console.log('create providers error: %j', err);
                 return callback(err, null);
