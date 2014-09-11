@@ -10,7 +10,7 @@ var Mongoose = require('mongoose'),
 var Schema = Mongoose.Schema;
 
 var TimeSlotSchema = new Schema({
-    provider: {type: String},
+    provider_id: {type: String},
     start: {type: Number},
     end: {type: Number}
 });
@@ -39,7 +39,7 @@ var TimeSlot = function (json) {
         this._id = json._id;
     }
 
-    this.provider = json.provider;
+    this.provider_id = json.provider_id;
     this.start = json.start;
     this.end = json.end;
 };

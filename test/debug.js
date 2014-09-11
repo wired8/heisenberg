@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  Mocha debugging script
  */
@@ -11,7 +13,7 @@ var mocha = new Mocha({
     ui: 'bdd',
     globals: 'logger,httpLogger',
     recursive: true,
-    timeout: 1000
+    timeout: 10000
 });
 
 /*
@@ -22,7 +24,7 @@ var debugMode = 'file';
 var testDir = './test/integration/';
 var testFile = './test/integration/TimeSlotServiceTests.js';
 
-if (debugMode == 'dir') {
+if (debugMode === 'dir') {
     debugDir();
 } else {
     debugFile();

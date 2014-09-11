@@ -83,7 +83,8 @@
     "winston": "~0.7.3",
     "xdate": "~0.8.0",
     "yui": "^3.17.1",
-    "chance": "~0.5.9"
+    "chance": "~0.5.9",
+    "gulp-resolve-dependencies": "~1.0.1"
   },
   "devDependencies": {
     "browser-sync": "^1.2.1",
@@ -112,6 +113,7 @@
     "mocha": "~1.20.1",
     "psi": "^0.1.1",
     "run-sequence": "^0.3.6",
-    "supertest": "~0.13.0"
+    "supertest": "~0.13.0",
+    "gulp-mocha": "~1.1.0"
   }
 }

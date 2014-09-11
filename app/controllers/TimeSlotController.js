@@ -25,14 +25,15 @@ module.exports.controller = function (app) {
      * @param request
      * @param response
      */
-    app.get('/api/timeslots/:providerid/:date', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/api/timeslots/:providerid/:serviceid/:date', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var provider_id = req.params.providerid;
+        var service_id = req.params.serviceid;
         var date = req.params.date;
         var timeSlotService = Injct.getInstance('timeSlotService');
 
-        timeSlotService.getAvailableTimeSlotsForProviderByDate(account_id, provider_id, date, function(err, result) {
+        timeSlotService.getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, date, function(err, result) {
 
             if (err) {
                 res.send({ result: 'ERROR', err: err });

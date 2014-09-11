@@ -1,10 +1,13 @@
+'use strict';
+
 var injct = require('injct'),
     util = require('util'),
     config = require('../config/config'),
     mongoose = require('mongoose'),
     redis = require('redis'),
-    Provider = req('/models/Provider.js'),
-    Service = req('/models/Service.js');
+    Provider = require('../app/models/Provider.js'),
+    Service = require('../app/models/Service.js'),
+    Account = require('../app/models/Account.js');
 
 /**
  * Setup for integration tests
@@ -14,14 +17,25 @@ exports.setup = function (done) {
 
    // exports.flushRedis();
 
-    mongoose.connect(config.mongodbTest.url);
+    mongooseConnect(function() {
+        initDependencies(function() { setTimeout(done, 200) });
+    });
+};
+
+var mongooseConnect = function(next) {
     var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
+
+    db.on('connecting', function () {
+        console.warn('Mongoose is connecting');
+    });
+
+    db.on('connected', function () {
+        console.warn('Mongoose connected');
+        next();
+    });
+
+    mongoose.connect(config.mongodbTest.url);
     console.log(config.mongodbTest.url);
-
-    initDependencies();
-
-    setTimeout(done, 200);
 };
 
 /**
@@ -46,13 +60,9 @@ exports.tearDown = function (done) {
     Service.model().remove({}, logDrop);
     Service.model().collection.dropAllIndexes(logDrop);
 
-    mongoose.connection.close();
+    mongoose.connection.close(done);
 
    // exports.flushRedis();
-
-    if (done) {
-        done();
-    }
 };
 
 exports.flushRedis = function() {

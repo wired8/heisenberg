@@ -4,7 +4,6 @@ var _ = require('underscore'),
     TestUtil = require('../util.js'),
     Service = TestUtil.require('/models/Service.js'),
     ServiceService = TestUtil.require('/services/ServiceService.js'),
-    ServiceService = TestUtil.require('/services/ServiceService.js'),
     Async = require('async'),
     Chance = require('chance'),
     Injct = require('injct');

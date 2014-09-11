@@ -27,7 +27,7 @@ var semver            = require('semver');                  // https://npmjs.org
 var enforce           = require('express-sslify');          // https://github.com/florianheinemann/express-sslify
 var winston           = require('winston');                 // https://npmjs.org/package/winston
 var mongoose          = require('mongoose');                // https://npmjs.org/package/mongoose
-var redis             = require('redis');                   // https://npmjs.org/package/redis
+//var redis             = require('redis');                   // https://npmjs.org/package/redis
 var passport          = require('passport');                // https://npmjs.org/package/passport
 var MongoStore        = require('connect-mongo')(session);  // https://npmjs.org/package/connect-mongo
 var expressValidator  = require('express-validator');       // https://npmjs.org/package/express-validator
@@ -331,15 +331,15 @@ app.use(require('express-subdomain-handler')({ baseUrl: 'resrvo.com', prefix: ''
 app.get('*', function(req, res, next) {
     var regex = /(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i;
     var subdomain = req.headers.host.match(regex);
-    if (subdomain != null) {
+    if (subdomain !== null) {
         console.log('subdomain: ' + subdomain[1]);
-        if (subdomain[1] == 'www') {
+        if (subdomain[1] === 'www') {
             console.log(req);
             res.redirect("http://resrvo.com" + req.url, 301);
         } else {
             // Lookup subdomain
             Account.findOne({ subdomain: subdomain[1] }, function(account, err) {
-                if (err || account == null) {
+                if (err || account === null) {
                     console.log("Account is: " + account);
                     res.render('404.jade', { locals:
                     {
@@ -392,7 +392,7 @@ app.use(serveStatic(__dirname + '/public', { maxAge: week }));
 //   $ curl http://localhost:3000/notfound -H "Accept: text/plain"
 
 // Handle 404 Errors
-app.use(function (req, res, next) {
+app.use(function (req, res) {
   winston.warn('404 Warning. URL: ' + req.url + '\n');
   res.status(404);
   // Respond with html page

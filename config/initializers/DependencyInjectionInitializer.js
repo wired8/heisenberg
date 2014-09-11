@@ -3,13 +3,14 @@
 var injct = require('injct'),
     util = require('util'),
     config = require('config'),
-    redis = require('redis'),
     Constants = require('../../app/util/Constants.js');
 
 /**
  * Init all dependency injection references
  */
 exports.init = function (cb) {
+
+    console.log('Setting up dependencies');
 
     setupDependencies(function() {
 

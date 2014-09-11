@@ -27,59 +27,95 @@ module.exports = TimeSlotService;
  *
  * @param {string} accountId
  * @param {string} providerId
+ * @param {string} serviceId
  * @param {number} from
  * @param {number} to
  * @param callback
  */
-TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (accountId, providerId, from, to, callback) {
+TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (accountId, providerId, serviceId, date, callback) {
 
     var self = this;
     var scheduleService = Injct.getInstance('scheduleService');
 
+    Async.waterfall([getAccountScheduleHours, getServicePeriod,  getProviderAvailableTimeSlots], callback);
 
-    Async.waterfall([getScheduleHours, getAvailableTimeSlots], buildTimeSlots);
+    function getAccountScheduleHours(cb) {
 
-    function getScheduleHours(cb) {
-
-        scheduleService.getScheduleByAccountId(accountId, function(err, result) {
-
-            if (err) {
-                cb(err);
-                return;
-            }
-
-            var day = new XDate(from, true).getDay();
-
-            var provider_schedule = result[getDayName(day)].providers[providerId];
-
-            cb(null, provider_schedule);
-
-        });
-
-    }
-
-    function getAvailableTimeSlots(provider_schedule, cb) {
-
-        var timeSlots = [];
-
-        if (provider_schedule.available === false) {
-            cb(null, timeSlots);
-            return;
-        }
-
-        self.timeSlotRepository.getAvailableTimeSlotsForProviderByDate(providerId, from, to, function(err, result) {
+        scheduleService.getScheduleByAccountId(accountId, function(err, schedule) {
 
             if (err) {
                 cb(err);
                 return;
             }
 
-            cb(null, result);
+            var day = new XDate(date, true).getDay();
+
+            var provider_ids = schedule[getDayName(day)].providers;
+
+            var valid_provider = _.find(provider_ids, function(provider_id) {
+                return providerId === provider_id;
+            });
+
+            if (!valid_provider) {
+                callback('Invalid provider');
+            }
+
+            cb(null, schedule);
+
+        });
+    }
+
+    function getServicePeriod(cb) {
+
+        var serviceService = Injct.getInstance('scheduleService');
+
+        serviceService.getServiceById(serviceId, function(err, service){
+
+            if (err) {
+                Logger.error('Invalid service id %j: %j', serviceId, err);
+                callback('Invalid service id');
+                return;
+            }
+
+            if (!service) {
+                callback('Service empty!');
+                return;
+            }
+
+            var serviceDuration = {
+                padding_before_minutes: (service.padding_before.hours * 60) + service.padding_before.minutes,
+                duration_minutes: (service.duration.hours * 60) + service.duration.minutes,
+                padding_after_minutes: (service.padding_after.hours * 60) + service.padding_after.minutes
+             };
+
+            callback(null, serviceDuration);
+
         });
 
     }
 
-    function buildTimeSlots() {
+    function getProviderAvailableTimeSlots(provider_schedule, cb) {
+
+        var day = new XDate(date).getDate();
+        var month = new XDate(date).getMonth();
+        var year = new XDate(date).getFullYear();
+
+        var from = new XDate(year, month, day, 0, 0, 0, 0);
+        var to = new XDate(year, month, day, 23, 59, 59, 59);
+
+        self.timeSlotRepository.getTimeSlotsByProviderId(providerId, from, to, function(err, timeslots) {
+
+            if (err) {
+                cb(err);
+                return;
+            }
+
+            cb(null, buildTimeSlots(provider_schedule, timeslots));
+        });
+
+    }
+
+    function buildTimeSlots(provider_schedule, timeslots) {
 
         var timeslots = [];
 
@@ -111,8 +147,6 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
                 return 'saturday';
         }
     }
-
-
 };
 
 /**
@@ -141,7 +175,6 @@ TimeSlotService.prototype.getAvailableTimeSlots = function(startdate, enddate, m
     while(start_timestamp <= end_timestamp) {
 
     }
-
 
     callback(null, timeslots);
 

@@ -1,3 +1,5 @@
+'use strict';
+
 var TestUtil = require('../util.js'),
     Assert = require('assert'),
     User = TestUtil.require('/models/User.js');
@@ -24,10 +26,12 @@ describe('User Model', function() {
       password: 'password'
     });
     user.save(function(err, cb) {
-      if (err) return done(err);
+      if (err) {
+          return done(err);
+      }
       Assert.ifError(err);
       done();
-    })
+    });
   });
 
   it('should not create a user with the unique email', function(done) {
@@ -36,14 +40,18 @@ describe('User Model', function() {
       password: 'password'
     });
     user.save(function(err) {
-      if (err) err.code.should.equal(11000);
+      if (err) {
+          err.code.should.equal(11000);
+      }
       done();
     });
   });
 
   it('should find user by email', function(done) {
     User.findOne({ email: 'test@gmail.com' }, function(err, user) {
-      if (err) return done(err);
+      if (err) {
+          return done(err);
+      }
       user.email.should.equal('test@gmail.com');
       done();
     });
@@ -51,7 +59,9 @@ describe('User Model', function() {
 
   it('should delete a user', function(done) {
     User.remove({ email: 'test@gmail.com' }, function(err) {
-      if (err) return done(err);
+      if (err) {
+          return done(err);
+      }
       done();
     });
   });
