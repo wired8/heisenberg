@@ -68,6 +68,17 @@ module.exports.controller = function (app) {
 
         function getProviders(services, cb) {
 
+            if (services.length === 0) {
+                res.send({
+                    data: bookings,
+                    collections: {
+                        services: [],
+                        providers: [],
+                        units: []
+                    }
+                });
+                return;
+            }
             var service_id = services[0].key;
 
             providerService.getProvidersByServiceId(service_id, function(err, _providers) {

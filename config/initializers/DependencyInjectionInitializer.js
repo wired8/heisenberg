@@ -1,9 +1,7 @@
 'use strict';
 
 var injct = require('injct'),
-    util = require('util'),
-    config = require('config'),
-    Constants = require('../../app/util/Constants.js');
+    util = require('util');
 
 /**
  * Init all dependency injection references

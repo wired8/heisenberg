@@ -53,14 +53,11 @@ exports.setupUnit = function (done) {
  */
 exports.tearDown = function (done) {
 
-    Account.model().remove({}, logDrop);
-    Account.model().collection.dropAllIndexes(logDrop);
-    Provider.model().remove({}, logDrop);
-    Provider.model().collection.dropAllIndexes(logDrop);
-    Service.model().remove({}, logDrop);
-    Service.model().collection.dropAllIndexes(logDrop);
-
-    mongoose.connection.close(done);
+    mongoose.connection.db.dropDatabase(function() {
+        mongoose.connection.removeAllListeners('connecting');
+        mongoose.connection.removeAllListeners('connected');
+        mongoose.connection.close(done);
+    });
 
    // exports.flushRedis();
 };

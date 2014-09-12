@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -8333,7 +8334,6 @@ fieldset[disabled] .btn-yahoo.active {
 .fa-plus-square-o:before {
   content: "\f196";
 }
-@charset "UTF-8";
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license
@@ -10668,7 +10668,6 @@ div.dhx_menu_icon {
 }
 .watable .btn-toolbar {
   margin-bottom: -5px;
-  /*display: none;*/
 }
 .watable .pagination {
   margin: 0;

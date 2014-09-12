@@ -345,7 +345,7 @@
                                         dp.on('changeDate', {column: column, input: $('input.filter', elem)}, priv.dpClicked);
                                     }
                                     else
-                                        priv.log('datepicker plugin not found');
+                                    priv.log('datepicker plugin not found');
                                 }
                                 elem.on('keyup', 'input.filter', {column: column}, priv.filterChanged);
                                 break;
@@ -1016,7 +1016,7 @@
         };
 
         /*
-         helper to detect transition support
+        helper to detect transition support
          */
         priv.supportsTransition = function() {
             var style = document.createElement('p').style;
@@ -1026,12 +1026,12 @@
 
             //check vendor support
             var vendorSupport = false;
-            $.each(_vendors, function (index, vendor) {
-                if ('{0}Transition'.f(vendor) in style) {
-                    vendorSupport = true;
-                    return false;
-                }
-            });
+             $.each(_vendors, function (index, vendor) {
+                 if ('{0}Transition'.f(vendor) in style) {
+                     vendorSupport = true;
+                     return false;
+                 }
+             });
             return vendorSupport;
         };
 
