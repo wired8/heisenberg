@@ -20,6 +20,13 @@
  * @requires ../lib/smokejs/smoke.min.js
  * @requires ../lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js
  * @requires ../lib/fastclick/lib/fastclick.js
+ * @requires ../lib/debugging/debug.js
  * @requires ../lib/application/navigation.js
  * @requires ../lib/application/tabs.js
+ * @requires ../lib/jquery/jquery-migrate.min.js
+ * @requires ../lib/datatables/jquery.dataTables.js
+ * @requires ../lib/datatables/DTBootstrap.js)
+ * @requires ../lib/datatables/KeyTable.min.js
+ * @requires ../lib/datatables/dataTables.editor.min.js
+ * @requires ../lib/jquery.inputmask/dist/jquery.inputmask.bundle.min.js
  */

@@ -84,7 +84,8 @@
     "xdate": "~0.8.0",
     "yui": "^3.17.1",
     "chance": "~0.5.9",
-    "gulp-resolve-dependencies": "~1.0.1"
+    "gulp-resolve-dependencies": "~1.0.1",
+    "shopify-node-api": "~1.4.5"
   },
   "devDependencies": {
     "browser-sync": "^1.2.1",

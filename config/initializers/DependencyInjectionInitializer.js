@@ -35,6 +35,8 @@ function setupDependencies(cb) {
         bookingRepository: reqRepository('BookingRepository'),
         formService: reqService('FormService'),
         formRepository: reqRepository('FormRepository'),
+        locationService: reqService('LocationService'),
+        locationRepository: reqRepository('LocationRepository'),
         providerService: reqService('ProviderService'),
         providerRepository: reqRepository('ProviderRepository'),
         serviceRepository: reqRepository('ServiceRepository'),

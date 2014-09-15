@@ -1,34 +1,34 @@
 'use strict';
 
-var resrvo_services = {
+var resrvo_locations = {
 
     init: function () {
         // New record
         $('button.editor_create').on('click', function (e) {
             e.preventDefault();
-            location.href = '/management/service/';
+            location.href = '/management/location/';
         });
 
         // Edit record
-        $('#services').on('click', 'a.editor_edit', function (e) {
+        $('#locations').on('click', 'a.editor_edit', function (e) {
             e.preventDefault();
             var row = $(this).closest('tr'),
                 data = oTable._(row),
                 id = data[0].DT_RowId;
 
-            location.href = '/management/service/' + id;
+            location.href = '/management/location/' + id;
         });
 
         // Delete record
-        $('#services').on('click', 'a.editor_delete', function (e) {
+        $('#locations').on('click', 'a.editor_delete', function (e) {
             e.preventDefault();
             var row = $(this).closest('tr'),
                 data = oTable._(row),
                 id = data[0].DT_RowId;
 
-            smoke.confirm("Are you sure you wish to delete this service?", function (e) {
+            smoke.confirm("Are you sure you wish to delete this location?", function (e) {
                 if (e) {
-                    $.post('/management/service/remove', {event_id: id }, function (result) {
+                    $.post('/management/location/remove', {event_id: id }, function (result) {
                         location.href = location.href;
                     });
                 }
@@ -36,12 +36,12 @@ var resrvo_services = {
         });
 
 
-        var oTable = $('#services').dataTable({
+        var oTable = $('#locations').dataTable({
             "bProcessing": false,
             "bServerSide": true,
             "sDefaultContent": "",
             "sPaginationType": "bootstrap",
-            "sAjaxSource": "/management/services/list",
+            "sAjaxSource": "/management/locations/list",
             "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
                 oSettings.jqXHR = $.ajax({
                     "dataType": 'json',
@@ -62,8 +62,8 @@ var resrvo_services = {
                     "bVisible": false
                 },
                 { "mDataProp": "name" },
-                { "mDataProp": "description" },
-                { "mDataProp": "duration" },
+                { "mDataProp": "address" },
+                { "mDataProp": "providers" },
                 {
                     "mDataProp": "active",
                     "bUseRendered": false,
@@ -119,8 +119,8 @@ var resrvo_services = {
 
         // Initialise KeyTable
         var keys = new KeyTable({
-            "table": $('#services')[0],
-            "datatable": $('#services').dataTable()
+            "table": $('#locations')[0],
+            "datatable": $('#locations').dataTable()
         });
 
         keys.event.esc(null, null, function () {
@@ -136,11 +136,11 @@ var resrvo_services = {
         });
 
         keys.event.action(2, null, function () {
-            showField(editor, keys, 'description');
+            showField(editor, keys, 'address');
         });
 
         keys.event.action(3, null, function () {
-            showField(editor, keys, 'duration');
+            showField(editor, keys, 'providers');
         });
 
         keys.event.action(4, null, function () {

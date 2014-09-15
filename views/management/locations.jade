@@ -1,0 +1,44 @@
+extends ../layouts/layout
+block head
+    title #{application} &middot; Location Management
+block content
+    .container
+        .row
+            .col-sm-12
+                .page-header
+                    h2
+                        i.fa.fa-file-text-o
+                        | &nbsp;Location Management
+                form.form-horizontal(role='form', id='locationForm', method='POST')
+                    input(type='hidden', name='_csrf', value=_csrf)
+
+                    .form-group
+
+                        .dataTables_wrapper(class="form-inline", role="grid")
+                            button(class="editor_create btn btn-primary") Create new location
+                            .spacer
+                            table(id='locations', class="table table-striped table-bordered dTableR dataTable")
+                                thead
+                                    tr
+                                        th _id
+                                        th Name
+                                        th Address
+                                        th Providers
+                                        th Active
+                                        th Created
+                                        th Updated
+                                        th Edit
+                                        th Delete
+
+//- Page-specific stuff
+block scripts
+    script.
+        $(document).ready(function() {
+            loadScript('/lib/application/locations.js').done(function () {
+                resrvo_locations.init();
+            });
+        });
+
+
+
+

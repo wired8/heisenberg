@@ -1,0 +1,68 @@
+extends ../layouts/layout
+block head
+    title #{application} &middot; Location
+block content
+    .container
+        .row
+            .col-sm-12
+                .page-header
+                    h2
+                        i.fa.fa-file-text-o
+                        | &nbsp;Location
+                form.form-horizontal(role='form', id='locationForm', method='POST')
+                    input(type='hidden', name='_csrf', value=_csrf)
+
+                    .form-group
+                        .col-sm-3
+                            ul(class="nav nav-pills nav-stacked", id="settings_tab")
+                                li(class="active")
+                                    a(href="#general", data-toggle="pill") General
+                                li
+                                    a(href="#providers", data-toggle="pill") Providers
+                        .col-sm-9
+                            .tab-content
+                                .tab-pane(id="general", class="active")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 General Settings
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Name
+                                        .col-sm-4
+                                            input.form-control(type='text', name='name', id='name', value='#{location.name}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='address') Address
+                                        .col-sm-4
+                                            input.form-control(type='text', name='address', id='address', value='#{location.address}')
+                                    .form-group
+                                        label.col-sm-3.control-label(for='name') Active
+                                        .col-sm-4
+                                            input(type='checkbox', name='active', id='active', checked='#{location.active}'=='true')
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+
+                                .tab-pane(id="providers")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Providers
+                                    .form-group
+                                        .col-sm-4
+                                            each provider in providers
+                                                p
+                                                    input(type='checkbox', name='providers', value='#{provider._id}', checked='#{provider.selected}'=='true')
+                                                    |   #{provider.first_name} #{provider.last_name}
+
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit', class='save') Save changes
+
+//- Page-specific stuff
+block scripts
+script.
+    $(document).ready(function() {
+        loadScript('/lib/application/location.js').done(function () {
+            resrvo_location.init();
+        });
+    });
+
+

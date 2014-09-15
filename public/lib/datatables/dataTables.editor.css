@@ -235,8 +235,8 @@ div.DTED_Lightbox_Wrapper {
 div.DTED_Lightbox_Container {
     *position: absolute; /* IE6 */
     *top: 50%;
-    #position: absolute; /* IE7 */
-    #top: 50%;
+   /* #position: absolute; /* IE7
+    #top: 50%; */
     display: table;
     height: 100%;
     width: 100%;
@@ -244,7 +244,7 @@ div.DTED_Lightbox_Container {
 
 div.DTED_Lightbox_Content_Wrapper {
     *position: relative; /* IE6 */
-    #position: relative; /* IE7 */
+  /*  #position: relative; /* IE7 */
     display: table-cell;
     vertical-align: middle;
     width: 100%;
@@ -252,7 +252,7 @@ div.DTED_Lightbox_Content_Wrapper {
 
 div.DTED_Lightbox_Content {
     *top: -50%; /* IE6 */
-    #top: -50%; /* IE7 */
+  /*  #top: -50%; /* IE7 */
     position: relative;
     border: 2px solid #111;
     box-shadow: 3px 3px 10px #555;

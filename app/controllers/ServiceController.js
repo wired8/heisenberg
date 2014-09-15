@@ -154,16 +154,17 @@ module.exports.controller = function (app) {
 
                 serviceService.getServiceById(service_id, function (err, service) {
 
+                    if (err) {
+                        res.send({ result: 'error', error: err });
+                        return;
+                    }
+
                     _.each(all_providers, function(provider) {
                         if (_.contains(service.providers, provider._id)) {
                             provider.selected = true;
                         }
                     });
 
-                    if (err) {
-                        res.send({ result: 'error', error: err });
-                        return;
-                    }
                     res.render('management/service', {
                         title: 'Edit Service',
                         service: service,

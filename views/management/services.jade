@@ -29,14 +29,8 @@ block content
 
 //- Page-specific stuff
 block scripts
-    link(rel="stylesheet", href="/lib/datatables/TableTools.css")
-    link(rel="stylesheet", href="/lib/smoke/themes/gebo.css", id="smoke_gebo")
-    link(rel='stylesheet', href='/lib/datatables/DTBootstrap.css')
-    link(rel='stylesheet', href='/lib/datatables/dataTables.editor.css')
-    script(src='/lib/jquery/jquery.js')
-    script(src='/lib/jquery/jquery-migrate.min.js')
-    script(src='/lib/datatables/jquery.dataTables.js')
-    script(src='/lib/datatables/DTBootstrap.js')
-    script(src='/lib/datatables/KeyTable.min.js')
-    script(src='/lib/datatables/dataTables.editor.min.js')
-    script(src='/lib/application/services.js')
+    $(document).ready(function() {
+        loadScript('/lib/application/services.js').done(function () {
+            resrvo_services.init();
+        });
+    });
