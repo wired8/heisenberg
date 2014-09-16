@@ -8,7 +8,7 @@ build:
     - jshint:
         use_strict: true
         trailing_whitespace: false
-    -  npm-test
+    - npm-test
     - script:
         name: echo nodejs information
         code: |
