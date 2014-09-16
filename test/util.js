@@ -34,6 +34,8 @@ var mongooseConnect = function(next) {
         next();
     });
 
+
+
     mongoose.connect(config.mongodbTest.url);
     console.log(config.mongodbTest.url);
 };
