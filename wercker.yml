@@ -4,7 +4,7 @@ services:
 build:
     steps:
       - npm-install
-      - npm-test
+      - npm-test:
          cwd: $WERCKER_SOURCE_DIR
       - script:
          name: echo nodejs information
