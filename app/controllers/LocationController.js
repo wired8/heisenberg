@@ -133,6 +133,7 @@ module.exports.controller = function (app) {
                     _id: provider._id.toString(),
                     first_name: provider.first_name,
                     last_name: provider.last_name,
+                    locations: provider.locations,
                     selected: false
                 };
             });
@@ -147,7 +148,7 @@ module.exports.controller = function (app) {
                     }
 
                     _.each(all_providers, function(provider) {
-                        if (_.contains(location.providers, provider._id)) {
+                        if (_.contains(provider.locations, location_id)) {
                             provider.selected = true;
                         }
                     });
@@ -184,6 +185,7 @@ module.exports.controller = function (app) {
         var account_id = req.user.account_id;
         var location_id = req.params.location_id;
         var locationService = Injct.getInstance('locationService');
+        var providerService = Injct.getInstance('providerService');
 
         var location = new Location({
             _id: location_id !== 'undefined' ? location_id : undefined,
@@ -193,8 +195,18 @@ module.exports.controller = function (app) {
             active: req.body.active === 'on' ? true : false
         });
 
-        locationService.updateLocation(location, function(err, location) {
+        Async.parallel({location: updateLocation, providers: updateProviders}, render);
 
+        function updateLocation(cb) {
+            locationService.updateLocation(location, cb);
+        }
+
+        function updateProviders(cb) {
+            var provider_ids = Array.isArray(req.body.providers) ? req.body.providers : (req.body.providers !== undefined ? [req.body.providers] : []);
+            providerService.updateAllProvidersLocation(provider_ids, location_id, cb);
+        }
+
+        function render(err, result) {
             if (err) {
                 req.flash('errors', { msg: 'Error updating location.' });
                 res.redirect('/management/locations');
@@ -202,8 +214,9 @@ module.exports.controller = function (app) {
             }
 
             req.flash('success', { msg: 'Location updated.' });
-            res.redirect('/management/location/' + location._id.toString());
-        });
+            res.redirect('/management/location/' + result.location._id.toString());
+        }
+
     });
 
 };

@@ -41,7 +41,7 @@ ScheduleService.prototype.getScheduleByAccountId = function (account_id, callbac
         if (err) {
             Logger.error(err);
         }
-        callback(null, schedule.toJSON());
+        callback(null, schedule !== null ? schedule.toJSON() : null);
     });
 };
 

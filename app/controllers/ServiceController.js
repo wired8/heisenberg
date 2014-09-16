@@ -235,7 +235,7 @@ module.exports.controller = function (app) {
         }
 
         function updateProviders(cb) {
-            var provider_ids = req.body.providers !== undefined ? req.body.providers : [];
+            var provider_ids = Array.isArray(req.body.providers) ? req.body.providers : (req.body.providers !== undefined ? [req.body.providers] : []);
             providerService.updateAllProvidersService(provider_ids, service_id, cb);
         }
 
@@ -248,7 +248,6 @@ module.exports.controller = function (app) {
 
             req.flash('success', { msg: 'Service updated.' });
             res.redirect('/management/service/' + result.service._id.toString());
-
         }
 
     });

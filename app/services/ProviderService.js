@@ -72,3 +72,14 @@ ProviderService.prototype.updateProvider = function(provider, callback) {
 ProviderService.prototype.updateAllProvidersService = function(provider_ids, service_id, callback) {
     this.providerRepository.updateAllProvidersService(provider_ids, service_id, callback);
 };
+
+/**
+ * Update locations by provider
+ *
+ * @param [string] provider_ids
+ * @param {string} location_id
+ * @param {Function} callback
+ */
+ProviderService.prototype.updateAllProvidersLocation = function(provider_ids, location_id, callback) {
+    this.providerRepository.updateAllProvidersLocation(provider_ids, location_id, callback);
+};

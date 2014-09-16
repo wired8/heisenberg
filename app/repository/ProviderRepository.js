@@ -146,13 +146,39 @@ ProviderRepository.prototype.saveProvider = function (provider, callback) {
  */
 ProviderRepository.prototype.updateAllProvidersService = function(provider_ids, service_id, callback) {
 
-    Provider.model().update( { }, { $pull: { services: { $eq: service_id } } }, { multi: true }, function(err, result) {
+    var ids = _.map(provider_ids, function(provider_id) {
+       return Mongoose.Types.ObjectId(provider_id);
+    });
+
+    Provider.model().update( { }, { $pull: { services: service_id } }, { multi: true }, function(err, result) {
          if (err) {
              callback(err);
              return;
          }
-         Provider.model().update( { _id: { $in: provider_ids } }, { push: { services: { $eq: service_id } } }, { multi: true }, callback);
+         Provider.model().update( { _id: { $in: ids } }, { $push: { services: service_id  } }, { multi: true }, callback);
     });
 };
 
+
+/**
+ * Update locations by provider
+ *
+ * @param [string] provider_ids
+ * @param {string} location_id
+ * @param {Function} callback
+ */
+ProviderRepository.prototype.updateAllProvidersLocation = function(provider_ids, location_id, callback) {
+
+    var ids = _.map(provider_ids, function(provider_id) {
+        return Mongoose.Types.ObjectId(provider_id);
+    });
+
+    Provider.model().update( { }, { $pull: { locations: location_id } }, { multi: true }, function(err, result) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        Provider.model().update( { _id: { $in: ids } }, { $push: { locations: location_id  } }, { multi: true }, callback);
+    });
+};
 
