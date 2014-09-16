@@ -5,6 +5,7 @@ build:
     steps:
       - npm-install
       - npm-test
+         cwd: $WERCKER_SOURCE_DIR
       - script:
          name: echo nodejs information
          code: |

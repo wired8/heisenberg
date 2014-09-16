@@ -41,6 +41,9 @@ var Account           = require('./app/models/Account');
 
 var app         = module.exports = express();  // export app for testing ;)
 
+global.appRoot = path.resolve(__dirname);
+
+
 /**
  * Create Express HTTP Server and faye
  */
