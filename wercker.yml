@@ -3,10 +3,14 @@ services:
   - wercker/mongodb@0.0.1
 build:
   steps:
-    - npm-install@1.0.5:
+    - npm-install
         strict-ssl: false
     - jshint:
         use_strict: true
         trailing_whitespace: false
-    # A comment
     -  npm-test
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
