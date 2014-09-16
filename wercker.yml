@@ -1,16 +1,12 @@
-box: wercker/nodejs@0.0.10
+box: wercker/nodejs
 services:
-  - wercker/mongodb@0.0.1
+  - wercker/mongodb
 build:
-  steps:
-    - npm-install:
-      strict-ssl: false
-    - jshint:
-        use_strict: true
-        trailing_whitespace: false
-    - npm-test
-    - script:
-        name: echo nodejs information
-        code: |
+    steps:
+      - npm-install
+      - npm-test
+      - script:
+         name: echo nodejs information
+         code: |
           echo "node version $(node -v) running"
           echo "npm version $(npm -v) running"
