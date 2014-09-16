@@ -60,6 +60,7 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
 
             if (!valid_provider) {
                 callback('Invalid provider');
+                return;
             }
 
             cb(null, schedule);

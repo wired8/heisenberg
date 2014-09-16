@@ -242,53 +242,10 @@ module.exports.controller = function (app) {
                 if (schedule === null) {
 
                     var provider_ids = _.pluck(providers, '_id');
-
-                    var providers_monday = {};
-                    var providers_tuesday = {};
-                    var providers_wednesday = {};
-                    var providers_thursday = {};
-                    var providers_friday = {};
-                    var providers_saturday = {};
-                    var providers_sunday = {};
+                    var provider = {};
 
                     _.each(provider_ids, function (provider_id) {
-                        providers_monday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_tuesday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_wednesday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_thursday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_friday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_saturday[provider_id] = {
-                            _id: provider_id.toString(),
-                            available: false,
-                            start: '0800',
-                            end: '1800'
-                        };
-                        providers_sunday[provider_id] = {
+                        provider[provider_id] = {
                             _id: provider_id.toString(),
                             available: false,
                             start: '0800',
@@ -296,66 +253,48 @@ module.exports.controller = function (app) {
                         };
                     });
 
-                    var monday = {
+                    var day = {
                         open: true,
                         start: '0800',
                         end: '1800',
-                        providers: providers_monday
-                    };
-
-                    var tuesday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_tuesday
-                    };
-
-                    var wednesday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_wednesday
-                    };
-
-                    var thursday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_thursday
-                    };
-
-                    var friday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_friday
-                    };
-
-                    var saturday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_saturday
-                    };
-
-                    var sunday = {
-                        open: true,
-                        start: '0800',
-                        end: '1800',
-                        providers: providers_sunday
+                        providers: provider
                     };
 
                     schedule = new Schedule({
                         account_id: account_id,
-                        monday: monday,
-                        tuesday: tuesday,
-                        wednesday: wednesday,
-                        thursday: thursday,
-                        friday: friday,
-                        saturday: saturday,
-                        sunday: sunday
+                        monday: day,
+                        tuesday: day,
+                        wednesday: day,
+                        thursday: day,
+                        friday: day,
+                        saturday: day,
+                        sunday: day
                     });
 
+                } else {
+
+                    var provider_ids = _.pluck(providers, '_id');
+
+                    _.each(provider_ids, function (provider_id) {
+
+                        if (schedule.monday.providers[provider_id]) {
+                            return;
+                        }
+
+                        schedule.sunday.providers[provider_id] =
+                        schedule.saturday.providers[provider_id] =
+                        schedule.friday.providers[provider_id] =
+                        schedule.thursday.providers[provider_id] =
+                        schedule.wednesday.providers[provider_id] =
+                        schedule.tuesday.providers[provider_id] =
+                        schedule.monday.providers[provider_id] = {
+                            _id: provider_id.toString(),
+                            available: false,
+                            start: '0800',
+                            end: '1800'
+                        };
+
+                    });
                 }
 
                 var result = {};

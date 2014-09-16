@@ -41,7 +41,7 @@ block scripts
     script.
         $(document).ready(function() {
             //- Load sync
-            $.getScript('/sync.js').done(function () {
+            loadScript('/sync.js').done(function () {
                 resrvo_scheduler.init();
             });
         });

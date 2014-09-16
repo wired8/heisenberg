@@ -69,6 +69,7 @@ var resrvo_scheduler = {
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
             { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getService},
             { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers")},
+            { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("time_slots")},
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
 
@@ -139,16 +140,12 @@ var resrvo_scheduler = {
 
         // Get service and available time slots
         function getService() {
-
-            $.get('/api/services/' + service_id, function(providers) {
-
-                updateProviders();
-            });
+            var service_id = this.value; //selection from first list
+            updateProviders(service_id);
         }
 
-        function updateProviders() {
+        function updateProviders(service_id) {
             var self = this;
-            var service_id = this.value; //selection from first list
             var $el = $(scheduler.formSection('providers').control);
 
             $.get('/api/providers/' + service_id, function(providers) {
@@ -159,7 +156,25 @@ var resrvo_scheduler = {
                     $el.append($("<option></option>")
                         .attr("value", provider.key).text(provider.label));
                 });
+
+                var provider_id = providers[0].key;
+                var date = '1/1/2015';
+
+                updateTimeSlots(service_id, provider_id, date);
                // $(scheduler.formSection('services').control).val(service_id);
+            });
+        }
+
+        function updateTimeSlots(service_id, provider_id, date) {
+            var $el = $(scheduler.formSection('time_slots').control);
+            var csrf = document.getElementById("_csrf").value;
+
+            $.post('/api/timeslots/', { providerid:  provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(time_slots) {
+                $el.empty(); // remove old options
+                $.each(time_slots, function(i, time_slot) {
+                    $el.append($("<option></option>")
+                        .attr("value", time_slot.key).text(time_slot.label));
+                });
             });
         }
 
