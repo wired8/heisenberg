@@ -73,7 +73,6 @@ module.exports.controller = function (app) {
                     _id: location._id,
                     name: location.name,
                     address: location.address,
-                    providers: location.providers,
                     active: location.active,
                     created_at: location.created_at,
                     updated_at: location.updated_at
@@ -191,7 +190,6 @@ module.exports.controller = function (app) {
             account_id: account_id,
             name: req.body.name,
             address: req.body.address,
-            providers: Util.isArray(req.body.providers) ? req.body.providers : [],
             active: req.body.active === 'on' ? true : false
         });
 

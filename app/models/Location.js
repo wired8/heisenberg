@@ -13,7 +13,6 @@ var LocationSchema = new Schema({
     account_id: {type: String, require: true},
     name: {type: String, required: true},
     address: {type: String, required: true},
-    providers: Array,
     active: {type: Boolean, default: false},
     created_at: {type: Number, required: true},
     updated_at: {type: Number, required: true}
@@ -26,7 +25,6 @@ var LocationSchema = new Schema({
  *      account_id: String
  *      name: String
  *      address: String
- *      providers: String
  *      active: Boolean
  *      created_at: Number
  *      updated_at: Number
@@ -50,7 +48,6 @@ var Location = function (json) {
     this.account_id = json.account_id;
     this.name = json.name || '';
     this.address = json.address || '';
-    this.providers = json.providers || [];
     this.active = json.active || false;
 
     var now = new XDate(true).getTime();

@@ -60,3 +60,15 @@ ProviderService.prototype.getProvidersByServiceId = function (service_id, callba
 ProviderService.prototype.updateProvider = function(provider, callback) {
     this.providerRepository.saveProvider(provider, callback);
 };
+
+
+/**
+ * Update services by provider
+ *
+ * @param [string] provider_ids
+ * @param {string} service_id
+ * @param {Function} callback
+ */
+ProviderService.prototype.updateAllProvidersService = function(provider_ids, service_id, callback) {
+    this.providerRepository.updateAllProvidersService(provider_ids, service_id, callback);
+};

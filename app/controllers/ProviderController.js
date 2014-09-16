@@ -124,14 +124,25 @@ module.exports.controller = function (app) {
         var provider_id = req.params.provider_id;
         var providerService = Injct.getInstance('providerService');
         var serviceService = Injct.getInstance('serviceService');
+        var locationService = Injct.getInstance('locationService');
 
-        Async.waterfall([getServices, renderProviders], null);
+        Async.waterfall([getServices, getLocations, renderProviders], null);
 
         function getServices(cb) {
             serviceService.getServicesByAccountId(account_id, cb);
         }
 
-        function renderProviders(services, cb) {
+        function getLocations(services, cb) {
+            locationService.getLocationsByAccountId(account_id, function(err, locations) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
+                cb(null, services, locations);
+            });
+        }
+
+        function renderProviders(services, locations, cb) {
 
             var startTime = new XDate(2014, 1, 1, 0, 0, 0, 0);
             var endTime = new XDate(2014, 1, 1, 23, 55, 0, 0);
@@ -154,6 +165,14 @@ module.exports.controller = function (app) {
                 };
             });
 
+            var all_locations = _.map(locations, function (location) {
+                return {
+                    _id: location._id.toString(),
+                    name: location.name,
+                    selected: false
+                };
+            });
+
             if (provider_id !== undefined) {
 
                 providerService.getProviderById(provider_id, function (err, provider) {
@@ -161,6 +180,12 @@ module.exports.controller = function (app) {
                     _.each(all_services, function (service) {
                         if (_.contains(provider.services, service._id)) {
                             service.selected = true;
+                        }
+                    });
+
+                    _.each(all_locations, function (location) {
+                        if (_.contains(provider.locations, location._id)) {
+                            location.selected = true;
                         }
                     });
 
@@ -173,7 +198,8 @@ module.exports.controller = function (app) {
                         personal_titles: titles,
                         provider: provider,
                         provider_breaks: breaks,
-                        services: all_services
+                        services: all_services,
+                        locations: all_locations
                     });
                 });
             } else {
@@ -185,7 +211,8 @@ module.exports.controller = function (app) {
                     personal_titles: titles,
                     provider: provider,
                     provider_breaks: breaks,
-                    services: all_services
+                    services: all_services,
+                    locations: all_locations
                 });
 
             }
@@ -248,7 +275,8 @@ module.exports.controller = function (app) {
             bio: req.body.bio,
             image_url: req.body.image_url,
             password: req.body.password,
-            services: Util.isArray(req.body.services) ? req.body.services : [req.body.services],
+            locations: Array.isArray(req.body.locations) ? req.body.locations: (req.body.locations !== undefined ? [req.body.locations] : []),
+            services: Array.isArray(req.body.services) ? req.body.service: (req.body.services !== undefined ? [req.body.services] : []),
             breaks: breaks,
             active: req.body.active === 'on' ? true : false,
             active_from: req.body.active_from,

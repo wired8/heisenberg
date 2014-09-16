@@ -63,7 +63,6 @@ var resrvo_locations = {
                 },
                 { "mDataProp": "name" },
                 { "mDataProp": "address" },
-                { "mDataProp": "providers" },
                 {
                     "mDataProp": "active",
                     "bUseRendered": false,
@@ -140,26 +139,22 @@ var resrvo_locations = {
         });
 
         keys.event.action(3, null, function () {
-            showField(editor, keys, 'providers');
-        });
-
-        keys.event.action(4, null, function () {
             showField(editor, keys, 'active');
         });
 
-        keys.event.action(5, null, function () {
+        keys.event.action(4, null, function () {
             showField(editor, keys, 'created_at');
         });
 
-        keys.event.action(6, null, function () {
+        keys.event.action(5, null, function () {
             showField(editor, keys, 'updated_at');
         });
 
-        keys.event.action(7, null, function () {
+        keys.event.action(6, null, function () {
             $('a', keys.fnGetCurrentTD()).click();
         });
 
-        keys.event.action(8, null, function () {
+        keys.event.action(7, null, function () {
             $('a', keys.fnGetCurrentTD()).click();
         });
     }

@@ -137,4 +137,22 @@ ProviderRepository.prototype.saveProvider = function (provider, callback) {
     }
 };
 
+/**
+ * Update services by provider
+ *
+ * @param [string] provider_ids
+ * @param {string} service_id
+ * @param {Function} callback
+ */
+ProviderRepository.prototype.updateAllProvidersService = function(provider_ids, service_id, callback) {
+
+    Provider.model().update( { }, { $pull: { services: { $eq: service_id } } }, { multi: true }, function(err, result) {
+         if (err) {
+             callback(err);
+             return;
+         }
+         Provider.model().update( { _id: { $in: provider_ids } }, { push: { services: { $eq: service_id } } }, { multi: true }, callback);
+    });
+};
+
 

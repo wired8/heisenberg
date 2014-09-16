@@ -145,6 +145,7 @@ module.exports.controller = function (app) {
                     _id: provider._id.toString(),
                     first_name: provider.first_name,
                     last_name: provider.last_name,
+                    services: provider.services,
                     selected: false
                 };
             });
@@ -160,7 +161,7 @@ module.exports.controller = function (app) {
                     }
 
                     _.each(all_providers, function(provider) {
-                        if (_.contains(service.providers, provider._id)) {
+                        if (_.contains(provider.services, service_id)) {
                             provider.selected = true;
                         }
                     });
@@ -203,6 +204,7 @@ module.exports.controller = function (app) {
         var account_id = req.user.account_id;
         var service_id = req.params.service_id;
         var serviceService = Injct.getInstance('serviceService');
+        var providerService = Injct.getInstance('providerService');
 
         var service = new Service({
             _id: service_id !== 'undefined' ? service_id : undefined,
@@ -223,12 +225,21 @@ module.exports.controller = function (app) {
                 minutes: req.body.padding_after_minutes
             },
             active: req.body.active === 'on' ? true : false,
-            service_options: req.body.service_options,
-            providers: Util.isArray(req.body.providers) ? req.body.providers : [req.body.providers]
+            service_options: req.body.service_options
         });
 
-        serviceService.updateService(service, function(err, service) {
+        Async.parallel({service: updateService, providers: updateProviders}, render);
 
+        function updateService(cb) {
+            serviceService.updateService(service, cb);
+        }
+
+        function updateProviders(cb) {
+            var provider_ids = req.body.providers !== undefined ? req.body.providers : [];
+            providerService.updateAllProvidersService(provider_ids, service_id, cb);
+        }
+
+        function render(err, result) {
             if (err) {
                 req.flash('errors', { msg: 'Error updating service.' });
                 res.redirect('/management/services');
@@ -236,8 +247,10 @@ module.exports.controller = function (app) {
             }
 
             req.flash('success', { msg: 'Service updated.' });
-            res.redirect('/management/service/' + service._id.toString());
-        });
+            res.redirect('/management/service/' + result.service._id.toString());
+
+        }
+
     });
 
 };

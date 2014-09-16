@@ -29,7 +29,6 @@ var ServiceSchema = new Schema({
     },
     book_online: {type: Boolean, default: true},
     image_url: {type: String},
-    providers: Array,
     order: {type: Number},
     active: {type: Boolean, default: false},
     created_at: {type: Number, required: true},
@@ -50,7 +49,6 @@ var ServiceSchema = new Schema({
  *      padding_after: Object
  *      book_online: Boolean
  *      image_url: String
- *      providers: Array
  *      order: Number
  *      active: Boolean
  *      created_at: Number
@@ -84,7 +82,6 @@ var Service = function (json) {
     this.book_online = json.book_online || true;
     this.image_url = json.image_url || '';
     this.order = json.order || 0;
-    this.providers = json.providers || [];
 
     var now = new XDate(true).getTime();
 

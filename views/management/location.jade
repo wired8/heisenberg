@@ -32,7 +32,8 @@ block content
                                     .form-group
                                         label.col-sm-3.control-label(for='address') Address
                                         .col-sm-4
-                                            input.form-control(type='text', name='address', id='address', value='#{location.address}')
+                                            textarea.form-control(name='address', row="5", cols="10", id='address')
+                                                | #{location.address}
                                     .form-group
                                         label.col-sm-3.control-label(for='name') Active
                                         .col-sm-4

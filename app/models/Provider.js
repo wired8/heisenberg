@@ -20,10 +20,8 @@ var ProviderSchema = new Schema({
     image_url: {type: String},
     email: {type: String, unique: true},
     password: {type: String},
-    services: {
-        service_id: String,
-        options: [String]
-    },
+    locations: Array,
+    services: Array,
     breaks: {
         sunday: [{
             from: String,
@@ -81,6 +79,7 @@ var ProviderSchema = new Schema({
  *      image_url: String
  *      email: String
  *      password: String
+ *      locations: [String]
  *      services: [String]
  *      breaks: Object
  *      active: Boolean
@@ -126,7 +125,8 @@ var Provider = function (json) {
     this.image_url = json.image_url || '';
     this.email = json.email || '';
     this.password = json.password || '';
-    this.services = json.services || {};
+    this.locations = json.locations || '';
+    this.services = json.services || [];
     this.breaks = json.breaks || breaks;
     this.active = json.active || false;
     this.active_from = json.active_from;

@@ -22,6 +22,8 @@ block content
                                 li
                                     a(href="#services", data-toggle="pill") Services
                                 li
+                                    a(href="#locations", data-toggle="pill") Locations
+                                li
                                     a(href="#breaks", data-toggle="pill") Breaks
                         .col-sm-9
                             .tab-content
@@ -59,6 +61,7 @@ block content
                                         label.col-sm-3.control-label(for='bio') Bio
                                         .col-sm-4
                                             textarea.form-control(name='bio', row="3", cols="10", id='bio')
+                                                | #{provider.bio}
                                     .form-group
                                         label.col-sm-3.control-label(for='image_url') Image
                                         .col-sm-4
@@ -114,6 +117,20 @@ block content
                                                 p
                                                     input(type='checkbox', name='services', value='#{service._id}', checked='#{service.selected}'=='true')
                                                     |   #{service.name}
+                                    .form-group
+                                        .col-sm-offset-3.col-sm-4
+                                            button.btn.btn.btn-primary(type='submit') Save changes
+
+                                .tab-pane(id="locations")
+                                    .form-group
+                                        .col-sm-offset-2
+                                            h3 Locations
+                                    .form-group
+                                        .col-sm-4
+                                            each location in locations
+                                                p
+                                                    input(type='checkbox', name='locations', value='#{location._id}', checked='#{location.selected}'=='true')
+                                                    |   #{location.name}
                                     .form-group
                                         .col-sm-offset-3.col-sm-4
                                             button.btn.btn.btn-primary(type='submit') Save changes
