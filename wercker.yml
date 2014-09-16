@@ -3,8 +3,8 @@ services:
   - wercker/mongodb@0.0.1
 build:
   steps:
-    - npm-install
-        strict-ssl: false
+    - npm-install:
+      strict-ssl: false
     - jshint:
         use_strict: true
         trailing_whitespace: false
