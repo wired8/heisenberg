@@ -6,9 +6,10 @@ build:
       - npm-install
       - script:
          name: mocha test
+         cwd: $WERCKER_ROOT
          code: |
+          echo "ls -la"
           npm test
-          cwd: $WERCKER_ROOT
       - script:
          name: echo nodejs information
          code: |
