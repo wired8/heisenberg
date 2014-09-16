@@ -4,8 +4,10 @@ services:
 build:
     steps:
       - npm-install
-      - npm-test:
-         cwd: $WERCKER_SOURCE_DIR
+      - script:
+         name: mocha test
+         code: |
+          npm test
       - script:
          name: echo nodejs information
          code: |
