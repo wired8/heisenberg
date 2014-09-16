@@ -11,7 +11,7 @@ var Mocha = require('mocha'),
 var mocha = new Mocha({
     reporter: 'spec',
     ui: 'bdd',
-    globals: 'logger,httpLogger',
+    globals: 'logger',
     recursive: true,
     timeout: 10000
 });

@@ -1,0 +1,12 @@
+box: wercker/nodejs@0.0.10
+services:
+  - wercker/mongodb@0.0.1
+build:
+  steps:
+    - npm-install@1.0.5:
+        strict-ssl: false
+    - jshint:
+        use_strict: true
+        trailing_whitespace: false
+    # A comment
+    -  npm-test

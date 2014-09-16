@@ -49,6 +49,8 @@ function setupDependencies(cb) {
         userService: reqService('UserService')
     });
 
+    console.log('Setup dependencies');
+
     if (cb) {
         cb();
     }

@@ -16,6 +16,7 @@ var injct = require('injct'),
 exports.setup = function (done) {
 
    // exports.flushRedis();
+    console.log('Test util setup');
 
     mongooseConnect(function() {
         initDependencies(function() { setTimeout(done, 200) });
@@ -52,6 +53,8 @@ exports.setupUnit = function (done) {
  * @param done
  */
 exports.tearDown = function (done) {
+
+    console.log('Test util tearDown');
 
     mongoose.connection.db.dropDatabase(function() {
         mongoose.connection.removeAllListeners('connecting');
