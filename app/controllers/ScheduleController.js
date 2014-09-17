@@ -195,6 +195,7 @@ module.exports.controller = function (app) {
      */
     app.post('/management/schedule', PassportConf.isAuthenticated, function (req, res) {
         var account_id = req.user.account_id;
+        var serviceService = Injct.getInstance('serviceService');
         var bookingService = Injct.getInstance('bookingService');
         var timeSlotService = Injct.getInstance('timeSlotService');
         var data = req.body;
@@ -202,25 +203,33 @@ module.exports.controller = function (app) {
         var sid = data.id;
         var tid = sid;
 
+        var d = new XDate(data.start_date);
+        var service_id = data.service;
+        var start_date = new XDate(new XDate(data.start_date).toString("MMM d, yyyy") + ' ' + data.time_slots);
+
         Logger.info('Booking request: %j', Util.inspect(req.body));
 
-        Async.series([updateTimeSlot, createBooking], update_response);
+        Async.waterfall([getService, updateTimeSlot, createBooking], update_response);
 
+        function getService(cb) {
+            serviceService.getServiceById(service_id, cb);
+        }
 
-        function updateTimeSlot(cb) {
+        function updateTimeSlot(service, cb) {
+
+            var end_date = new XDate(start_date).addMinutes((service.duration.hours * 60) +  (service.duration.minutes));
 
             var timeslot = new TimeSlot({
                 provider_id: req.body.provider,
-                start: req.body.start_date,
-                end: req.body.start_date
+                start: start_date.getTime(),
+                end: end_date.getTime()
             });
 
             timeSlotService.updateTimeSlot(timeslot, cb);
         }
 
-        function createBooking(cb) {
+        function createBooking(timeslot, cb) {
 
-            //remove properties which we do not want to save in DB
             delete data.id;
             delete data.gr_id;
             delete data["!nativeeditor_status"];
@@ -232,8 +241,8 @@ module.exports.controller = function (app) {
                 last_name: req.body.last_name,
                 phone: req.body.phone,
                 email: req.body.email,
-                start_date: new XDate(req.body.start_date).getTime(),
-                end_date: new XDate(req.body.end_date).getTime(),
+                start_date: timeslot.start,
+                end_date: timeslot.end,
                 service: req.body.service,
                 provider: req.body.provider
             });
@@ -241,10 +250,10 @@ module.exports.controller = function (app) {
             switch (mode) {
                 case 'inserted':
                 case 'updated':
-                    bookingService.updateBooking(booking, update_response);
+                    bookingService.updateBooking(booking, cb);
                     break;
                 case 'deleted':
-                    bookingService.deleteBooking(booking, update_response);
+                    bookingService.deleteBooking(booking, cb);
                     break;
             }
         }
