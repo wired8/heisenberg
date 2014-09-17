@@ -20,6 +20,15 @@ var ScheduleUtil = function() {
 ScheduleUtil.prototype.createSchedules = function(n, account_id, providers, callback) {
 
     var schedules = [];
+    var p = {};
+
+    _.each(providers, function (provider) {
+        p[provider._id.toString()] = {
+            available: true,
+            start: '8:00',
+            end: '18:00'
+        };
+    });
 
     Async.whilst(
         function () { return _.size(schedules) < n; },
@@ -30,43 +39,43 @@ ScheduleUtil.prototype.createSchedules = function(n, account_id, providers, call
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 tuesday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 wednesday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 thursday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 friday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 saturday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 sunday: {
                     open: true,
                     start: '9:00',
                     end: '18:00',
-                    providers: providers
+                    providers: p
                 },
                 created_at: new Date().getTime()
             });

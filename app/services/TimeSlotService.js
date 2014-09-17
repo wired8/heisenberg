@@ -52,7 +52,8 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
 
             var provider_ids = weekly_schedule[getDayName(day)].providers;
 
-            var valid_provider = _.find(provider_ids, function(provider_id) {
+            var keys = Object.keys(provider_ids);
+            var valid_provider = _.find(keys, function(provider_id) {
                 return providerId === provider_id;
             });
 
@@ -139,7 +140,7 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
         var schedule_start = new XDate('1/1/2000 ' + schedule.start, false);
         var schedule_end = new XDate('1/1/2000 ' + schedule.end, false);
 
-        while(schedule_start <= schedule_end) {
+        while(schedule_start.getTime() <= schedule_end.getTime()) {
 
             var start = new XDate(schedule_start).getTime();
             var end = new XDate(schedule_start).addMinutes(service_duration.duration_minutes + service_duration.padding_after_minutes).getTime();

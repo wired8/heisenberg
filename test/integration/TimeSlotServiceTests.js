@@ -48,10 +48,7 @@ describe('TimeSlotServiceTests', function() {
             }
 
             function createSchedules(accounts, providers, cb) {
-                var provider_ids = _.map(providers, function(provider) {
-                    return provider._id.toString();
-                });
-                new ScheduleUtil().createSchedules(10, accounts[0]._id.toString(), provider_ids, function (err, schedules) {
+                new ScheduleUtil().createSchedules(10, accounts[0]._id.toString(), providers, function (err, schedules) {
                     _schedules = schedules;
                     cb(null, 'done');
                 });

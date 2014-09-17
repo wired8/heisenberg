@@ -248,15 +248,15 @@ module.exports.controller = function (app) {
                         provider[provider_id] = {
                             _id: provider_id.toString(),
                             available: false,
-                            start: '0800',
-                            end: '1800'
+                            start: '8:00',
+                            end: '18:00'
                         };
                     });
 
                     var day = {
                         open: true,
-                        start: '0800',
-                        end: '1800',
+                        start: '8:00',
+                        end: '18:00',
                         providers: provider
                     };
 
@@ -290,8 +290,8 @@ module.exports.controller = function (app) {
                         schedule.monday.providers[provider_id] = {
                             _id: provider_id.toString(),
                             available: false,
-                            start: '0800',
-                            end: '1800'
+                            start: '8:00',
+                            end: '18:00'
                         };
 
                     });
@@ -319,7 +319,7 @@ module.exports.controller = function (app) {
             var hours = [];
 
             while (startTime.getTime() <= endTime.getTime()) {
-                hours.push({value: startTime.toString("hh:mmTT"), key: startTime.toString("HHmm")});
+                hours.push({value: startTime.toString("hh:mmTT"), key: startTime.toString("H:mm")});
                 startTime = startTime.addMinutes(step);
             }
 

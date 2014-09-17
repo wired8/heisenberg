@@ -144,6 +144,10 @@ var resrvo_scheduler = {
             updateProviders(service_id);
         }
 
+        function getProvider() {
+
+        }
+
         function updateProviders(service_id) {
             var self = this;
             var $el = $(scheduler.formSection('providers').control);

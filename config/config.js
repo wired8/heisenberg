@@ -46,7 +46,7 @@ config.mongodb        = {};
 config.mongodb.url    = process.env.MONGODB_URL || 'localhost:27017/resrvo';
 
 config.mongodbTest        = {};
-config.mongodbTest.url    = process.env.WERCKER_MONGODB_URL + '/resrvo_test' || 'localhost:27017/resrvo_test';
+config.mongodbTest.url    = (process.env.WERCKER_MONGODB_URL || 'localhost:27017') + '/resrvo_test';
 
 /**
  * Redis Configuration
