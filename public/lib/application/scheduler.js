@@ -64,11 +64,12 @@ var resrvo_scheduler = {
         scheduler.locale.labels.section_customer = "";
         scheduler.locale.labels.section_services = "Services";
         scheduler.locale.labels.section_providers = "Providers";
+        scheduler.locale.labels.section_time_slots = "Time Slots";
 
         var lightbox_sections=[
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
             { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getService},
-            { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers")},
+            { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers"), onchange:getProvider},
             { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("time_slots")},
             { name:"time", height:72, type:"time", map_to:"auto"}
         ];
@@ -173,11 +174,11 @@ var resrvo_scheduler = {
             var $el = $(scheduler.formSection('time_slots').control);
             var csrf = document.getElementById("_csrf").value;
 
-            $.post('/api/timeslots/', { providerid:  provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(time_slots) {
+            $.post('/api/timeslots/', { providerid:  provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(result) {
                 $el.empty(); // remove old options
-                $.each(time_slots, function(i, time_slot) {
+                $.each(result.timeslots, function(i, time_slot) {
                     $el.append($("<option></option>")
-                        .attr("value", time_slot.key).text(time_slot.label));
+                        .attr("value", time_slot).text(time_slot));
                 });
             });
         }
