@@ -74,7 +74,7 @@ var resrvo_scheduler = {
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
             { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getProviders},
             { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers"), onchange:getTimeSlots},
-            { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("timeslots")}
+            { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("timeslots"), onchange:setDateTime}
         ];
 
         scheduler.locale.labels.unit_tab = "Providers";
@@ -102,6 +102,7 @@ var resrvo_scheduler = {
 
         scheduler.config.first_hour = 7;
         scheduler.config.last_hour = 18;
+
 
         scheduler.templates.event_class = function(start, end, event) {
             return "my_event";
@@ -168,8 +169,6 @@ var resrvo_scheduler = {
             var $el = $(scheduler.formSection('providers').control);
 
             $.get('/api/providers/' + service_id, function(providers) {
-                //scheduler.updateCollection("providers", providers);
-               // scheduler.showLightbox(scheduler.getState().lightbox_id);
                 $el.empty(); // remove old options
                 $.each(providers, function(i, provider) {
                     $el.append($("<option></option>")
@@ -177,16 +176,18 @@ var resrvo_scheduler = {
                 });
 
                 var provider_id = providers[0].key;
-                var date = new Date(scheduler._min_date).toString(''); // '1/1/2015';
-
+                var d = new Date(scheduler._min_date);
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1;
+                var curr_year = d.getFullYear();
+                var date = curr_month + '/' + curr_date + '/' + curr_year;
                 updateTimeSlots(service_id, provider_id, date);
-               // $(scheduler.formSection('services').control).val(service_id);
             });
         }
 
         function updateTimeSlots(service_id, provider_id, date) {
             var $el = $(scheduler.formSection('time_slots').control);
-            var csrf = document.getElementById("_csrf").value;
+            var csrf = $("_csrf").value;
 
             $.post('/api/timeslots/', { providerid: provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(result) {
                 $el.empty(); // remove old options
@@ -197,6 +198,23 @@ var resrvo_scheduler = {
             });
         }
 
+        function setDateTime() {
+            var start_time = $(scheduler.formSection('time_slots').control).val();
+            var event_id = scheduler.getState().lightbox_id;
+            var service_duration = 120;
+            var d = new Date(scheduler._min_date);
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1;
+            var curr_year = d.getFullYear();
+            var start_date = new Date(curr_month + '/' + curr_date + '/' + curr_year + ' ' + start_time);
+            var end_date = new Date(start_date.getTime() + service_duration*60000);
+
+            scheduler.getEvent(event_id).start_date = start_date;
+            scheduler.getEvent(event_id).end_date = end_date;
+            scheduler.updateEvent(event_id);
+        }
+
+
         scheduler.attachEvent("onBeforeLightbox", function(event_id) {
             scheduler.resetLightbox();
             var ev = scheduler.getEvent(event_id);
@@ -204,6 +222,10 @@ var resrvo_scheduler = {
             scheduler.config.lightbox.sections = lightbox_sections;
 
             return true;
+        });
+
+        scheduler.attachEvent("onLightbox", function(){
+            setDateTime();
         });
 
         dhtmlxAjax.get("/api/services", function(services){
