@@ -165,7 +165,7 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
             }
 
             if (valid) {
-                timeslots.push(schedule_start.toString("HH:mm:TT"));
+                timeslots.push({key: schedule_start.toString("HH:mm"), value: schedule_start.toString("HH:mm:TT")});
             }
             schedule_start.addMinutes(service_duration.duration_minutes + service_duration.padding_after_minutes);
 
@@ -222,6 +222,16 @@ TimeSlotService.prototype.getAvailableTimeSlots = function(startdate, enddate, m
     }
 
     callback(null, timeslots);
+};
 
+/**
+ * Delete a time slot by provider and start date
+ *
+ * @param {string} provider_id
+ * @param {number} start_date
+ * @param {Function} callback
+ */
+TimeSlotService.prototype.deleteTimeSlotByProviderStartDate = function(provider_id, start_date, callback) {
+    this.timeSlotRepository.deleteTimeSlotByProviderStartDate(provider_id, start_date, callback);
 };
 

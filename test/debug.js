@@ -22,7 +22,7 @@ var mocha = new Mocha({
  */
 var debugMode = 'file';
 var testDir = './test/integration/';
-var testFile = './test/integration/TimeSlotServiceTests.js';
+var testFile = './test/integration/BookingServiceTests.js';
 
 if (debugMode === 'dir') {
     debugDir();

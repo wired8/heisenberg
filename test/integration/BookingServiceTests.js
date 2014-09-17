@@ -7,8 +7,8 @@ var Assert = require('assert'),
     ServiceUtil = require('../common/ServiceUtil.js'),
     ProviderUtil = require('../common/ProviderUtil.js'),
     ScheduleUtil  = require('../common/ScheduleUtil.js'),
-    TimeSlotService = TestUtil.require('/services/TimeSlotService.js'),
-    TimeSlot = TestUtil.require('/models/TimeSlot.js'),
+    BookingService = TestUtil.require('/services/BookingService.js'),
+    Booking = TestUtil.require('/models/Booking.js'),
     XDate = require('xdate'),
     Async = require('async'),
     _ = require('underscore');
@@ -18,7 +18,7 @@ var _services = [];
 var _providers = [];
 var _schedules = [];
 
-describe('TimeSlotServiceTests', function() {
+describe('BookingServiceTests', function() {
 
     before(function(done) {
         TestUtil.setup(function() {
@@ -59,57 +59,59 @@ describe('TimeSlotServiceTests', function() {
 
     after(TestUtil.tearDown);
 
-    describe('Time Slots', function() {
+    describe('Bookings', function() {
 
-        it('should be able to get available time slots for provider by date', function(done) {
+        it('should be able to create a new booking', function(done) {
 
-           var from = new XDate('2014-1-1', true);
-           var account_id = _accounts[0]._id.toString();
-           var provider_id = _providers[0]._id.toString();
-           var service_id = _services[0]._id.toString();
-
-           new TimeSlotService().getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, from, function(err, result) {
-
-               Assert.ifError(err);
-               Assert.equal(result.length, 4, 'Should return 4 records');
-               Assert.equal(result[0].value, '09:00:AM');
-               Assert.equal(result[1].value, '10:30:AM');
-               Assert.equal(result[2].value, '13:30:PM');
-               Assert.equal(result[3].value, '16:30:PM');
-               done();
-
-           });
-        });
-
-
-        it('should be able to create a new timeslot for provider by date', function(done) {
-
-            var start = new XDate('2014-1-1 9:00', true);
-            var end = new XDate('2014-1-1 10:00', true);
+            var from = new XDate('2014-1-1', true);
+            var account_id = _accounts[0]._id.toString();
             var provider_id = _providers[0]._id.toString();
+            var service_id = _services[0]._id.toString();
 
-            var timeslot = new TimeSlot({
-                provider_id: provider_id,
-                start: start.getTime(),
-                end: end.getTime()
+            var booking = new Booking({
+                id: 1,
+                account_id: account_id,
+                first_name: 'Fred',
+                last_name: 'Bloggs',
+                phone: '555-555-5555',
+                email: 'fred.blogg@gmail.com',
+                start_date: new XDate(from).getTime(),
+                end_date: new XDate(from).addHours(1).getTime(),
+                service: service_id,
+                provider: provider_id
             });
 
-            new TimeSlotService().updateTimeSlot(timeslot, function(err, result) {
+            new BookingService().updateBooking(booking, function(err, result) {
 
                 Assert.ifError(err);
-                Assert.equal(result.provider_id, provider_id);
-                Assert.equal(result.start, start.getTime());
+                Assert.equal(result.account_id, account_id);
+                Assert.equal(result.provider, provider_id);
                 done();
 
             });
         });
 
-        it('should be able to delete a timeslot for provider by start date', function(done) {
+        it('should be able to delete a booking', function(done) {
 
-            var start = new XDate('2014-1-1 9:00', true).getTime();
+            var from = new XDate('2014-1-1', true);
+            var account_id = _accounts[0]._id.toString();
             var provider_id = _providers[0]._id.toString();
+            var service_id = _services[0]._id.toString();
 
-            new TimeSlotService().deleteTimeSlotByProviderStartDate(provider_id, start, function(err, result) {
+            var booking = new Booking({
+                id: 1,
+                account_id: account_id,
+                first_name: 'Fred',
+                last_name: 'Bloggs',
+                phone: '555-555-5555',
+                email: 'fred.blogg@gmail.com',
+                start_date: new XDate(from).getTime(),
+                end_date: new XDate(from).addHours(1).getTime(),
+                service: service_id,
+                provider: provider_id
+            });
+
+            new BookingService().deleteBooking(booking, function(err, result) {
 
                 Assert.ifError(err);
                 Assert.equal(result, 1, 'Should return 1');
@@ -118,6 +120,6 @@ describe('TimeSlotServiceTests', function() {
             });
         });
 
-     });
+    });
 
 });

@@ -8,6 +8,7 @@ var Injct = require('injct'),
     Logger = require('../util/Logger'),
     Util = require('util'),
     Booking = require('../models/Booking.js'),
+    TimeSlot = require('../models/TimeSlot.js'),
     Schedule = require('../models/Schedule.js'),
     XDate = require('xdate');
 
@@ -41,22 +42,28 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.get('/api/bookings/:timeshift?', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/api/bookings/:date/?', PassportConf.isAuthenticated, function (req, res) {
+
         var account_id = req.user.account_id;
         var bookingService = Injct.getInstance('bookingService');
         var providerService = Injct.getInstance('providerService');
         var serviceService = Injct.getInstance('serviceService');
+        var timeSlotService = Injct.getInstance('timeSlotService');
         var bookings = [];
+        var timeshift = req.query.timeshift;
 
-        Async.waterfall([getServices, getProviders, getBookings], null);
+        Async.waterfall([getServices, getProviders, getBookings,  getTimeSlots], render);
 
         function getServices(cb) {
+
+            var services = [];
+
             serviceService.getServicesByAccountId(account_id, function(err, _services) {
+
                 if (err) {
-                    res.send({ result: 'error', error: err });
+                    cb(err);
                     return;
                 }
-                var services = [];
 
                 _.each(_services, function(service) {
                     services.push({ key: service._id.toString(), label: service.name });
@@ -74,6 +81,7 @@ module.exports.controller = function (app) {
                     collections: {
                         services: [],
                         providers: [],
+                        timeslots: [],
                         units: []
                     }
                 });
@@ -83,7 +91,7 @@ module.exports.controller = function (app) {
 
             providerService.getProvidersByServiceId(service_id, function(err, _providers) {
                 if (err) {
-                    res.send({ result: 'error', error: err });
+                    cb(err);
                     return;
                 }
 
@@ -91,7 +99,7 @@ module.exports.controller = function (app) {
 
                 _.each(_providers, function(provider) {
                     providers.push({
-                        key: provider._id,
+                        key: provider._id.toString(),
                         label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name,
                         name: provider.first_name + ' ' + provider.last_name
                     });
@@ -102,7 +110,15 @@ module.exports.controller = function (app) {
         }
 
         function getBookings(services, providers, cb) {
+
+            var bookings = [];
+
             bookingService.getBookingsByAccountId(account_id, function (err, _bookings) {
+
+                if (err) {
+                    cb(err);
+                    return;
+                }
 
                 //set id property for all records
                 for (var i = 0; i < _bookings.length; i++) {
@@ -112,16 +128,59 @@ module.exports.controller = function (app) {
                     booking.unit_id = booking.provider;
                     bookings.push(booking);
                 }
-                //output response
-                res.send({
-                    data: bookings,
-                    collections: {
-                        services: services,
-                        providers: providers,
-                        units: providers
-                    }
+
+                cb(null, services, providers, bookings);
+            });
+        }
+
+        function getTimeSlots(services, providers, bookings, cb) {
+
+            var service_id = services[0].key;
+            var provider_id = providers[0].key;
+            var date = new XDate();
+
+            if (req.params.date !== undefined) {
+                var str = req.params.date;
+                var y = str.substr(0,4),
+                    m = str.substr(4,2) - 1,
+                    d = str.substr(6,2);
+                var D = new Date(y,m,d);
+                date = (D.getFullYear() == y && D.getMonth() == m && D.getDate() == d) ? D : new XDate();
+            }
+
+            timeSlotService.getAvailableTimeSlotsForProviderByDate(account_id, provider_id, service_id, date, function(err, _timeslots) {
+
+                if (err) {
+                    cb(err);
+                    return;
+                }
+
+                var timeslots = [];
+
+                _.each(_timeslots, function(timeslot) {
+                    timeslots.push({ key: timeslot.key, label: timeslot.value });
                 });
 
+                cb(null, services, providers, bookings, timeslots)
+
+            });
+        }
+
+        function render(err, services, providers, bookings, timeslots) {
+
+            if (err) {
+                res.send({ result: 'error', error: err });
+                return;
+            }
+
+            res.send({
+                data: bookings,
+                collections: {
+                    services: services,
+                    providers: providers,
+                    timeslots: timeslots,
+                    units: providers
+                }
             });
         }
     });
@@ -137,81 +196,69 @@ module.exports.controller = function (app) {
     app.post('/management/schedule', PassportConf.isAuthenticated, function (req, res) {
         var account_id = req.user.account_id;
         var bookingService = Injct.getInstance('bookingService');
-
-        Logger.info(Util.inspect(req.body));
-
+        var timeSlotService = Injct.getInstance('timeSlotService');
         var data = req.body;
-
-        //get operation type
         var mode = data["!nativeeditor_status"];
-        //get id of record
         var sid = data.id;
         var tid = sid;
 
-        //remove properties which we do not want to save in DB
-        delete data.id;
-        delete data.gr_id;
-        delete data["!nativeeditor_status"];
+        Logger.info('Booking request: %j', Util.inspect(req.body));
+
+        Async.series([updateTimeSlot, createBooking], update_response);
 
 
-        //output confirmation response
+        function updateTimeSlot(cb) {
+
+            var timeslot = new TimeSlot({
+                provider_id: req.body.provider,
+                start: req.body.start_date,
+                end: req.body.start_date
+            });
+
+            timeSlotService.updateTimeSlot(timeslot, cb);
+        }
+
+        function createBooking(cb) {
+
+            //remove properties which we do not want to save in DB
+            delete data.id;
+            delete data.gr_id;
+            delete data["!nativeeditor_status"];
+
+            var booking = new Booking({
+                id: sid,
+                account_id: account_id,
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                phone: req.body.phone,
+                email: req.body.email,
+                start_date: new XDate(req.body.start_date).getTime(),
+                end_date: new XDate(req.body.end_date).getTime(),
+                service: req.body.service,
+                provider: req.body.provider
+            });
+
+            switch (mode) {
+                case 'inserted':
+                case 'updated':
+                    bookingService.updateBooking(booking, update_response);
+                    break;
+                case 'deleted':
+                    bookingService.deleteBooking(booking, update_response);
+                    break;
+            }
+        }
+
         function update_response(err, result) {
-            if (err)
-                mode = "error";
-            else if (mode == "inserted")
-                tid = result._id;
 
+            if (err) {
+                mode = "error";
+            } else if (mode == "inserted") {
+                tid = result._id;
+            }
             res.setHeader("Content-Type", "text/xml");
             res.send("<data><action type='" + mode + "' sid='" + sid + "' tid='" + tid + "'/></data>");
         }
-
-        var booking = new Booking({
-            id: sid,
-            account_id: account_id,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            phone: req.body.phone,
-            email: req.body.email,
-            start_date: new XDate(req.body.start_date).getTime(),
-            end_date: new XDate(req.body.end_date).getTime(),
-            service: 'ffff',
-            provider: 'ffff'
-        });
-
-        //run db operation
-        switch (mode) {
-            case 'inserted':
-            case 'updated':
-                bookingService.updateBooking(booking, update_response);
-                break;
-            case 'deleted':
-                bookingService.deleteBooking(booking, update_response);
-                break;
-            default:
-                res.send("Not supported operation");
-        }
-
-
-        /*
-         if (mode == "updated")
-         db.event.updateById( sid, data, update_response);
-         else if (mode == "inserted")
-         db.event.insert(data, update_response);
-         else if (mode == "deleted")
-         db.event.removeById( sid, update_response);
-         else
-
-
-         bookingService.getBookingsByAccountId(account_id, function(err, bookings) {
-
-         //set id property for all records
-         for (var i = 0; i < bookings.length; i++)
-         bookings[i].id = bookings[i]._id;
-
-         //output response
-         res.send(bookings);
-
-         }); */
     });
 
 

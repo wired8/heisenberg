@@ -5,7 +5,8 @@ var resrvo_scheduler = {
     init: function() {
         var self = this;
 
-        scheduler.form_blocks["editor_view"]={
+        scheduler.form_blocks["editor_view"] = {
+
             render:function(sns){
                 var html = '<div class="dhx_cal_ltext" style="height:160px;">';
                 html += 'First Name:&nbsp;<input type="text" placeholder="First Name" size="25" class="search" id="first_name"><br/>';
@@ -15,6 +16,7 @@ var resrvo_scheduler = {
                 html += '</div>';
                 return html;
             },
+
             set_value:function(node,value,ev){
                 node.childNodes[0].value=value||"";
                 // we must loop through all nodes because we use the autocomplete plugin which sometimes adds
@@ -34,6 +36,7 @@ var resrvo_scheduler = {
                     }
                 });
             },
+
             get_value:function(node,ev){
                 // we must loop through all nodes because we use the autocomplete plugin which sometimes adds
                 // additional html elements therefore changing the position of the inputs
@@ -53,6 +56,7 @@ var resrvo_scheduler = {
                 });
                 return node.childNodes[0].value;
             },
+
             focus:function(node){
                // var a=node.childNodes[0];
                // a.select();
@@ -66,12 +70,11 @@ var resrvo_scheduler = {
         scheduler.locale.labels.section_providers = "Providers";
         scheduler.locale.labels.section_time_slots = "Time Slots";
 
-        var lightbox_sections=[
+        var lightbox_sections = [
             { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
-            { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getService},
-            { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers"), onchange:getProvider},
-            { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("time_slots")},
-            { name:"time", height:72, type:"time", map_to:"auto"}
+            { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getProviders},
+            { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers"), onchange:getTimeSlots},
+            { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("timeslots")}
         ];
 
         scheduler.locale.labels.unit_tab = "Providers";
@@ -111,8 +114,8 @@ var resrvo_scheduler = {
             var html = "<div class='dhx_event_move my_event_move' style='width: " + container_width + "'></div>";
 
             // container for event contents
-            html+= "<div class='my_event_body'>";
-            html += "<span class='event_date'>";
+            html += "<div class='my_event_body'>";
+            html += "<span style='display: none' class='event_date'>";
             // two options here: show only start date for short events or start+end for long
             if ((ev.end_date - ev.start_date) / 60000 > 40) { // if event is longer than 40 minutes
                 html += scheduler.templates.event_header(ev.start_date, ev.end_date, ev);
@@ -131,26 +134,37 @@ var resrvo_scheduler = {
             return true; // required, true - we've created custom form; false - display default one instead
         };
 
-
-
         scheduler.config.xml_date="%Y-%m-%d %H:%i";
         scheduler.init('resrvo_scheduler', new Date(),"day");
 
         scheduler.templates.xml_date = function(value){ return new Date(value); };
-        scheduler.load("/api/bookings", "json");
 
-        // Get service and available time slots
-        function getService() {
+        scheduler.templates.lightbox_header = function(start,end,ev){
+            return ev.text;
+        };
+
+        var now = new Date(scheduler._min_date).toISOString().slice(0,10).replace(/-/g,"");
+
+        scheduler.load("/api/bookings/" + now + "/", "json");
+
+        // Get providers and available time slots based on selected service
+        function getProviders() {
             var service_id = this.value; //selection from first list
             updateProviders(service_id);
         }
 
-        function getProvider() {
-
+        function getTimeSlots() {
+            var service_id = $(scheduler.formSection('services').control).val();
+            var provider_id = $(scheduler.formSection('providers').control).val();
+            var d = new Date(scheduler._min_date);
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1;
+            var curr_year = d.getFullYear();
+            var date = curr_month + '/' + curr_date + '/' + curr_year;
+            updateTimeSlots(service_id, provider_id, date);
         }
 
         function updateProviders(service_id) {
-            var self = this;
             var $el = $(scheduler.formSection('providers').control);
 
             $.get('/api/providers/' + service_id, function(providers) {
@@ -163,7 +177,7 @@ var resrvo_scheduler = {
                 });
 
                 var provider_id = providers[0].key;
-                var date = '1/1/2015';
+                var date = new Date(scheduler._min_date).toString(''); // '1/1/2015';
 
                 updateTimeSlots(service_id, provider_id, date);
                // $(scheduler.formSection('services').control).val(service_id);
@@ -174,11 +188,11 @@ var resrvo_scheduler = {
             var $el = $(scheduler.formSection('time_slots').control);
             var csrf = document.getElementById("_csrf").value;
 
-            $.post('/api/timeslots/', { providerid:  provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(result) {
+            $.post('/api/timeslots/', { providerid: provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(result) {
                 $el.empty(); // remove old options
                 $.each(result.timeslots, function(i, time_slot) {
                     $el.append($("<option></option>")
-                        .attr("value", time_slot).text(time_slot));
+                        .attr("value", time_slot.key).text(time_slot.value));
                 });
             });
         }

@@ -27,11 +27,11 @@ TimeSlotRepository.prototype.getTimeSlotsByProviderId = function (provider_id, f
 
         if (err) {
             Logger.error("Error trying to find timeslots by provider_id %j", provider_id, err);
-            return callback(err);
+            callback(err);
+            return;
         }
 
         callback(null, timeslots);
-
     });
 };
 
@@ -43,10 +43,27 @@ TimeSlotRepository.prototype.getTimeSlotsByProviderId = function (provider_id, f
  */
 TimeSlotRepository.prototype.saveTimeSlot = function (timeslot, callback) {
 
-    TimeSlot.model().findOneAndUpdate({}, timeslot, {upsert: true, new: true}, function (err, result) {
-        callback(err, result);
-    });
+    timeslot.model().save(function (err, _timeslot) {
+        if (err) {
+            Logger.error("Error trying to save timeslot  %j", timeslot, err);
+            callback(err);
+            return;
+        }
 
+        callback(null, new TimeSlot(_timeslot));
+    });
 };
+
+/**
+ * Delete a time slot by provider and start date
+ *
+ * @param {string} provider
+ * @param {number} start_date
+ * @param {Function} callback
+ */
+TimeSlotRepository.prototype.deleteTimeSlotByProviderStartDate = function(provider_id, start_date, callback) {
+    TimeSlot.model().remove({ provider_id: provider_id, start: start_date }, callback)
+};
+
 
 
