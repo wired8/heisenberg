@@ -45,14 +45,15 @@ module.exports.controller = function (app) {
     app.get('/api/bookings/:date/?', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
+        var timeshift = req.query.timeshift;
         var bookingService = Injct.getInstance('bookingService');
         var providerService = Injct.getInstance('providerService');
         var serviceService = Injct.getInstance('serviceService');
         var timeSlotService = Injct.getInstance('timeSlotService');
         var bookings = [];
-        var timeshift = req.query.timeshift;
+        var all_providers = [];
 
-        Async.waterfall([getServices, getProviders, getBookings,  getTimeSlots], render);
+        Async.waterfall([getServices, getAllProviders, getProviders, getBookings,  getTimeSlots], render);
 
         function getServices(cb) {
 
@@ -67,6 +68,25 @@ module.exports.controller = function (app) {
 
                 _.each(_services, function(service) {
                     services.push({ key: service._id.toString(), label: service.name });
+                });
+
+                cb(null, services);
+            });
+        }
+
+        function getAllProviders(services, cb) {
+
+            providerService.getProvidersByAccountId(account_id, function(err, _providers) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
+                _.each(_providers, function(provider) {
+                    all_providers.push({
+                        key: provider._id.toString(),
+                        label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name,
+                        name: provider.first_name + ' ' + provider.last_name
+                    });
                 });
 
                 cb(null, services);
@@ -179,7 +199,7 @@ module.exports.controller = function (app) {
                     services: services,
                     providers: providers,
                     timeslots: timeslots,
-                    units: providers
+                    units: all_providers
                 }
             });
         }
