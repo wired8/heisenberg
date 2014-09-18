@@ -81,10 +81,9 @@ var resrvo_scheduler = {
 
         scheduler.createUnitsView({
             name:"unit",
-            property:"key",
+            property:"unit_id",
             list:scheduler.serverList("units"),
-            size:20,
-            step:1
+            skip_incorrect:true
         });
 
         scheduler.config.collision_limit = 1;
@@ -238,9 +237,10 @@ var resrvo_scheduler = {
             getTimeSlots();
         });
 
+        /*
         dhtmlxAjax.get("/api/services", function(services){
             scheduler.updateCollection("services", services);
-        });
+        });*/
 
         var dp = new dataProcessor("/management/schedule/");
         dp.live_updates("/sync");

@@ -87,8 +87,7 @@ module.exports.controller = function (app) {
                 _.each(_providers, function(provider) {
                     all_providers.push({
                         key: provider._id.toString(),
-                        label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name,
-                        name: provider.first_name + ' ' + provider.last_name
+                        label: provider.title + ' ' + provider.first_name + ' ' + provider.last_name
                     });
                 });
 
