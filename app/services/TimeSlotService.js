@@ -37,7 +37,7 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
     var self = this;
     var scheduleService = Injct.getInstance('scheduleService');
 
-    Async.waterfall([getAccountScheduleHours, getProviderBreaks, getServicePeriod,  getProviderAvailableTimeSlots], callback);
+    Async.waterfall([getAccountScheduleHours, getProviderBreaks, getServicePeriod,  getProviderReservedTimeSlots], callback);
 
     function getAccountScheduleHours(cb) {
 
@@ -112,7 +112,7 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
 
     }
 
-    function getProviderAvailableTimeSlots(schedule, provider_breaks, service_duration, cb) {
+    function getProviderReservedTimeSlots(schedule, provider_breaks, service_duration, cb) {
 
         var day = new XDate(date).getDate();
         var month = new XDate(date).getMonth();
@@ -121,14 +121,14 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
         var from = new XDate(year, month, day, 0, 0, 0, 0).getTime();
         var to = new XDate(year, month, day, 23, 59, 59, 59).getTime();
 
-        self.timeSlotRepository.getTimeSlotsByProviderId(providerId, from, to, function(err, timeslots) {
+        self.timeSlotRepository.getTimeSlotsByProviderId(providerId, from, to, function(err, reserved_timeslots) {
 
             if (err) {
                 cb(err);
                 return;
             }
 
-            cb(null, buildTimeSlots(schedule, provider_breaks, service_duration, timeslots));
+            cb(null, buildTimeSlots(schedule, provider_breaks, service_duration, reserved_timeslots));
         });
 
     }
@@ -136,9 +136,14 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
     function buildTimeSlots(schedule, provider_breaks, service_duration, reserved_timeslots) {
 
         var timeslots = [];
+        var d = new XDate(date);
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth() + 1;
+        var curr_year = d.getFullYear();
+        var schedule_start = new XDate(curr_month + '/' + curr_date + '/' + curr_year + ' ' + schedule.start, false);
+        var schedule_end = new XDate(curr_month + '/' + curr_date + '/' + curr_year + ' ' +  schedule.end, false);
 
-        var schedule_start = new XDate('1/1/2000 ' + schedule.start, false);
-        var schedule_end = new XDate('1/1/2000 ' + schedule.end, false);
+        Logger.info('schedule_start %j', schedule_start.toString());
 
         while(schedule_start.getTime() <= schedule_end.getTime()) {
 
@@ -147,14 +152,28 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
             var valid = true;
 
             _.each(provider_breaks, function(provider_break) {
-                var break_start = new XDate('1/1/2000 ' + provider_break.from, false).getTime();
-                var break_to = new XDate('1/1/2000 ' + provider_break.to, false).getTime();
+                var break_start = new XDate(curr_month + '/' + curr_date + '/' + curr_year + ' ' + provider_break.from, false).getTime();
+                var break_to = new XDate(curr_month + '/' + curr_date + '/' + curr_year + ' ' + provider_break.to, false).getTime();
 
                 if (break_start >= start && break_start <= end) {
                     valid = false;
                     return;
                 }
                 if (break_to >= start && break_to <= end) {
+                    valid = false;
+                    return;
+                }
+            });
+
+            _.each(reserved_timeslots, function(reserved_timeslot) {
+                var timeslot_start = reserved_timeslot.start;
+                var timeslot_end = reserved_timeslot.end;
+
+                if (timeslot_start >= start && timeslot_start <= end) {
+                    valid = false;
+                    return;
+                }
+                if (timeslot_end >= start && timeslot_end <= end) {
                     valid = false;
                     return;
                 }
@@ -202,26 +221,6 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
  */
 TimeSlotService.prototype.updateTimeSlot = function(timeSlot, callback) {
     this.timeSlotRepository.saveTimeSlot(timeSlot, callback);
-};
-
-/**
- * Get available time slots
- *
- * @param {TimeSlot} timeslot
- * @param {Function} callback
- */
-TimeSlotService.prototype.getAvailableTimeSlots = function(startdate, enddate, minutes, callback) {
-
-    var timeslots = [];
-
-    var start_timestamp = new XDate(startdate, true).getTime();
-    var end_timestamp = new XDate(enddate, true).getTime();
-
-    while(start_timestamp <= end_timestamp) {
-
-    }
-
-    callback(null, timeslots);
 };
 
 /**

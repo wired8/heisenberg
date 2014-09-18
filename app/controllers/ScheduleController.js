@@ -1,6 +1,7 @@
 'use strict';
 
 var Injct = require('injct'),
+    Config = require('../../config/config'),
     Passport = require('passport'),
     PassportConf = require('../../config/passport'),
     _ = require('underscore'),
@@ -10,7 +11,9 @@ var Injct = require('injct'),
     Booking = require('../models/Booking.js'),
     TimeSlot = require('../models/TimeSlot.js'),
     Schedule = require('../models/Schedule.js'),
-    XDate = require('xdate');
+    XDate = require('xdate'),
+    Redis = require('redis').createClient(Config.redis.port, Config.redis.host, Config.redis.options || {}),
+    Warlock = require('node-redis-warlock')(Redis);
 
 
 /**
@@ -197,7 +200,7 @@ module.exports.controller = function (app) {
                 data: bookings,
                 collections: {
                     services: services,
-                    providers: providers,
+                    providers: all_providers,
                     timeslots: timeslots,
                     units: all_providers
                 }
@@ -229,7 +232,44 @@ module.exports.controller = function (app) {
 
         Logger.info('Booking request: %j', Util.inspect(req.body));
 
-        Async.waterfall([getService, updateTimeSlot, createBooking], update_response);
+        var key = 'lock_' + new XDate().getTime().toString();
+        var ttl = 10000;
+        var maxAttempts = 4;
+        var wait = 1000;
+
+        Warlock.optimistic(key, ttl, maxAttempts, wait, function(err, unlock) {
+
+            if (err) {
+                update_response(err);
+                return;
+            }
+
+            if (typeof unlock === 'function') {
+
+                Logger.info('Got lock %j', key);
+
+                Async.waterfall([getService, updateTimeSlot, createBooking], function(err, result) {
+
+                    if (err) {
+                        update_response(err);
+                        return;
+                    }
+
+                    unlock();
+                    Logger.info('Released lock %j', key);
+
+                    update_response(null, result);
+                });
+
+            } else {
+
+                Logger.info('Error getting lock');
+
+            }
+
+        });
+
+
 
         function getService(cb) {
             serviceService.getServiceById(service_id, cb);

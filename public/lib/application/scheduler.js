@@ -187,14 +187,24 @@ var resrvo_scheduler = {
 
         function updateTimeSlots(service_id, provider_id, date) {
             var $el = $(scheduler.formSection('time_slots').control);
-            var csrf = $("_csrf").value;
+            var csrf = $('#_csrf').val();
 
             $.post('/api/timeslots/', { providerid: provider_id, serviceid: service_id, date: date, _csrf: csrf }, function(result) {
                 $el.empty(); // remove old options
+                $el.prop('disabled', false);
+
+                if (result.timeslots.length === 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", 'null').text('None available'));
+                    $el.prop('disabled', 'disabled');
+                    return;
+                }
+
                 $.each(result.timeslots, function(i, time_slot) {
                     $el.append($("<option></option>")
                         .attr("value", time_slot.key).text(time_slot.value));
                 });
+                setDateTime();
             });
         }
 
@@ -225,7 +235,7 @@ var resrvo_scheduler = {
         });
 
         scheduler.attachEvent("onLightbox", function(){
-            setDateTime();
+            getTimeSlots();
         });
 
         dhtmlxAjax.get("/api/services", function(services){

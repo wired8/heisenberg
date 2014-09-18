@@ -53,7 +53,7 @@ config.mongodbTest.url    = (process.env.WERCKER_MONGODB_URL || 'localhost:27017
  */
 config.redis          = {};
 config.redis.host     = process.env.REDIS_HOST || '127.0.0.1';
-config.redis.port     = process.env.REDIS_PORT || 6739;
+config.redis.port     = process.env.REDIS_PORT || 6379;
 
 
 /**

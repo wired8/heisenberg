@@ -27,7 +27,7 @@ var semver            = require('semver');                  // https://npmjs.org
 var enforce           = require('express-sslify');          // https://github.com/florianheinemann/express-sslify
 var winston           = require('winston');                 // https://npmjs.org/package/winston
 var mongoose          = require('mongoose');                // https://npmjs.org/package/mongoose
-//var redis             = require('redis');                   // https://npmjs.org/package/redis
+var redis             = require('redis');                   // https://npmjs.org/package/redis
 var passport          = require('passport');                // https://npmjs.org/package/passport
 var MongoStore        = require('connect-mongo')(session);  // https://npmjs.org/package/connect-mongo
 var expressValidator  = require('express-validator');       // https://npmjs.org/package/express-validator
@@ -89,7 +89,7 @@ config.session.store  = new MongoStore({
 /**
  * Configure Redis
  */
-//redis.createClient(config.redis.port, config.redis.host, config.redis.options || {});
+redis.createClient(config.redis.port, config.redis.host, config.redis.options || {});
 
 
 /**
