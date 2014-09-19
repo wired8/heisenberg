@@ -169,11 +169,11 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
                 var timeslot_start = reserved_timeslot.start;
                 var timeslot_end = reserved_timeslot.end;
 
-                if (timeslot_start >= start && timeslot_start <= end) {
+                if (timeslot_start >= start && timeslot_start < end) {
                     valid = false;
                     return;
                 }
-                if (timeslot_end >= start && timeslot_end <= end) {
+                if (timeslot_end > start && timeslot_end <= end) {
                     valid = false;
                     return;
                 }
