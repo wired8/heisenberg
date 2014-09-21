@@ -1,4 +1,33 @@
-@charset "UTF-8";
+/*--------------------------------------
+ * #CONTENTS
+ * -------------------------------------
+ *
+ * BASE SETUP
+ *
+ * Imports..............Import all the things.
+ * Typography...........Setup our typography.
+ * Colors...............Setup our colors.
+ * Scaffolding..........Basic setup.
+ *
+ * COMPONENTS
+ *
+ * Navbar...............Main navigation.
+ * Flash alerts.........Flash messages at the top of the page.
+ * Jumbotron............Landing page.
+ * Mini-tron............Page headers.
+ * Soften...............Faded out HR.
+ * Footer...............Footer styles.
+ */
+/*------------------------------------*\
+  #IMPORTS
+\*------------------------------------*/
+/**
+ * First, import base frameworks and fonts:
+ *
+ *  - Bootstrap        http://getbootstrap.com/
+ *  - Boostrap Social  http://lipis.github.io/bootstrap-social/
+ *  - Font Awesome     http://fontawesome.io/
+ */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -8334,6 +8363,7 @@ fieldset[disabled] .btn-yahoo.active {
 .fa-plus-square-o:before {
   content: "\f196";
 }
+@charset "UTF-8";
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license
@@ -12257,19 +12287,53 @@ div.DTED_Envelope_Background {
   z-index: 10;
   display: none;
 }
+/*------------------------------------*\
+    #TYPOGRAPHY
+\*------------------------------------*/
 /**
- * First, import base frameworks:
- *
- *  - Project Font(s)  http://www.google.com/fonts/specimen/Open+Sans
- *  - Bootstrap        http://getbootstrap.com/
- *  - Font Awesome     http://fontawesome.io/
- *  - Animate.css      http://daneden.github.io/animate.css
- *
- *  Now add your own Bootstrap overrides and new styles below.
+ *   In <head>:
+ *   link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,500,700')
  */
 /**
- * Colors
+ * http://css-tricks.com/watch-your-font-weight/
+ * http://alistapart.com/article/say-no-to-faux-bold
  *
+ * Bootstrap uses five different font weights:
+ *
+ * 200 - Jumbotron paragraph
+ * 300 - Paragraph .lead class
+ * 400 - Normal Font Weight
+ * 500 - Headings
+ * 700 - Bold Text
+ *
+ * In order to completely change to a different font we need to:
+ *
+ * 1) Include the font - the easiest is with an example from Google fonts.
+ *    (Google sets up your @font-face rules correctly with the same
+ *    name for each @font-face rule - see links above)
+ *    You need to include all weights needed. However Open Sans does
+ *    NOT have a 200 weight, so we will substitute a 300 weight and skip the italic
+ *    version. In the Head section include the font stylesheet:
+ *
+ *    <link href='http: *fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,500,700', rel='stylesheet'>
+ *
+ * 2) Override the  the "@font-family-sans-serif" variable from variables.less:
+ *    @font-family-sans-serif:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+ *
+ * 3) Override Jumbotron paragraph if you don't have a 200 weight:
+ *
+ *    .jumbotron {
+ *       p {
+ *         font-weight: 300;
+ *       }
+ *     }
+ *
+ * Boom! Done.
+ */
+/*------------------------------------*\
+  #COLORS
+\*------------------------------------*/
+/**
  * This needs some explaining.  I'd rather keep colors separate
  * from widgets. That way I can just use HTML markup to colorize
  * widgets in a semantic way:
@@ -12286,9 +12350,8 @@ div.DTED_Envelope_Background {
  * make a widget that is designed with a particular color
  * I use the color in the name. Example: .btn-white or .navbar-yellow
  *
- * I usually designate brand colors only but this
+ * I usually designate brand colors only but since this
  * is an example so I included a more complete set.
- *
  */
 .brand1 {
   color: #377db5;
@@ -12362,26 +12425,23 @@ div.DTED_Envelope_Background {
 .bg-black {
   background-color: #111111;
 }
-.pink {
-  color: #ff748a;
-}
-.navy {
-  color: #001f3f;
+.aqua {
+  color: #7fdbff;
 }
 .blue {
   color: #0074d9;
 }
-.aqua {
-  color: #7fdbff;
+.navy {
+  color: #001f3f;
 }
 .teal {
   color: #39cccc;
 }
-.olive {
-  color: #3d9970;
-}
 .green {
   color: #2ecc40;
+}
+.olive {
+  color: #3d9970;
 }
 .lime {
   color: #01ff70;
@@ -12395,6 +12455,9 @@ div.DTED_Envelope_Background {
 .red {
   color: #ff4136;
 }
+.pink {
+  color: #ff748a;
+}
 .fuchsia {
   color: #f012be;
 }
@@ -12404,23 +12467,23 @@ div.DTED_Envelope_Background {
 .maroon {
   color: #85144b;
 }
-.bg-navy {
-  background-color: #001f3f;
+.bg-aqua {
+  background-color: #7fdbff;
 }
 .bg-blue {
   background-color: #0074d9;
 }
-.bg-aqua {
-  background-color: #7fdbff;
+.bg-navy {
+  background-color: #001f3f;
 }
 .bg-teal {
   background-color: #39cccc;
 }
-.bg-olive {
-  background-color: #3d9970;
-}
 .bg-green {
   background-color: #2ecc40;
+}
+.bg-olive {
+  background-color: #3d9970;
 }
 .bg-lime {
   background-color: #01ff70;
@@ -12446,14 +12509,10 @@ div.DTED_Envelope_Background {
 .bg-maroon {
   background-color: #85144b;
 }
-/**
- * Typography
- */
-/**
- * Scaffolding
- */
+/*------------------------------------*\
+  #SCAFFOLDING
+\*------------------------------------*/
 html {
-  text-rendering: optimizeLegibility;
   /* Sticky Footer Styles Below */
   position: relative;
   min-height: 100%;
@@ -12464,11 +12523,14 @@ body {
   /* Sticky Footer: margin bottom = footer height */
   margin-bottom: 80px;
 }
-/* thin style for large headers */
+/* Use a thin style for large headers */
 h1,
 h2 {
   font-weight: 300;
 }
+/*------------------------------------*\
+  #COMPONENTS
+\*------------------------------------*/
 /**
  * Navbar
  */
@@ -12496,8 +12558,19 @@ h2 {
   text-align: center;
 }
 /*
- * Home Page
+ * Jumbotron
  */
+.jumbotron,
+.mini-tron {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  background-color: #377db5;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2d6796), to(#377db5));
+  background-image: -webkit-linear-gradient(top, #2d6796 0%, #377db5 100%);
+  background-image: -o-linear-gradient(top, #2d6796 0%, #377db5 100%);
+  background-image: linear-gradient(to bottom, #2d6796 0%, #377db5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@brand1-darker', endColorstr='@brand1', GradientType=0);
+  background-repeat: repeat-x;
+}
 .jumbotron {
   margin-bottom: 0px;
 }
@@ -12556,11 +12629,6 @@ h2 {
     font-size: 22px;
   }
 }
-.jumbotron .btn {
-  width: 100%;
-  padding: 10px 20px;
-  font-size: 22px;
-}
 .btn-white {
   color: #333;
   background-color: #ffffff;
@@ -12573,6 +12641,11 @@ h2 {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
   border-color: #ffffff;
 }
+.jumbotron .btn {
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 22px;
+}
 @media (min-width: 768px) {
   .jumbotron .btn {
     width: 100%;
@@ -12581,33 +12654,68 @@ h2 {
   }
 }
 /*
- * Minitron
+ * Page headers (mini-tron)
  * Jumbotron-esque page headers
  */
 .mini-tron {
-  margin-top: 0px;
-  margin-bottom: 15px;
+  position: relative;
   padding: 30px 15px;
+  color: #b6d2e9;
   text-align: center;
+  margin-bottom: 40px;
+  font-size: 20px;
 }
 .mini-tron h1 {
   margin-top: 0;
+  color: #ffffff;
 }
 .mini-tron p {
+  margin-bottom: 0;
   font-weight: 300;
+  line-height: 1.4;
+}
+.mini-tron .container {
+  position: relative;
 }
 @media (min-width: 768px) {
   .mini-tron {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    margin-bottom: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    font-size: 24px;
+    text-align: left;
   }
   .mini-tron h1 {
-    font-size: 45px;
+    font-size: 60px;
+    line-height: 1;
   }
+}
+@media (min-width: 992px) {
+  .mini-tron h1,
   .mini-tron p {
-    font-size: 18px;
+    margin-right: 180px;
   }
+}
+/**
+ * Faded out hr
+ */
+.soften {
+  height: 2px;
+  margin: 10px 0;
+  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  border: 0;
+}
+/**
+ * Panel Headers Like Buttons
+ */
+.panel-button:hover {
+  background: #cfcfcf;
+}
+a.noDecoration {
+  text-decoration: none;
+}
+a.noDecoration:hover {
+  text-decoration: none;
 }
 /**
  * Footer
@@ -12635,130 +12743,5 @@ h2 {
   color: #eeeeee;
 }
 /**
- * Dashboard Page
- */
-.dashboard {
-  text-align: center;
-}
-.dashboard p {
-  font-size: 50px;
-  line-height: 1;
-  color: #ff4136;
-  text-shadow: 1px 1px 1px #111111;
-}
-@media (min-width: 768px) {
-  .dashboard p {
-    font-size: 96px;
-  }
-}
-/**
- * Colors Page
- */
-.pnl {
-  padding: 15px;
-}
-/**
- * Privacy Page
- */
-.table.privacy {
-  text-align: left;
-  margin-top: 30px;
-}
-.table.privacy tbody > tr > td {
-  border-top: 0px;
-  font-weight: 300;
-  font-size: 20px;
-}
-/**
- * Credit Card Page
- */
-@media (min-width: 768px) {
-  .ccform .form-group {
-    display: inline-block;
-    margin-bottom: 3px;
-    vertical-align: middle;
-  }
-  .ccform #ccnumber {
-    width: 220px;
-  }
-  .ccform #ccname {
-    width: 220px;
-  }
-  .ccform #expiry {
-    width: 78px;
-  }
-  .ccform #cvc {
-    width: 70px;
-  }
-}
-#ccnumber {
-  width: 220px;
-}
-#ccname {
-  width: 220px;
-}
-#expiry {
-  width: 78px;
-}
-#cvc {
-  width: 70px;
-}
-/**
- * Panel Headers Like Buttons
- */
-.panel-button:hover {
-  background: #cfcfcf;
-}
-a.noDecoration {
-  text-decoration: none;
-}
-a.noDecoration:hover {
-  text-decoration: none;
-}
-/**
  * Other Media/Responsiveness
  */
-.spacer {
-  height: 20px;
-  clear: both;
-}
-.cell-wrap {
-  position: relative;
-}
-.hide-times,
-.show-times {
-  display: inline-block;
-  position: absolute;
-  right: -1px;
-  top: -1px;
-  z-index: 1;
-}
-.radio-inline,
-.checkbox-inline {
-  cursor: pointer;
-  display: inline-block;
-  font-weight: normal;
-  margin-bottom: 0;
-  margin: 0 !important;
-  padding-left: 20px;
-  padding-top: 0px !important;
-  vertical-align: middle;
-}
-.loading #subdomain {
-  background: url("/img/loading.gif") no-repeat scroll 6px 9px #ffffff;
-}
-.available #subdomain {
-  background: url("/img/available.png") no-repeat scroll 6px 5px #ffffff;
-}
-.not-available #subdomain {
-  background: none repeat scroll 0 0 #ffe5e5;
-}
-.not-available #subdomain:after {
-  content: "Not Available";
-}
-html,
-body {
-  height: 100%;
-  /*mandatory*/
-  overflow: hidden;
-}

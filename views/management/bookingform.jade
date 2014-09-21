@@ -1,5 +1,4 @@
 extends ../layouts/layout
-
 block head
     title #{application} &middot; Booking Form
 block content
@@ -10,11 +9,9 @@ block content
                     h2
                         i.fa.fa-file-text-o
                         | &nbsp;Booking Form
-
-                form.form-horizontal(role='form')
                     input(type='hidden', name='_csrf', value=_csrf)
                     .form-group
-                        .formbuilder(id='resrvo_form')
+                        .fb-main(id='resrvo_form')
 
 //- Page-specific stuff
 block scripts

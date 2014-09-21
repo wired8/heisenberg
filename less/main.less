@@ -1,3 +1,40 @@
+/*--------------------------------------
+ * #CONTENTS
+ * -------------------------------------
+ *
+ * BASE SETUP
+ *
+ * Imports..............Import all the things.
+ * Typography...........Setup our typography.
+ * Colors...............Setup our colors.
+ * Scaffolding..........Basic setup.
+ *
+ * COMPONENTS
+ *
+ * Navbar...............Main navigation.
+ * Flash alerts.........Flash messages at the top of the page.
+ * Jumbotron............Landing page.
+ * Mini-tron............Page headers.
+ * Soften...............Faded out HR.
+ * Footer...............Footer styles.
+ */
+
+
+
+
+
+/*------------------------------------*\
+  #IMPORTS
+\*------------------------------------*/
+
+/**
+ * First, import base frameworks and fonts:
+ *
+ *  - Bootstrap        http://getbootstrap.com/
+ *  - Boostrap Social  http://lipis.github.io/bootstrap-social/
+ *  - Font Awesome     http://fontawesome.io/
+ */
+
 @import "bootstrap.less";
 @import "../public/lib/bootstrap-social/bootstrap-social.less";
 @import "../public/lib/font-awesome/less/font-awesome.less";
@@ -15,20 +52,66 @@
 @import (less) "../public/lib/datatables/dataTables.editor.css";
 
 
+
+
+
+/*------------------------------------*\
+    #TYPOGRAPHY
+\*------------------------------------*/
+
+@font-family-sans-serif:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 /**
- * First, import base frameworks:
- *
- *  - Project Font(s)  http://www.google.com/fonts/specimen/Open+Sans
- *  - Bootstrap        http://getbootstrap.com/
- *  - Font Awesome     http://fontawesome.io/
- *  - Animate.css      http://daneden.github.io/animate.css
- *
- *  Now add your own Bootstrap overrides and new styles below.
+ *   In <head>:
+ *   link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,500,700')
  */
 
 /**
- * Colors
+ * http://css-tricks.com/watch-your-font-weight/
+ * http://alistapart.com/article/say-no-to-faux-bold
  *
+ * Bootstrap uses five different font weights:
+ *
+ * 200 - Jumbotron paragraph
+ * 300 - Paragraph .lead class
+ * 400 - Normal Font Weight
+ * 500 - Headings
+ * 700 - Bold Text
+ *
+ * In order to completely change to a different font we need to:
+ *
+ * 1) Include the font - the easiest is with an example from Google fonts.
+ *    (Google sets up your @font-face rules correctly with the same
+ *    name for each @font-face rule - see links above)
+ *    You need to include all weights needed. However Open Sans does
+ *    NOT have a 200 weight, so we will substitute a 300 weight and skip the italic
+ *    version. In the Head section include the font stylesheet:
+ *
+ *    <link href='http: *fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,500,700', rel='stylesheet'>
+ *
+ * 2) Override the  the "@font-family-sans-serif" variable from variables.less:
+ *    @font-family-sans-serif:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+ *
+ * 3) Override Jumbotron paragraph if you don't have a 200 weight:
+ *
+ *    .jumbotron {
+ *       p {
+ *         font-weight: 300;
+ *       }
+ *     }
+ *
+ * Boom! Done.
+ */
+
+
+
+
+
+/*------------------------------------*\
+  #COLORS
+\*------------------------------------*/
+
+/**
  * This needs some explaining.  I'd rather keep colors separate
  * from widgets. That way I can just use HTML markup to colorize
  * widgets in a semantic way:
@@ -45,17 +128,9 @@
  * make a widget that is designed with a particular color
  * I use the color in the name. Example: .btn-white or .navbar-yellow
  *
- * I usually designate brand colors only but this
+ * I usually designate brand colors only but since this
  * is an example so I included a more complete set.
- *
  */
-
-// Boostrap colors in case you need to override them
-@brand-primary: #428bca;
-@brand-success: #5cb85c;
-@brand-info:    #5bc0de;
-@brand-warning: #f0ad4e;
-@brand-danger:  #d9534f;
 
 // Brand Color Scheme (checkout: https://kuler.adobe.com/explore)
 @brand1:        #377DB5;  // Blue
@@ -63,6 +138,14 @@
 @brand3:        #FFDBC2;  // Salmon
 @brand4:        #FF7B64;  // Orange
 @brand5:        #E61D46;  // Red
+
+
+// Boostrap colors in case you need to override them
+@brand-primary: #428bca;
+@brand-success: #5cb85c;
+@brand-info:    #5bc0de;
+@brand-warning: #f0ad4e;
+@brand-danger:  #d9534f;
 
 // Brand Colors
 .brand1 {       color: @brand1; }
@@ -79,8 +162,9 @@
 .bg-brand5 {    background-color: @brand5; }
 
 // Bootstrap provides an incomplete grayscale
-// but the ones commented below are coming
-// from Bootstrap:
+// because it doesn't define white and black.
+// Note the items commented below are coming
+// from Bootstrap but we add white and black:
 
 // Gray Scale
 @white:             #FFFFFF;
@@ -130,29 +214,31 @@
 @maroon:        #85144B;
 
 // Colors
-.pink {         color: @pink; }
-.navy {         color: @navy; }
-.blue {         color: @blue; }
 .aqua {         color: @aqua; }
+.blue {         color: @blue; }
+.navy {         color: @navy; }
 .teal {         color: @teal; }
-.olive {        color: @olive; }
 .green {        color: @green; }
+.olive {        color: @olive; }
 .lime {         color: @lime; }
+
 .yellow {       color: @yellow; }
 .orange {       color: @orange; }
 .red {          color: @red; }
+.pink {         color: @pink; }
 .fuchsia {      color: @fuchsia; }
 .purple {       color: @purple; }
 .maroon {       color: @maroon; }
 
 // Backgrounds
-.bg-navy {      background-color: @navy; }
-.bg-blue {      background-color: @blue; }
 .bg-aqua {      background-color: @aqua; }
+.bg-blue {      background-color: @blue; }
+.bg-navy {      background-color: @navy; }
 .bg-teal {      background-color: @teal; }
-.bg-olive {     background-color: @olive; }
 .bg-green {     background-color: @green; }
+.bg-olive {     background-color: @olive; }
 .bg-lime {      background-color: @lime; }
+
 .bg-yellow {    background-color: @yellow; }
 .bg-orange {    background-color: @orange; }
 .bg-red {       background-color: @red; }
@@ -161,58 +247,15 @@
 .bg-purple {    background-color: @purple; }
 .bg-maroon {    background-color: @maroon; }
 
-/**
- * Typography
- */
 
-// http://coding.smashingmagazine.com/2013/02/14/setting-weights-and-styles-at-font-face-declaration/
-// http://css-tricks.com/watch-your-font-weight/
-// http://alistapart.com/article/say-no-to-faux-bold
 
-// Bootstrap uses four different font weights:
 
-// 200 - Paragraph .lead class, Jumbotron paragraph
-// 400 - Normal Font Weight
-// 500 - Headings
-// 700 - Bold Text
 
-// In order to completely change to a different font we need to:
-
-// 1) Include the font - the easiest is with an example from Google fonts.
-//    (Google sets up your @font-face rules correctly with the same
-//    name for each @font-face rule - see links above)
-//    You need to include all weights needed. BUT for example Open Sans does
-//    NOT have a 200 weight, so we will substitute a 300 weight and skip the italic
-//    version. In the Head section include the font stylesheet:
-//
-//    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,500,700', rel='stylesheet'>
-
-// 2) Override the  the "@font-family-sans-serif" variable from variables.less:
-//    @font-family-sans-serif:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-// 3) Override Jumbotron paragraph and page .lead if you don't have a 200 weight:
-//     .lead {
-//        font-weight: 300;
-//     }
-
-//    .jumbotron {
-//       p {
-//         font-weight: 300;
-//       }
-//     }
-
-// Boom! Done.
-
-@font-family-sans-serif:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-/**
- * Scaffolding
- */
+/*------------------------------------*\
+  #SCAFFOLDING
+\*------------------------------------*/
 
 html {
-  // http://files.christophzillgens.com/webkit-font-smoothing.html
-  // -webkit-font-smoothing: antialiased;  // also try subpixel-antialiased, antialiased, none
-  text-rendering: optimizeLegibility;
   /* Sticky Footer Styles Below */
   position: relative;
   min-height: 100%;
@@ -225,17 +268,24 @@ body {
   margin-bottom: 80px;
 }
 
-/* thin style for large headers */
+/* Use a thin style for large headers */
 h1, h2 {
   font-weight: 300;
 }
+
+
+
+
+/*------------------------------------*\
+  #COMPONENTS
+\*------------------------------------*/
 
 /**
  * Navbar
  */
 
-@navbar-default-brand-color:       @gray-darker;
-@navbar-default-link-hover-bg:     darken(@navbar-default-bg, 6.5%);
+@navbar-default-brand-color: @gray-darker;
+@navbar-default-link-hover-bg: darken(@navbar-default-bg, 6.5%);
 
 .navbar-nav .profile-image {
   width: 30px;
@@ -265,11 +315,24 @@ h1, h2 {
 }
 
 /*
- * Home Page
+ * Jumbotron
  */
 
-@jumbotron-bg:            @brand1;
+@jumbotron-bg: @brand1;
 @jumbotron-heading-color: @white;
+@brand1-darker: darken(@brand1, 8%);
+
+.jumbotron,
+.mini-tron {
+  text-shadow: 0 1px 0 rgba(0,0,0,.2);
+  background-color: @brand1;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@brand1-darker), to(@brand1));
+  background-image: -webkit-linear-gradient(top, @brand1-darker 0%, @brand1 100%);
+  background-image:      -o-linear-gradient(top, @brand1-darker 0%, @brand1 100%);
+  background-image:         linear-gradient(to bottom, @brand1-darker 0%, @brand1 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@brand1-darker', endColorstr='@brand1', GradientType=0);
+  background-repeat: repeat-x;
+}
 
 .jumbotron {
   margin-bottom: 0px;
@@ -280,6 +343,7 @@ h1, h2 {
     font-size: 26px;
   }
 }
+
 @media (min-width: 768px) {
   .jumbotron {
     margin-bottom: 0px;
@@ -311,6 +375,7 @@ h1, h2 {
     }
   }
 }
+
 @media (min-width: 1170px) {
   .jumbotron {
     h1 {
@@ -331,15 +396,12 @@ h1, h2 {
     }
   }
 }
-.jumbotron .btn {
-  width: 100%;
-  padding: 10px 20px;
-  font-size: 22px;
-}
+
 .btn-white {
   color: #333;
   background-color: @white;
 }
+
 .btn-white:hover,
 .btn-white:focus,
 .btn-white:active {
@@ -347,6 +409,12 @@ h1, h2 {
   background-color: transparent;
   text-shadow: 1px 1px 1px rgba(0,0,0,.6);
   border-color: @white;
+}
+
+.jumbotron .btn {
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 22px;
 }
 
 @media (min-width: 768px) {
@@ -358,34 +426,80 @@ h1, h2 {
 }
 
 /*
- * Minitron
+ * Page headers (mini-tron)
  * Jumbotron-esque page headers
  */
 
 .mini-tron {
-  margin-top: 0px;
-  margin-bottom: 15px;
+  position: relative;
   padding: 30px 15px;
+  color: lighten(@brand1, 35%);
   text-align: center;
+  margin-bottom: 40px;
+  font-size: 20px;
   h1 {
     margin-top: 0;
+    color: @white;
   }
   p {
+    margin-bottom: 0;
     font-weight: 300;
+    line-height: 1.4;
   }
 }
+
+.mini-tron .container {
+  position: relative;
+}
+
 @media (min-width: 768px) {
   .mini-tron {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    margin-bottom: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    font-size: 24px;
+    text-align: left;
     h1 {
-      font-size: 45px;
-    }
-    p {
-      font-size: 18px;
+      font-size: 60px;
+      line-height: 1;
     }
   }
+}
+
+@media (min-width: 992px) {
+  .mini-tron {
+    h1,
+    p {
+      margin-right: 180px;
+    }
+  }
+}
+
+/**
+ * Faded out hr
+ */
+
+.soften {
+  height: 2px;
+  margin: 10px 0;
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  border: 0;
+}
+
+/**
+ * Panel Headers Like Buttons
+ */
+
+.panel-button:hover {
+  background: darken(#f5f5f5, 15%);
+}
+a.noDecoration {
+  text-decoration: none;
+}
+a.noDecoration:hover {
+  text-decoration: none;
 }
 
 /**
@@ -416,103 +530,6 @@ h1, h2 {
 }
 
 /**
- * Dashboard Page
- */
-
-.dashboard {
-  text-align: center;
-  p {
-    font-size: 50px;
-    line-height: 1;
-    color: @red;
-    text-shadow: 1px 1px 1px @black;
-  }
-}
-@media (min-width: 768px) {
-  .dashboard {
-    p {
-      font-size: 96px;
-    }
-  }
-}
-
-/**
- * Colors Page
- */
-
-.pnl {
-  padding: 15px;
-}
-
-/**
- * Privacy Page
- */
-
-.table.privacy {
-  text-align: left;
-  margin-top: 30px;
-  tbody>tr>td {
-    border-top: 0px;
-    font-weight: 300;
-    font-size: 20px;
-  }
-}
-
-/**
- * Credit Card Page
- */
-.ccform {
-  // Kick in the inline
-  @media (min-width: @screen-sm-min) {
-    // Inline-block all the things for "inline"
-    .form-group {
-      display: inline-block;
-      margin-bottom: 3px;
-      vertical-align: middle;
-    }
-    #ccnumber {
-      width: 220px;
-    }
-    #ccname {
-      width: 220px;
-    }
-    #expiry {
-      width: 78px;
-    }
-    #cvc {
-      width: 70px;
-    }
-  }
-}
-
-#ccnumber {
-  width: 220px;
-}
-#ccname {
-  width: 220px;
-}
-#expiry {
-  width: 78px;
-}
-#cvc {
-  width: 70px;
-}
-
-/**
- * Panel Headers Like Buttons
- */
-
-.panel-button:hover {
-  background: darken(#f5f5f5, 15%);
-}
-a.noDecoration {
-  text-decoration: none;
-}
-a.noDecoration:hover {
-  text-decoration: none;
-}
-
-/**
  * Other Media/Responsiveness
  */
 
@@ -520,57 +537,11 @@ a.noDecoration:hover {
 }
 @media (max-width: 992px) {
 }
+
+
 @media (min-width: 768px) {
 }
 @media (min-width: 992px) {
 }
 @media (min-width: 1170px) {
-}
-
-.spacer {
-  height: 20px;
-  clear: both;
-}
-
-.cell-wrap {
-  position: relative;
-}
-
-.hide-times, .show-times {
-  display: inline-block;
-  position: absolute;
-  right: -1px;
-  top: -1px;
-  z-index: 1;
-}
-
-.radio-inline, .checkbox-inline {
-  cursor: pointer;
-  display: inline-block;
-  font-weight: normal;
-  margin-bottom: 0;
-  margin: 0 !important;
-  padding-left: 20px;
-  padding-top: 0px !important;
-  vertical-align: middle;
-}
-
-.loading #subdomain {
-  background: url("/img/loading.gif") no-repeat scroll 6px 9px #fff;
-}
-
-.available #subdomain {
-  background: url("/img/available.png") no-repeat scroll 6px 5px #fff;
-}
-.not-available #subdomain {
-  background: none repeat scroll 0 0 #ffe5e5;
-}
-.not-available #subdomain:after {
-  content: "Not Available";
-}
-
-html, body {
-
-  height:100%; /*mandatory*/
-  overflow:hidden;
 }

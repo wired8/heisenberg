@@ -8,12 +8,41 @@ var resrvo_scheduler = {
         scheduler.form_blocks["editor_view"] = {
 
             render:function(sns){
+
                 var html = '<div class="dhx_cal_ltext" style="height:160px;">';
                 html += 'First Name:&nbsp;<input type="text" placeholder="First Name" size="25" class="search" id="first_name"><br/>';
                 html += 'Last Name:&nbsp;<input type="text" placeholder="Last Name" size="25" class="search" id="last_name"><br/>';
                 html += 'Phone:&nbsp;<input type="text" placeholder="Phone" size="25" class="search" id="phone"><br/>';
                 html += 'Email:&nbsp;<input type="text" placeholder="Email" size="25" class="search" id="email"><br/>';
+
+                _.each(scheduler._temp.collections.form.fields, function(field) {
+
+                    switch (field.field_type) {
+
+                        case 'time':
+                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            break;
+
+                        case 'email':
+                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            break;
+
+                        case 'paragraph':
+                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            break;
+
+                        case 'text':
+                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            break;
+                    }
+                });
+
+
+
                 html += '</div>';
+
+
+
                 return html;
             },
 

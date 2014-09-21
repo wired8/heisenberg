@@ -48,6 +48,11 @@ TimeSlotService.prototype.getAvailableTimeSlotsForProviderByDate = function (acc
                 return;
             }
 
+            if (!weekly_schedule) {
+                callback(null, []);
+                return;
+            }
+
             var day = new XDate(date, true).getDay();
 
             var provider_ids = weekly_schedule[getDayName(day)].providers;

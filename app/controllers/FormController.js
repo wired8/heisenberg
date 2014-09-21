@@ -17,14 +17,14 @@ module.exports.controller = function (app) {
 
 
     /**
-     * GET /management/form
+     * GET /management/bookingform
      * Form management page.
      *
      * @param request
      * @param response
      * @param callback
      */
-    app.get('/management/form', PassportConf.isAuthenticated, function (req, res) {
+    app.get('/management/bookingform', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var formService = Injct.getInstance('formService');
@@ -38,7 +38,7 @@ module.exports.controller = function (app) {
 
             var form_fields = (form && form.fields !== undefined ? JSON.stringify(form.fields) : JSON.stringify([]));
 
-            res.render('management/form', {
+            res.render('management/bookingform', {
                 title: 'Form Management',
                 form_fields: form_fields
             });
@@ -56,7 +56,7 @@ module.exports.controller = function (app) {
      * @param response
      * @param callback
      */
-    app.post('/management/form', PassportConf.isAuthenticated, function (req, res, next) {
+    app.post('/management/bookingform', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
         var formService = Injct.getInstance('formService');
@@ -72,12 +72,12 @@ module.exports.controller = function (app) {
 
             if (err) {
                 req.flash('errors', { msg: 'Error updating form.' });
-                res.redirect('/management/form');
+                res.redirect('/management/bookingform');
                 return;
             }
 
             req.flash('success', { msg: 'Form updated.' });
-            res.redirect('/management/form');
+            res.redirect('/management/bookingform');
         });
 
 

@@ -53,10 +53,11 @@ module.exports.controller = function (app) {
         var providerService = Injct.getInstance('providerService');
         var serviceService = Injct.getInstance('serviceService');
         var timeSlotService = Injct.getInstance('timeSlotService');
+        var formService = Injct.getInstance('formService');
         var bookings = [];
         var all_providers = [];
 
-        Async.waterfall([getServices, getAllProviders, getProviders, getBookings,  getTimeSlots], render);
+        Async.waterfall([getServices, getAllProviders, getProviders, getBookings, getTimeSlots, getForm], render);
 
         function getServices(cb) {
 
@@ -188,7 +189,21 @@ module.exports.controller = function (app) {
             });
         }
 
-        function render(err, services, providers, bookings, timeslots) {
+        function getForm(services, providers, bookings, timeslots, cb) {
+
+            formService.getFormByAccountId(account_id, function (err, form) {
+
+                if (err) {
+                    cb(err);
+                    return;
+                }
+
+                cb(null, services, providers, bookings, timeslots, form);
+
+            });
+        }
+
+        function render(err, services, providers, bookings, timeslots, form) {
 
             if (err) {
                 res.send({ result: 'error', error: err });
@@ -201,7 +216,8 @@ module.exports.controller = function (app) {
                     services: services,
                     providers: all_providers,
                     timeslots: timeslots,
-                    units: all_providers
+                    units: all_providers,
+                    form: form
                 }
             });
         }

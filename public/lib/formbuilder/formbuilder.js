@@ -316,9 +316,9 @@
         }
         newMargin = Math.max(0, $(window).scrollTop());
         maxMargin = _this.$responseFields.height();
-        return _this.$fbLeft.css({
-          'margin-top': Math.min(maxMargin, newMargin)
-        });
+      //  return _this.$fbLeft.css({
+      //    'margin-top': Math.min(maxMargin, newMargin)
+      //  });
       });
     };
 
@@ -491,10 +491,10 @@
       this.formSaved = true;
       this.saveFormButton.attr('disabled', true).text(Formbuilder.options.dict.ALL_CHANGES_SAVED);
       this.collection.sort();
-      payload = JSON.stringify({
+      payload = {
         fields: this.collection.toJSON(),
         _csrf: $('[name="_csrf"]').val()
-      });
+      };
       if (Formbuilder.options.HTTP_ENDPOINT) {
         this.doAjaxSave(payload);
       }
@@ -507,7 +507,6 @@
         url: Formbuilder.options.HTTP_ENDPOINT,
         type: Formbuilder.options.HTTP_METHOD,
         data: payload,
-        contentType: "application/json",
         success: function(data) {
           var datum, _i, _len, _ref5;
           _this.updatingBatch = true;
