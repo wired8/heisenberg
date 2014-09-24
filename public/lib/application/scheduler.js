@@ -9,30 +9,200 @@ var resrvo_scheduler = {
 
             render:function(sns){
 
-                var html = '<div class="dhx_cal_ltext" style="height:160px;">';
-                html += 'First Name:&nbsp;<input type="text" placeholder="First Name" size="25" class="search" id="first_name"><br/>';
-                html += 'Last Name:&nbsp;<input type="text" placeholder="Last Name" size="25" class="search" id="last_name"><br/>';
-                html += 'Phone:&nbsp;<input type="text" placeholder="Phone" size="25" class="search" id="phone"><br/>';
-                html += 'Email:&nbsp;<input type="text" placeholder="Email" size="25" class="search" id="email"><br/>';
+                var html = '<div style="clear: both; height:160px; overflow-y: scroll;">';
+
+                html += '<div class="dhx_wrap_section" style="border: none;">';
+                html += '  <div class="dhx_cal_lsection">';
+                html +=     'First Name:';
+                html +=   '</div>';
+                html +=   '<div class="dhx_cal_ltext">';
+                html +=   '<input type="text" placeholder="First Name" size="25" class="search" id="first_name" />';
+                html +=   '</div>';
+                html += '</div>';
+
+                html += '<div class="dhx_wrap_section" style="border: none;">';
+                html += '  <div class="dhx_cal_lsection">';
+                html +=     'Last Name:';
+                html +=   '</div>';
+                html +=   '<div class="dhx_cal_ltext">';
+                html +=   '<input type="text" placeholder="Last Name" size="25" class="search" id="last_name" />';
+                html +=   '</div>';
+                html += '</div>';
+
+                html += '<div class="dhx_wrap_section" style="border: none;">';
+                html += '  <div class="dhx_cal_lsection">';
+                html +=     'Phone:';
+                html +=   '</div>';
+                html +=   '<div class="dhx_cal_ltext">';
+                html +=   '<input type="text" placeholder="Phone" size="25" class="search" id="phone" />';
+                html +=   '</div>';
+                html += '</div>';
+
+                html += '<div class="dhx_wrap_section" style="border: none;">';
+                html += '  <div class="dhx_cal_lsection">';
+                html +=     'Email:';
+                html +=   '</div>';
+                html +=   '<div class="dhx_cal_ltext">';
+                html +=   '<input type="text" placeholder="Email" size="25" class="search" id="email" />';
+                html +=   '</div>';
+                html += '</div>';
 
                 _.each(scheduler._temp.collections.form.fields, function(field) {
+                    var field_class = '';
+                    var help_block = '';
+
+                    if (field.field_options) {
+
+                        switch (field.field_options.size) {
+                            case 'small':
+                                field_class = 'rf-size-small';
+                                break;
+                            case 'medium':
+                                field_class = 'rf-size-medium';
+                                break;
+                            case 'large':
+                                field_class = 'rf-size-large';
+                                break;
+                        }
+
+                        if (field.field_options.description) {
+                            help_block = '<span class="help-block">' + field.field_options.description + '</span>';
+                        }
+                    }
 
                     switch (field.field_type) {
 
+                        case 'date':
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=   '  <span class="month">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>MM</label>';
+                            html +=   '  </span>';
+                            html +=   '  <span class="above-line">/</span>';
+                            html +=   '  <span class="day">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>DD</label>';
+                            html +=   '  </span>';
+                            html +=   '  <span class="above-line">/</span>';
+                            html +=   '  <span class="year">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>YYYY</label>';
+                            html +=   '  </span>';
+                             html +=   '</div>';
+                            html += '</div>';
+                            break;
+
                         case 'time':
-                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=   '  <span class="hours">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>HH</label>';
+                            html +=   '  </span>';
+                            html +=   '  <span class="above-line">:</span>';
+                            html +=   '  <span class="minutes">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>MM</label>';
+                            html +=   '  </span>';
+                            html +=   '  <span class="above-line">:</span>';
+                            html +=   '  <span class="seconds">';
+                            html +=   '    <input type="text">';
+                            html +=   '    <label>SS</label>';
+                            html +=   '  </span>';
+                            html +=   '  <span class="am_pm">';
+                            html +=   '    <select>';
+                            html +=   '      <option>AM</option>';
+                            html +=   '      <option>PM</option>';
+                            html +=   '    </select>';
+                            html +=   '  </span>';
+                            html +=   '</div>';
+                            html += '</div>';
                             break;
 
                         case 'email':
-                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=   '<input type="text" placeholder="@" size="25" class="search" id="' + field.cid +'" />';
+                            html +=   '</div>';
+                            html += '</div>';
+                            break;
+
+                        case 'number':
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=     '<input type="text" placeholder="' + field.field_options.units + '" size="25" class="search" id="' + field.cid +'" />';
+                            html +=     '&nbsp;' + field.field_options.units;
+                            html +=     help_block;
+                            html +=   '</div>';
+                            html += '</div>';
                             break;
 
                         case 'paragraph':
-                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=   '  <textarea id="' + field.cid + '" class="' + field_class + '"></textarea>';
+                            html +=      help_block;
+                            html +=   '</div>';
+                            html += '</div>';
                             break;
 
                         case 'text':
-                            html += field.label + '&nbsp;<input type="text" size="25" class="search" id="' + field.cid + '"><br/>';
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+                            html +=   '  <input type="text" placeholder="' + field.label + '" class="' + field_class + ' id="' + field.cid +'" />';
+                            html +=      help_block;
+                            html +=   '</div>';
+                            html += '</div>';
+                            break;
+
+                        case 'radio':
+                            html += '<div class="dhx_wrap_section" style="border: none;">';
+                            html += '  <div class="dhx_cal_lsection">';
+                            html +=     field.label + '&nbsp;' + (field.required === 'true' ? '<abbr title="required">*</abbr>' : '') + ':';
+                            html +=   '</div>';
+                            html +=   '<div class="dhx_cal_ltext">';
+
+                            _.each(field.field_options.options, function(radio) {
+                                html +=   '<div>';
+                                html +=   '  <label class="fb-option">';
+                                html +=     radio.checked === 'true' ? '<input type="radio" checked name="' + field.cid + '">' : '<input name="' + field.cid + '" type="radio">';
+                                html +=     '&nbsp;' + radio.label;
+                                html +=     '</label>';
+                                html +=   '</div>';
+                            });
+
+                            if (field.field_options.include_other_option) {
+                                html +=   '<div class="other_option">';
+                                html +=   '  <label class="fb-option">';
+                                html +=   '    <input type="radio" name="' + field.cid + '">';
+                                html +=   '    Other';
+                                html +=   '  </label>';
+                                html +=   '  <input type="text">';
+                                html +=   '</div>';
+                            }
+
+                            html +=      help_block;
+                            html +=   '</div>';
+                            html += '</div>';
                             break;
                     }
                 });
@@ -100,7 +270,7 @@ var resrvo_scheduler = {
         scheduler.locale.labels.section_time_slots = "Time Slots";
 
         var lightbox_sections = [
-            { name:"customer", height:72, type:"editor_view", map_to:"auto", focus:true},
+            { name:"customer", height:160, type:"editor_view", map_to:"auto", focus:true},
             { name:"services", map_to:"service", type:"select", options:scheduler.serverList("services"), onchange:getProviders},
             { name:"providers", map_to:"provider", type:"select", options:scheduler.serverList("providers"), onchange:getTimeSlots},
             { name:"time_slots", map_to:"time_slots", type:"select", options:scheduler.serverList("timeslots"), onchange:setDateTime}
