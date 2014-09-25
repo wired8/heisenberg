@@ -46,7 +46,9 @@ function setupDependencies(cb) {
         timeSlotRepository: reqRepository('TimeSlotRepository'),
         timeSlotService: reqService('TimeSlotService'),
         userRepository: reqRepository('UserRepository'),
-        userService: reqService('UserService')
+        userService: reqService('UserService'),
+        widgetRepository: reqRepository('widgetRepository'),
+        widgetService: reqService('widgetService')
     });
 
     console.log('Setup dependencies');

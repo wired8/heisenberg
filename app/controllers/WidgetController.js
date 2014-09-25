@@ -3,14 +3,14 @@
 var Injct = require('injct'),
     PassportConf = require('../../config/passport'),
     Account = require('../models/Account'),
-    User = require('../models/User'),
+    Widget = require('../models/Widget'),
     _ = require('underscore'),
     Logger = require('../util/Logger'),
     Util = require('util');
 
 
 /**
- * Analytics Controller
+ * Widgets Controller
  */
 
 module.exports.controller = function (app) {
@@ -25,10 +25,19 @@ module.exports.controller = function (app) {
     app.get('/management/widget', PassportConf.isAuthenticated, function (req, res) {
 
         var account_id = req.user.account_id;
-        var accountService = Injct.getInstance('accountService');
+        var widgetService = Injct.getInstance('widgetService');
 
-        res.render('management/widget', {
-            title: 'Widget Management'
+        widgetService.getWidgetsByAccountId(account_id, function(err, widgets) {
+
+            if (err) {
+                res.send({ result: 'error', error: err });
+                return;
+            }
+
+            res.render('management/widget', {
+                title: 'Widget Management',
+                widgets: widgets
+            });
         });
 
     });
@@ -42,6 +51,25 @@ module.exports.controller = function (app) {
      */
     app.post('/management/widget', PassportConf.isAuthenticated,  function (req, res) {
 
+        var account_id = req.user.account_id;
+        var widgetService = Injct.getInstance('widgetService');
+
+        var widget = new Widget({
+            account_id: account_id,
+            url: req.body.site_url
+        });
+
+        widgetService.updateWidget(widget, function (err, result) {
+
+            if (err) {
+                req.flash('errors', { msg: 'Error adding widget.' });
+                res.redirect('/management/widget');
+                return;
+            }
+
+            req.flash('success', { msg: 'Widget added.' });
+            res.redirect('/management/widget');
+        });
 
     });
 

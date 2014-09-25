@@ -10,11 +10,48 @@ block content
                     h2
                         i.fa.fa-file-text-o
                         | &nbsp;Booking Widget
-                form.form-horizontal(role='form')
+                form.form-horizontal(role='form', id='widgetForm', method='POST')
                     input(type='hidden', name='_csrf', value=_csrf)
+                    .col-sm-6
+                        .form-group
+                            .col-sm-12
+                                h3 New Widget
+                        .form-group
+                            label.col-sm-3.control-label(for='name') Site Name
+                            .col-sm-8
+                                input.form-control(type='text', placeholder='http://yoursite.com', name='site_url', id='site_url')
+                        .form-group
+                            .col-sm-offset-3.col-sm-4
+                                button.btn.btn.btn-primary(type='submit', class='save') Add Widget
+
+                    .col-sm-6
+                        .form-group
+                            .col-sm-12
+                                h3 Current Widgets
+                        .form-group
+                            .col-sm-12
+                                each widget in widgets
+                                    .form-group
+                                        .col-sm-8
+                                            h4 #{widget.url}
+                                        .col-sm-2
+                                            button.btn.btn.btn-success(class='code')
+                                                <i class="fa fa-code"></i> Code
+                                         .col-sm-2
+                                            button.btn.btn.btn-danger(class='remove')
+                                                <i class="fa fa-times"></i> Remove
+                                    hr
+
 
 //- Page-specific stuff
 block scripts
+    script.
+        $(document).ready(function() {
+            // Load widget
+            $.getScript('/lib/application/widget.js').done(function () {
+                resrvo_widget.init();
+            });
+        });
 
 
 
