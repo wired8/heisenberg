@@ -30,7 +30,7 @@ module.exports.controller = function (app) {
     // Check if user is already logged in
     if (req.user) {
       req.flash('info', { msg: 'You are already logged in!' });
-      return res.redirect('/api');
+      return res.redirect('/schedule');
     }
     // Turn off login form if too many attempts
     var tooManyAttempts = req.session.tooManyAttempts || false;

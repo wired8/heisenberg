@@ -1,133 +1,257 @@
 extends ../layouts/layout
-
 block head
-  title #{application} &middot; Welcome!
+    title #{application} &middot; Welcome!
 
 block content
-  .jumbotron.white
+    .preloader
+    // Fixed navbar
+    .navbar.navbar-default.navbar-fixed-top(role='navigation')
+        .container
+            .navbar-header
+                button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href='#')
+            .navbar-collapse.collapse
+                ul.nav.navbar-nav.navbar-right
+                    li.active
+                        a(href='#') Home
+                    li
+                        a(href='#') About
+                    li.dropdown
+                        a.dropdown-toggle(href='#', data-toggle='dropdown')
+                            | Features
+                            span.caret
+                        ul.dropdown-menu(role='menu')
+                            li
+                                a(href='#') Action
+                            li
+                                a(href='#') Another action
+                            li
+                                a(href='#') Something else here
+                            li.divider
+                            li.dropdown-header Nav header
+                            li
+                                a(href='#') Separated link
+                            li
+                                a(href='#') One more separated link
+                    li
+                        a(href='#') Pricing
+                    li
+                        a(href='#') Contact
+                    li
+                        a(href='/login') Login
+            // /.nav-collapse
+    // Parallax Header Starts
+    main#top.masthead(role='main')
+        .container
+            // Startup Logo
+            .logo
+                a(href='#')
+                    img(src='images/startup-template-logo.png', alt='startup-logo')
+            // Hero Title
+            h1
+                | The Most&nbsp;
+                span(data-typer-targets='Easy,Effective,Advanced,Secure,Friendly,Simple') Simple
+                |&nbsp;and&nbsp;
+                strong Powerful Way
+                br
+                |&nbsp;to&nbsp;
+                strong launch
+                |&nbsp;your startup
+            // Mailchimp Subscribe form
+            .row
+                .col-md-12
+                    img(src="images/web-app-banner.png", alt="Resrvo", class="img-responsive")
+            // Mailchimp Subscribe form Ends
+    // // Parallax Header Ends
+    // Container
+    #explore.container
+        // Hero Image
+        .section-title
+            h2 Responsive landing page for startup
+            h4 Simple, elegant and intutive user interface
+        section.row.heroimg.breath
+            .col-md-12.text-center
+                img(src='images/flat-mockup-template.png', alt='flat-mockup-template')
+        // //Hero Image
+        // Features Section
+        .section-title
+            h2 Some great features of our startup
+            h4 With our advanced features, you'll fall in love with
+        section.row.features
+            // Feature 01
+            .col-sm-6.col-md-3
+                .thumbnail
+                    img(src='images/flat-feature-icon-1.png', alt='analytics-icon')
+                    .caption
+                        h3 Advanced analytics
+                        p Browse and analyze detailed statistics of each of your keywords and phrases.
+            // Feature 02
+            .col-sm-6.col-md-3
+                .thumbnail
+                    img(src='images/flat-feature-icon-2.png', alt='analytics-icon')
+                    .caption
+                        h3 Spy Competitors
+                        p
+                            | Ever wondered what your competitors are up to? no more with our Spy Competitors.
+            // Feature 03
+            .col-sm-6.col-md-3
+                .thumbnail
+                    img(src='images/flat-feature-icon-3.png', alt='analytics-icon')
+                    .caption
+                        h3 Work with mac
+                        p You can even work on your mac with our Mac application and stay synced online.
+            // Feature 04
+            .col-sm-6.col-md-3
+                .thumbnail
+                    img(src='images/flat-feature-icon-4.png', alt='analytics-icon')
+                    .caption
+                        h3 Dedicated support
+                        p
+                            | Talk to human. when ever you need a help or want to talk with us, we are open 24/7.
+        // // Features Section Ends
+        // Client Logos
+        .section-title
+            h2 You are in a good company
+            h4 We are funded with world's trusted brands.
+        section.row.clientlogo.breath
+            .col-md-12.text-center
+                img(src='images/client-logos.png', alt='client-logos')
+        // // End Client Logos
+    // // Container Ends
+    // Grey Highlight Section
+    .highlight.testimonials
+        .container
+            // Testimonials
+            .section-title
+                h2 What our customers said
+                h4 Don't take our word. See our testimonials
+            section.row.breath
+                .col-md-6
+                    .testblock
+                        | Startup is really a great template to get strarted with. With its awesome features and easy customization with unbounce. This template made my day. Very recommended.
+                    .clientblock
+                        img(src='images/customer-img-1.jpg', alt='.')
+                        p
+                            strong Johnathan Doe
+                            br
+                            | Founder and CEO of
+                            a(href='#') Square Inc
+                .col-md-6
+                    .testblock
+                        | I like this template very much. easy customization and perfect support. This is the finest startup template I've ever seen. Its minimal, Flat and responsive too. I'm really happy with their service.
+                    .clientblock
+                        img(src='images/customer-img-2.jpg', alt='.')
+                        p
+                            strong Michael  Slats
+                            br
+                            | Project Lead at
+                            a(href='#') Airbnb.com
+            // // End Testimonials
+    // // End Grey Highlight Section
+    // Container
     .container
-      h1 Complete Boilerplate Site!
-      .row
-        .col-md-7.col-md-push-5
-          img.center-block.img-responsive.animated.bounceInLeft(alt='Skeleton App', src='img/Octocat.png', width='400px')
-        .col-md-4.col-md-offset-1.col-md-pull-7
-          ul.fa-ul.visible-md.visible-lg
-            li
-              i.fa.fa-li.fa-users
-              | OAUTH Authentication
-            li
-              i.fa.fa-li.fa-magic
-              | API Examples
-            li
-              i.fa.fa-li.fa-cogs
-              | Admin Dashboard
-            li
-              i.fa.fa-li.fa-magic
-              | Gulp Build System
+        // Pricing
+        .section-title
+            h2 Honest pricing. No surprises.
+            h4 No contract. No risk. No credit card required.
+        section.row.breath.planpricing
+            .col-md-4
+                .pricing.color1
+                    .planname Personal
+                    .price
+                        span.curr $
+                        | 14
+                        span.per /MO
+                    .billing Billed Annually
+            .col-md-4
+                .pricing.color2
+                    .planname Agency
+                    .price
+                        span.curr $
+                        | 49
+                        span.per /MO
+                    .billing Billed Annually
+            .col-md-4
+                .pricing.color3
+                    .planname Enterprise
+                    .price
+                        span.curr $
+                        | 99
+                        span.per /MO
+                    .billing Billed Annually
+        // // End Pricing
+        // FAQ
+        .section-title
+            h5 Frequently Asked Questions
+        section.row.faq.breath
+            .col-md-6
+                h6 How does the free trial work?
+                p
+                    | Our 10 day trial is 100% free and does not require credit card information to start. If at the end of your trial you would like to upgrade, great. If not, you can cancel your account altogether, or let us mark it as inactive for you to come back to later.
+                h6 Can I switch plans later?
+                p
+                    | Absolutely. You can switch between our paid plans, or cancel your account altogether, whenever you like. We will adjust any payments accordingly.
+            .col-md-6
+                h6 Do I need to choose a plan now?
+                p
+                    | No. You get the full featured, unlimited version of Startup completely free for 10 days. Once you're ready to upgrade, you may choose a plan which suits your needs.
+                h6 What payment types do you accept?
+                p
+                    | We accept payments from MasterCard, Visa, Visa Debit and American Express. We do not accept PayPal. Remember, you do not need to supply card details to start your free trial.
+        // // End FAQ
+    // // Container Ends
+    // Parallax Footer Starts
+    main.footercta(role='main')
+        .container
+            // Hero Title
+            h1
+                | The Most Simple & Yet
+                strong Powerful Way
+                br
+                | to
+                strong launch
+                | your startup
+            // Mailchimp Subscribe form
+            .row
+                .col-md-12.breath.text-center
+                    a.btn.btn-success.btn-lg.gototop(href='#top') GET EARLY ACCESS
+    // // Parallax Footer Ends
+    // Container
+    .container
+        section.row.breath
+            .col-md-12.footerlinks
+                a(href='#') About
+                a(href='#') Pricing
+                a(href='#') Blog
+                a(href='#') Help
+                a(href='#') Contact
+                a(href='#') Privacy
+                a(href='#') Terms
+                p © 2014 Resrvo. All Rights Reserved
 
-          br
-          a.btn.btn-white(href='/login', role='button') Sign in Now!
-      .row.hidden-xs
-        .col-md-12
-          h2 Why choose #{application}?
-      .row.hidden-xs
-        .col-md-4
-          h3
-            i.fa.fa-group.fa-lg.green
-            | &nbsp;&nbsp;Built for you
-          p
-            | #{application} Is built with standard components such as Bootstrap and FontAwesome and is easy to customize.
-        .col-md-4
-          h3
-            i.fa.fa-bolt.fa-lg.yellow
-            | &nbsp;&nbsp;Lightning fast
-          p
-            | #{application} is optimized to ensure fast loading time. Google page speed index of 93/100 on a nodejitsu micro drone ($9/month).
-        .col-md-4
-          h3
-            i.fa.fa-tablet.fa-lg.fuchsia
-            | &nbsp;&nbsp;On every device
-          p
-            | #{application} is built to look great on every device. Fully responsive for mobile devices to ensure the best user experience.
-      .row
-        .col-md-4.col-md-offset-4
-          //- http://github.hubspot.com/odometer/
-          .github-count
-            span.odometer-label
-              a.white(href='http://github.com/dstroot/skeleton', rel='external')
-                i.fa.fa-github
-                | &nbsp;GitHub ★ :
-            .odometer.bg-purple 0
 
 //- Page-specific stuff
 block scripts
-  //- Async load odometer styles
-  script.
-    var cb = function() {
-      var l = document.createElement('link'); l.rel = 'stylesheet';
-      l.href = 'lib/odometer/themes/odometer-theme-minimal.css';
-      var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
-    };
-    var raf = requestAnimationFrame || mozRequestAnimationFrame ||
-        webkitRequestAnimationFrame || msRequestAnimationFrame;
-    if (raf) raf(cb);
-    else window.addEventListener('load', cb);
+    script(src='/lib/application/home/pace.js')
+    script(src='/lib/application/home/easing.js')
+    script(src='/lib/application/home/typer.js')
+    script(src='/lib/application/home/nicescroll.js')
+    script(src='/lib/application/home/ketchup.all.js')
+    script.
+        $(function () {
+            $('[data-typer-targets]').typer();
+        });
+        $(function() {
+           $('.scrollto, .gototop').bind('click',function(event){
+             var $anchor = $(this);
+             $('html, body').stop().animate({
+               scrollTop: $($anchor.attr('href')).offset().top
+             }, 1500,'easeInOutExpo');
+             event.preventDefault();
+           });
+        });
 
-  //- Tweak the styles a bit...
-  style.
-    .github-count {
-      margin-top:20px;
-      font-size: 20px;
-      text-align: center;
-    }
-    .odometer-label {
-      margin-right: 10px;
-      line-height: 1;
-      vertical-align: middle;
-    }
-    .odometer {
-      padding: 13px 21px 11px;
-      margin: auto;
-      line-height: 1 !important;
-      border-radius: 6px;
-    }
-    .odometer-label a {
-      text-decoration: none;
-    }
-    .odometer-label a:hover {
-      color: #B10DC9;
-    }
-
-  script.
-    $(document).ready(function() {
-      $('body').addClass('bg-brand1');
-      $.getScript('lib/odometer/odometer.min.js')
-        .done(function() {
-          $(function(){
-            var starsOdometer = new Odometer({ el: $('.odometer')[0], theme: 'minimal', value: '0' });
-            starsOdometer.render()
-
-            var update = function() {
-              $.ajax('https://api.github.com/repos/dstroot/skeleton?access_token=1003ff07ff454596250e0bfa6940027a77a94866', {
-                cache: false,
-                success: function(data) {
-                  if (data.stargazers_count) {
-                    starsOdometer.update(data.stargazers_count);
-                  }
-                },
-                complete: function(xhr) {
-                  // Turn off rate limiting since we are using a token
-                  //remaining = xhr.getResponseHeader('X-RateLimit-Remaining');
-                  //setTimeout(update, 1000 * (4 + Math.pow(1.1, (60 - remaining))));
-                  setTimeout(update, 10000);
-                },
-                error: function(err) {
-                  console.log(err);
-                }
-              });
-            };
-
-            setTimeout(update, 1000);
-          });
-      });
-    });
